@@ -1,0 +1,9 @@
+
+#+TITLE: =Dotfiles=
+#+AUTHOR: Haider Mirza
+* Table Of Contents :toc:
+- [[#about-this-repository][About this repository]]
+
+* About this repository
+  Now that I use GNU Guix, my dotfiles will have a major overhaul resulting in this repository.
+  The files in this repository are mainly scheme files and are used in the Guix functional package manager to acheive utimate reproducability.
