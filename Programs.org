@@ -997,3 +997,32 @@ gnu https://www.gnu.org/
 gu https://guix.gnu.org/
 guma https://guix.gnu.org/manual/en/guix.html
 #+END_SRC
+** Scripts
+Here are some small scripts used in qutebrowser
+
+*** buffer.sh
+Switch buffers in Emacs useing emacsclient
+#+BEGIN_SRC shell-script :tangle "/home/haider/.config/qutebrowser/scripts/buffer.sh"
+  #!/usr/bin/env bash
+  # _   _ __  __
+  #| | | |  \/  |
+  #| |_| | |\/| | Made by Haider Mirza
+  #|  _  | |  | | My Github: https://github.com/Ha1derMirza
+  #|_| |_|_|  |_|
+
+  emacsclient -e "(consult-buffer)"
+
+#+END_SRC
+*** mpv.sh
+Switch workspace to 3 (this workspace is dedicated for videos that are launched in mpv)
+#+BEGIN_SRC shell-script :tangle "/home/haider/.config/qutebrowser/scripts/mpv.sh"
+  #!/usr/bin/env bash
+  # _   _ __  __
+  #| | | |  \/  |
+  #| |_| | |\/| | Made by Haider Mirza
+  #|  _  | |  | | My Github: https://github.com/Ha1derMirza
+  #|_| |_|_|  |_|
+
+  emacsclient -e "(exwm-workspace-switch-create 3)"
+
+#+END_SRC
