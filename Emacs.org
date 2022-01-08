@@ -122,7 +122,7 @@ xmodmap ~/.Xmodmap
 
 * Clean
   Makes Emacs keep my file directorys clean of unnecessary files.
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
   ;; auto-save-mode doesn't create the path automatically!
   (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
@@ -235,7 +235,7 @@ xmodmap ~/.Xmodmap
 #+end_src
 ** General Keybinds
 *** Settings
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (rune/leader-keys
     "s"  '(:ignore t :which-key "settings")
     "sp" '(counsel-package :which-key "Install Packages")
@@ -243,7 +243,7 @@ xmodmap ~/.Xmodmap
 #+END_SRC
     
 *** File control
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   "x"  '(:ignore t :which-key "Delete")
   "c"  '(:ignore t :which-key "Create")
   "xf" '(delete-file :which-key "Delete file")
@@ -253,7 +253,7 @@ xmodmap ~/.Xmodmap
 #+END_SRC
     
 *** Buffers
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   "b"  '(:ignore t :which-key "Buffers")
   "bb" '(consult-buffer :which-key "Switch to buffer")
   "bB" '(consult-buffer-other-window :which-key "Switch to buffer on new window")
@@ -264,32 +264,32 @@ xmodmap ~/.Xmodmap
 #+END_SRC
 
 *** General
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   "g"  '(:ignore t :which-key "General")
   "gr" '(counsel-recentf :which-key "Recent files")
   "gl" '(display-line-numbers-mode :which-key "Line mode")
 #+END_SRC
 
 *** Typing Command
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   "TAB" '(comment-region :which-key "comment lines")
 #+END_SRC
 
 *** Eshell
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   "e"  '(:ignore t :which-key "Eshell")
   "es" '(eshell :which-key "Launch Eshell")
   "eh" '(counsel-esh-history :which-key "Eshell History")
 #+END_SRC
 
 *** Eval Emacs Expressions
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   "e"  '(:ignore t :which-key "E-Lisp")
-  "eb" '(eval-buffer :which-key "Evaluate elisp in buffer")
+  "eb" '(eval-buffer :which-key "Evaluate emacs-lisp in buffer")
   "ed" '(eval-defun :which-key "Evaluate defun")
-  "ee" '(eval-expression :which-key "Evaluate elisp expression")
+  "ee" '(eval-expression :which-key "Evaluate emacs-lisp expression")
   "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
-  "er" '(eval-region :which-key "Evaluate elisp in region"))
+  "er" '(eval-region :which-key "Evaluate emacs-lisp in region"))
 #+END_SRC
     
 ** Counsel
@@ -307,7 +307,7 @@ xmodmap ~/.Xmodmap
 #+end_src
 * General Settings
   Changing some variables
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq version-control t)
   (setq vc-follow-symlinks t)
   (setq ring-bell-function 'ignore)
@@ -342,13 +342,13 @@ Note That I use my own custom theme
 #+end_src
  
 *** Keybinds
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (rune/leader-keys
     "st" '(counsel-load-theme :which-key "choose theme"))
 #+end_src
 
 ** Dashboard
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 
   ;; (use-package dashboard
   ;;   :ensure t
@@ -399,7 +399,7 @@ Center org-mode documents.
 #+end_src
 
 ** Set frame transparency and maximize windows by default.
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 
    (set-frame-parameter (selected-frame) 'alpha '(70 . 70))
    (add-to-list 'default-frame-alist '(alpha . (70 . 70)))
@@ -486,7 +486,7 @@ M-x all-the-icons-install-fonts
   ;; (setq doom-modeline-minor-modes t)
 #+end_src 
 * Interactions
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 
   ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
   (fset 'yes-or-no-p 'y-or-n-p)
@@ -507,7 +507,7 @@ M-x all-the-icons-install-fonts
 
 #+END_SRC 
 ** Consult
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package consult
     :demand t
     :bind (("C-s" . consult-line)
@@ -608,7 +608,7 @@ I have customised OrgMode heavily for my environment.
 #+end_src
 
 ** Org-Superstar
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package org-superstar
     :config
     (setq org-superstar-leading-bullet " ")
@@ -629,7 +629,7 @@ I have customised OrgMode heavily for my environment.
 #+END_SRC
 
 ** Evil-Org
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package evil-org
     :diminish evil-org-mode
     :after org
@@ -728,7 +728,7 @@ The tree directory listing in Emacs.
 
 #+end_src
 ** Org-Sidebar
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   ;; (use-package org-sidebar)
 
   ;; (rune/leader-keys
@@ -737,7 +737,7 @@ The tree directory listing in Emacs.
 #+END_SRC
 * Chat
 ** ERC
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (setq erc-server "irc.libera.chat"
         erc-nick "Haider"    ; Change this!
         erc-user-full-name "Haider Mirza"  ; And this!
@@ -792,7 +792,7 @@ These keybindings will open my systemconfigs.
 * Mail
 ** Mu4e
   make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package mu4e
     :ensure nil
     :defer 10 ; Wait until 20 seconds after startup
@@ -870,7 +870,7 @@ These keybindings will open my systemconfigs.
 #+END_SRC
 
 ** Mu4e-Alert
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
    (use-package mu4e-alert)
    (mu4e-alert-set-default-style 'libnotify)
    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
@@ -878,7 +878,7 @@ These keybindings will open my systemconfigs.
 #+END_SRC
    
 ** Org-mime
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package org-mime
     :ensure t
     :config
@@ -897,7 +897,7 @@ These keybindings will open my systemconfigs.
 * Development
 ** Language servers
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :commands lsp
     :hook ((typescript-mode js2-mode web-mode) . lsp)
@@ -930,7 +930,7 @@ These keybindings will open my systemconfigs.
 *** Javascript and Typescript
 Setting up development in Javascript.
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package typescript-mode
     :mode "\\.ts\\'"
     :config
@@ -968,14 +968,14 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** C/C++
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package ccls
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
            (lambda () (require 'ccls) (lsp))))
 
 #+END_SRC
 *** Rust
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package rust-mode
     :mode "\\.rs\\'"
     :init (setq rust-format-on-save t))
@@ -985,7 +985,7 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** Scheme
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   ;; TODO: This causes issues for some reason.
   ;; :bind (:map geiser-mode-map
   ;;        ("TAB" . completion-at-point))
@@ -1004,7 +1004,7 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** HTML
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
     :config
@@ -1026,19 +1026,19 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** YAML
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
     :mode "\\.ya?ml\\'")
 
 #+END_SRC
 ** Smart Parens
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package smartparens
     :hook (prog-mode . smartparens-mode))
 
 #+END_SRC
 ** Company mode
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package company
     :after lsp-mode
     :hook (lsp-mode . company-mode)
@@ -1055,7 +1055,7 @@ Setting up development in Javascript.
 
 #+END_SRC 
 ** Compilation
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package compile
     :custom
     (compilation-scroll-output t))
@@ -1068,7 +1068,7 @@ Setting up development in Javascript.
 
 #+END_SRC
 * VTerm
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (use-package vterm
     :after evil-collection
     :commands vterm
@@ -1089,7 +1089,7 @@ Uses the standard Unix password store "pass".
 
 #+end_src
 * Magit
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   ;;     (use-package magit
   ;;       :custom
   ;;       (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
@@ -1105,7 +1105,7 @@ Uses the standard Unix password store "pass".
 * Hydra
 
 [[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
 
   ;; change the text's scale if required
   (defhydra hydra-zoom (global-map "<f6>")
@@ -1124,11 +1124,12 @@ Uses the standard Unix password store "pass".
 
 #+END_SRC 
 * Server
-#+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp
   (server-start)
 
 #+END_SRC
 * Load Desktop.org
-  #+BEGIN_SRC elisp
- (load "~/.emacs.d/desktop.el")
+  This loads EXWM and the rest of my system.
+  #+BEGIN_SRC emacs-lisp
+ (load-file "~/.emacs.d/desktop.el")
   #+END_SRC
