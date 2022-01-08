@@ -1,0 +1,435 @@
+#+TITLE: =Desktop configuration=
+#+AUTHOR: Haider Mirza
+* Table of contents :toc:
+- [[#about-this-config][About This Config]]
+- [[#polybar][Polybar]]
+- [[#exwm][EXWM]]
+  - [[#window-mangement][Window Mangement]]
+  - [[#helper-functions][Helper Functions]]
+  - [[#configuration][Configuration]]
+  - [[#desktop-configuration][Desktop Configuration]]
+  - [[#polybar-panel][Polybar Panel]]
+  - [[#use-package][use-package]]
+  - [[#keybinds][Keybinds]]
+  - [[#system-functions][System functions]]
+
+* About This Config
+  This is my desktop configuration for my system.
+* Polybar
+** Emacs 
+   Custom Polybar code for control in Emacs.
+ #+BEGIN_SRC elisp
+   (defvar poly/polybar-process nil
+     "Holds the process of the running Polybar instance, if any")
+
+   (defun poly/kill-panel ()
+     (interactive)
+     (when poly/polybar-process
+       (ignore-errors
+	 (kill-process poly/polybar-process)))
+     (setq poly/polybar-process nil))
+
+   (defun poly/start-panel ()
+     (interactive)
+     (poly/kill-panel)
+     (setq poly/polybar-process (start-process-shell-command "polybar" nil "polybar panel")))
+
+   (defun poly/send-polybar-hook (module-name hook-index)
+     (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
+
+   (defun poly/send-polybar-exwm-workspace ()
+     (poly/send-polybar-hook "exwm-workspace" 1))
+
+   ;; Update panel indicator when workspace changes
+   (add-hook 'exwm-workspace-switch-hook #'poly/send-polybar-exwm-workspace)
+ #+END_SRC
+** Polybar
+   My Polybar config
+#+BEGIN_SRC conf
+
+; Docs: https://github.com/polybar/polybar
+;==========================================================
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[colors]
+background = #1D2026
+background-alt = #282C34
+foreground = #A6Accd
+foreground-alt = #555
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+underline-1 = #51AFEF
+
+[bar/panel]
+width = 100%
+height = 17
+offset-x = 0
+offset-y = 0
+fixed-center = true
+enable-ipc = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 2
+line-color = #f00
+
+border-size = 0
+border-color = #00000000
+
+padding-top = 5
+padding-left = 1
+padding-right = 1
+
+module-margin-left = 5
+
+font-0 = "Cantarell:size=8:weight=bold;2"
+font-1 = "Font Awesome:size=6;2"
+font-2 = "Material Icons:size=9;5"
+font-3 = "Fira Mono:size=5;-3"
+
+modules-left = exwm-workspace title
+modules-right = cpu memory date
+
+tray-position = right
+tray-padding = 2
+tray-maxsize = 28
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+[module/exwm-workspace]
+type = custom/ipc
+hook-0 = emacsclient -e "(poly/polybar-exwm-workspace)" | sed -e 's/^"//' -e 's/"$//'
+initial = 1
+format-underline = ${colors.underline-1}
+format-padding = 1
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format = <label>
+format-underline = ${colors.underline-1}
+click-left = emacsclient -e "(proced)"
+label = CPU %percentage%%
+
+[module/memory]
+type = internal/memory
+interval = 3
+format = <bar-used>
+bar-used-indicator =
+bar-used-width = 30
+bar-used-foreground-0 = #55aa55
+bar-used-foreground-1 = #557755
+bar-used-foreground-2 = #f5a70a
+bar-used-foreground-3 = #ff5555
+bar-used-fill = ▐
+bar-used-empty = ▐
+format-underline = ${colors.underline-1}
+bar-used-empty-foreground = #444444
+
+[module/date]
+type = internal/date
+interval = 1
+date = "%A %B %d %Y"
+time = %l:%M:%S %p
+format-prefix-foreground = ${colors.foreground-alt}
+format-underline = ${colors.underline-1}
+label = %date% %time%
+
+[module/title]
+type = internal/xwindow
+format = <label>
+format-foreground = #98BE65
+format-padding = 4
+label = %title%
+label-empty = Empty
+label-empty-foreground = #707880
+   #+END_SRC
+* EXWM
+  EXWM is my Window Manager That I use becuase It fits very well to my workflow and is highly keyboard-based. 
+** Window Mangement
+#+BEGIN_SRC elisp
+  (defun win/position-window-left-corner ()
+    (interactive)
+    (let* ((pos (frame-position))
+	   (pos-x (car pos))
+	   (pos-y (cdr pos)))
+
+      (exwm-floating-move (- pos-x) (- pos-y))))
+
+  (defun win/position-window-right-corner ()
+    (interactive)
+    (let* ((pos (frame-position))
+	   (pos-x (car pos))
+	   (pos-y (cdr pos)))
+
+      (exwm-floating-move (- (- 1366 (frame-pixel-width)) pos-x) (- pos-y))))
+
+  (defun exwm/exwm-update-class ()
+    (exwm-workspace-rename-buffer exwm-class-name))
+
+  (defun exwm/exwm-update-title ()
+    (pcase exwm-class-name
+      ("qutebrowser" (exwm-workspace-rename-buffer (format "qutebrowser: %s" exwm-title)))
+      ("vimb" (exwm-workspace-rename-buffer (format "vimb: %s" exwm-title)))))
+
+#+END_SRC 
+  
+** Helper Functions
+#+BEGIN_SRC elisp
+  (defun exwm/run-in-background (command)
+    (let ((command-parts (split-string command "[ ]+")))
+      (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
+  (defun exwm/bind-function (key invocation &rest bindings)
+    "Bind KEYs to FUNCTIONs globally"
+    (while key
+      (exwm-input-set-key (kbd key)
+			  `(lambda ()
+			     (interactive)
+			     (funcall ',invocation)))
+      (setq key (pop bindings)
+	    invocation (pop bindings))))
+
+  (defun exwm/bind-command (key command &rest bindings)
+    "Bind KEYs to COMMANDs globally"
+    (while key
+      (exwm-input-set-key (kbd key)
+			  `(lambda ()
+			     (interactive)
+			     (exwm/run-in-background ,command)))
+      (setq key (pop bindings)
+	    command (pop bindings))))
+
+#+END_SRC
+** Configuration
+#+BEGIN_SRC elisp
+
+  (defun exwm/exwm-init ()
+    (exwm-workspace-switch-create 1)
+    (vterm)                                                ;; vterm
+
+    (exwm-workspace-switch-create 2)
+    (exwm/run-in-background "qutebrowser")                 ;; Qutebrowser
+
+    (exwm-workspace-switch-create 7)
+    (erc-tls)                                              ;; ERC
+
+    (exwm-workspace-switch-create 8)
+    (mu4e)                                                 ;; Mu4e
+
+    (sleep-for 1)                                          ;; 1 second delay
+  
+    (exwm-workspace-switch-create 9)
+    (exwm/run-in-background "alacritty -t mocp -e mocp")   ;; mocp in Alacritty
+
+    (sleep-for 1)                                          ;; 1 second delay
+    (exwm-workspace-switch-create 1))
+
+  (defun exwm/exwm-init-hook ()
+    (poly/start-panel)
+    (exwm/exwm-init)
+    (exwm/run-in-background "dunst"))
+
+  (defun exwm/configure-window-by-class ()
+    (interactive)
+    (pcase exwm-class-name
+      ("qutebrowser" (exwm-workspace-move-window 2))
+      ("icecat" (exwm-workspace-move-window 3))
+      ("blender" (exwm-workspace-move-window 6))
+      ("mpv" (exwm-workspace-move-window 3))
+      ("QjackCtl" (exwm-floating-toggle-floating)
+       (exwm-layout-toggle-mode-line))))
+#+END_SRC
+** Desktop Configuration
+#+BEGIN_SRC elisp
+  (defun exwm/picom ()
+    (interactive)
+    (start-process-shell-command "picom" nil "picom"))
+
+  (defun exwm/run-xmodmap ()
+    (interactive)
+    (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/Xmodmap"))
+
+  (defun exwm/set-wallpaper ()
+    (interactive)
+    (start-process-shell-command
+     "feh" nil  "feh --bg-scale ~/Wallpapers/Black.png"))
+
+#+END_SRC
+** Polybar Panel
+#+BEGIN_SRC elisp
+  (defun poly/polybar-exwm-workspace ()
+    (pcase exwm-workspace-current-index
+      (0 "Audio Contol")
+      (1 "Terminal")
+      (2 "Web Browser")
+      (3 "Videos")
+      (4 "Documentation")
+      (5 "Development")
+      (6 "Blender")
+      (7 "Chat")
+      (8 "Mu4e")
+      (9 "Mocp")))
+
+#+END_SRC
+** use-package
+#+BEGIN_SRC elisp
+  (use-package exwm
+    :config
+    ;; Set the default number of workspaces
+    (setq exwm-workspace-number 10)
+
+    ;; When window "class" updates, use it to set the buffer name
+    (add-hook 'exwm-update-class-hook #'exwm/exwm-update-class)
+
+    ;; When window title updates, use it to set the buffer name
+    (add-hook 'exwm-update-title-hook #'exwm/exwm-update-title)
+
+    ;; Configure windows as they're created
+    (add-hook 'exwm-manage-finish-hook #'exwm/configure-window-by-class)
+
+    ;; Load the system tray before exwm-init
+    ;; (require 'exwm-systemtray)
+    ;; (setq exwm-systemtray-height 16)
+    ;; (exwm-systemtray-enable)
+
+    ;; When EXWM starts up, do some extra configuration
+    (add-hook 'exwm-init-hook #'exwm/exwm-init-hook)
+
+    ;; Remap CapsLock to Ctrl
+    (exwm/run-xmodmap)
+
+    ;; Open my wallpaper
+    (exwm/set-wallpaper)
+
+    ;; Launch compositor
+    (exwm/picom)
+
+#+END_SRC
+** Keybinds
+#+BEGIN_SRC elisp
+  (setq exwm-input-prefix-keys
+	'(?\C-x
+	  ?\C-u
+	  ?\C-h
+	  ?\M-x
+	  ?\M-`
+	  ?\M-&
+	  ?\s-q
+	  ?\s-f
+	  ?\M-:
+	  ?\C-\M-j  ;; Buffer list
+	  ?\C-\ ))  ;; Ctrl+Space
+
+  (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
+  (defun exwm/run-qute ()
+    (interactive)
+    (exwm/run-in-background "qutebrowser")
+    (message "Launching Qutebrowser")
+    (exwm-workspace-switch-create 2))
+
+  (defun exwm/run-icecat ()
+    (exwm/run-in-background "icecat")
+    (message "Launching Icecat")
+    (exwm-workspace-switch-create 2))
+
+  (defun exwm/run-mpv ()
+    (exwm/run-in-background "mpv")
+    (message "Launching MPV")
+    (exwm-workspace-switch-create 3))
+
+  (defun exwm/mpv-float ()
+    (interactive)
+    (exwm-floating-toggle-floating)
+    (exwm-layout-toggle-mode-line)
+    (exwm-layout-shrink-window 500)
+    (exwm-layout-shrink-window-horizontally 960))
+
+  (defun exwm/run-blen ()
+    (exwm/run-in-background "blender")
+    (message "Launching Blender")
+    (exwm-workspace-switch-create 6))
+
+  (defun exwm/run-snip ()
+    (exwm/run-in-background "ksnip")
+    (message "Launching Ksnip"))
+
+  (defun exwm/run-slock ()
+    (interactive)
+    (start-process-shell-command "slock" nil "slock"))
+
+  (exwm/bind-function
+   "M-s-b" 'exwm/run-qute
+   "M-s-i" 'exwm/run-icecat
+   "M-s-v" 'exwm/run-mpv
+   "C-s-b" 'exwm/run-blen
+   "s-l" 'exwm/run-slock
+   "s-s" 'exwm/run-snip
+   "s-q" 'kill-buffer)
+
+  ;; (exwm/bind-command
+  ;; "s-p" "playerctl play-pause"
+  ;; "s-[" "playerctl previous"
+  ;; "s-]" "playerctl next")
+
+  ;; Set up global key bindings.  These always work, no matter the input state!
+  ;; Keep in mind that changing this list after EXWM initializes has no effect.
+  (setq exwm-input-global-keys
+	`(
+	  ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+	  ([?\s-r] . exwm-reset)
+	  ([?\s-f] . exwm-layout-toggle-fullscreen)
+	  ([?\s-z] . exwm-layout-toggle-mode-line)
+	  ([?\s-b] . exwm-workspace-switch-to-buffer)
+	  ([?\s-x] . exwm-floating-toggle-floating)
+	  ([?\s-j] . win/position-window-left-corner)
+	  ([?\s-k] . win/position-window-right-corner)
+	  ([?\s-m] . exwm/mpv-float)
+
+	  ;; Launch applications via shell command
+	  ([?\s-&] . (lambda (command)
+		       (interactive (list (read-shell-command "$ ")))
+		       (start-process-shell-command command nil command)))
+
+	  ;; Switch workspace
+	  ([?\s-w] . exwm-workspace-switch)
+
+	  ([?\s-E] . (lambda () (interactive) (dired "~")))
+	  ([?\s-Q] . (lambda () (interactive) (kill-buffer)))
+
+	  ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+	  ,@(mapcar (lambda (i)
+		      `(,(kbd (format "s-%d" i)) .
+			(lambda ()
+			  (interactive)
+			  (exwm-workspace-switch-create ,i))))
+		    (number-sequence 0 9))))
+
+  (exwm-enable))
+
+
+  (global-set-key (kbd "s-SPC") 'counsel-linux-app)
+#+END_SRC
+** System functions
+#+BEGIN_SRC elisp
+  (defun shutdown ()
+    (interactive)
+    (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password: "))
+			   " | sudo -S shutdown")))
+
+  (defun reboot ()
+    (interactive)
+    (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password: "))
+			   " | sudo -S reboot")))
+
+#+END_SRC

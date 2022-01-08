@@ -1,0 +1,110 @@
+#+TITLE: =System configuration=
+#+AUTHOR: Haider Mirza
+* Table of contents :toc:
+  - [[#about-this-config][About This Config]]
+
+* About This Config
+  This is my GNU Guix system configuration applied on my system.
+* Config.scm
+  This is the config file used in GNU Guix to manage your system.
+  #+BEGIN_SRC scheme
+    ;; This is to be copied from /etc/config.scm or used directly
+    (use-modules (gnu))
+    (use-modules (gnu packages emacs))
+    (use-modules (gnu packages emacs-xyz))
+    (use-modules (gnu packages xorg))
+    (use-modules (gnu packages certs))
+    (use-modules (gnu packages mail))
+    (use-modules (gnu packages vim))
+    (use-service-modules
+     cups
+     desktop
+     networking
+     ssh
+     xorg)
+
+    (operating-system
+     (locale "en_GB.utf8")
+     (timezone "Europe/London")
+     (keyboard-layout (keyboard-layout "gb" "extd"))
+     (host-name "xps")
+     (users (cons* (user-account
+		    (name "haider")
+		    (comment "Haider")
+		    (group "users")
+		    (home-directory "/home/haider")
+		    (supplementary-groups
+		     '("wheel"
+		       "netdev"
+		       "audio"
+		       "video")))
+		   %base-user-accounts))
+
+     (packages (append (list
+			;; Window Manager
+			emacs emacs-exwm emacs-desktop-environment
+			;; Emacs Packages
+			emacs-guix mu 
+			;; terminal emulator
+			xterm
+			;; Text Editor
+			vim
+			;; for HTTPS access
+			nss-certs)
+		       %base-packages))
+
+     (services
+      (append
+       (list (service xfce-desktop-service-type)
+	     (service openssh-service-type)
+	     (set-xorg-configuration
+	      (xorg-configuration
+	       (keyboard-layout keyboard-layout))))
+       %desktop-services))
+
+     (bootloader
+      (bootloader-configuration
+       (bootloader grub-bootloader)
+       (targets (list "/dev/sda"))
+       (keyboard-layout keyboard-layout)))
+
+     (swap-devices
+      (list (swap-space
+	     (target
+	      (uuid "fdc34943-1094-4a38-90c4-c07960e388ab")))))
+
+     (file-systems
+      (cons* (file-system
+	      (mount-point "/")
+	      (device
+	       (uuid "8abae596-c59e-418f-a7f0-e6a65ea54039"
+		     'ext4))
+	      (type "ext4"))
+	     %base-file-systems)))
+  #+END_SRC
+
+* Channels.scm
+  If you dont want to just use the default channels for whatever reason, place this file in ~/.config/guix to use the nonguix and flat channels.
+  *NOTE:* I do not recommend this in any capacity. This is only for reference and I dont even personally use it.
+  #+BEGIN_SRC scheme
+    (list (channel
+	    (name 'guix)
+	    (url "https://git.savannah.gnu.org/git/guix.git")
+	    (introduction
+	      (make-channel-introduction
+		"9edb3f66fd807b096b48283debdcddccfea34bad"
+		(openpgp-fingerprint
+		  "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
+	  (channel
+	    (name 'nonguix)
+	    (url "https://gitlab.com/nonguix/nonguix"))
+	  (channel
+	    (name 'flat)
+	    (url "https://github.com/flatwhatson/guix-channel.git")
+	    (introduction
+	      (make-channel-introduction
+		"33f86a4b48205c0dc19d7c036c85393f0766f806"
+		(openpgp-fingerprint
+		  "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490")))))
+
+  #+END_SRC

@@ -1,0 +1,1130 @@
+#+TITLE: =Emacs configuration=
+#+AUTHOR: Haider Mirza
+* Table of contents :toc:
+- [[#about-this-config][About This Config]]
+- [[#note][Note]]
+  - [[#replace-capslock-with-ctrl][Replace Capslock with CTRL]]
+- [[#packages][Packages]]
+- [[#keybinds][Keybinds]]
+  - [[#general][General]]
+  - [[#global-keybindings][Global Keybindings]]
+  - [[#helpful][Helpful]]
+  - [[#evil-mode][Evil Mode]]
+  - [[#general-keybinds][General Keybinds]]
+  - [[#counsel][Counsel]]
+- [[#init][Init]]
+- [[#user-interface][User Interface]]
+  - [[#font][Font]]
+  - [[#theme][Theme]]
+  - [[#dashboard][Dashboard]]
+  - [[#minimal-visuals][Minimal Visuals]]
+  - [[#center-documents][Center Documents]]
+  - [[#set-frame-transparency-and-maximize-windows-by-default][Set frame transparency and maximize windows by default.]]
+  - [[#scrolling][Scrolling]]
+  - [[#line-numbers][Line numbers]]
+  - [[#emojify][Emojify]]
+  - [[#icons][Icons]]
+  - [[#doom-modeline][Doom Modeline]]
+- [[#interactions][Interactions]]
+- [[#vertico][Vertico]]
+  - [[#consult][Consult]]
+- [[#orgmode][OrgMode]]
+  - [[#org-superstar][Org-Superstar]]
+  - [[#evil-org][Evil-Org]]
+  - [[#orgroam][OrgRoam]]
+- [[#yasnippet][YASnippet]]
+- [[#programming][Programming]]
+  - [[#rust][Rust]]
+- [[#backup][Backup]]
+- [[#tree][Tree]]
+  - [[#neotree][Neotree]]
+  - [[#org-sidebar][Org-Sidebar]]
+- [[#chat][Chat]]
+  - [[#erc][ERC]]
+- [[#open][Open]]
+  - [[#open-documents][Open Documents]]
+  - [[#open-configs][Open Configs]]
+- [[#which-key][Which key]]
+- [[#mail][Mail]]
+  - [[#mu4e][Mu4e]]
+  - [[#mu4e-alert][Mu4e-Alert]]
+  - [[#org-mime][Org-mime]]
+- [[#development][Development]]
+  - [[#language-servers][Language servers]]
+  - [[#languages][Languages]]
+  - [[#smart-parens][Smart Parens]]
+  - [[#company-mode][Company mode]]
+  - [[#compilation][Compilation]]
+- [[#vterm][VTerm]]
+- [[#password-manager][Password Manager]]
+- [[#magit][Magit]]
+- [[#hydra][Hydra]]
+- [[#server][Server]]
+- [[#polybar][Polybar]]
+- [[#exwm][EXWM]]
+
+* About This Config
+  This is my Emacs configuration used in all of my Systems.
+  This is *VERY* heavily customised for my workflow and therefore not recommended as a drop-in replacement for your config.
+
+* Note
+** Replace Capslock with CTRL
+You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
+Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
+So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
+Doing this will prevent you from having to bend your pinky down all day long to hit all those fabled Emacs keybindings,
+allowing you to keep your hands on the home row of the keyboard.
+
+There are many ways to accomplish this in Linux, but the easiest (and most repeatable) I’ve found is to use xmodmap.
+First, make sure you have it xmodmap installed.
+Then, create a file named .Xmodmap in your home folder and populate it like so:
+
+#+BEGIN_SRC
+clear lock
+clear control
+keycode 66 = Control_L
+add control = Control_L
+add Lock = Control_R
+#+end_src
+
+This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case you ever need to use it.
+Most login systems (GDM, KDM, etc) will load this file when you log in so you might not need to do anything extra for it to take effect, just log out and log back in again.
+If that doesn’t seem to work, you can add this line to one of your startup files (.xinitrc, .profile, window manager configuration, etc):
+(I have already enabled this in my EXWM config (desktop.org))
+#+BEGIN_SRC
+xmodmap ~/.Xmodmap
+#+end_src
+
+* Packages
+#+begin_src emacs-lisp
+
+  ;; Initialize package sources
+  (require 'package)
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("melpa-stable" . "https://stable.melpa.org/packages/")
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
+
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+  ;; Initialize use-package on non-Linux platforms
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+#+end_src
+
+* Clean
+  Makes Emacs keep my file directorys clean of unnecessary files.
+#+BEGIN_SRC elisp
+  (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+  ;; auto-save-mode doesn't create the path automatically!
+  (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
+
+  (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
+	auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
+
+  (use-package no-littering)
+
+#+END_SRC
+* Keybinds
+** General
+  
+#+begin_src emacs-lisp
+  (use-package general
+    :config
+    (general-create-definer rune/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    (rune/leader-keys
+      "SPC" '(counsel-find-file :which-key "find file")))
+
+#+end_src
+
+** Global Keybindings
+#+begin_src emacs-lisp
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (global-set-key (kbd "C-s-s") 'swiper)
+  (global-set-key (kbd "s-v") 'vterm)
+  (global-set-key (kbd "<s-left>") 'windmove-left)
+  (global-set-key (kbd "<s-right>") 'windmove-right)
+  (global-set-key (kbd "<s-up>") 'windmove-up)
+  (global-set-key (kbd "<s-down>") 'windmove-down)
+
+#+end_src
+
+** Helpful
+  
+
+#+begin_src emacs-lisp
+  (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+
+#+end_src
+
+** Evil Mode
+   
+#+begin_src emacs-lisp
+
+  (use-package undo-tree)
+  (setq undo-tree-auto-save-history nil)
+  (global-undo-tree-mode 1)
+
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    (setq evil-respect-visual-line-mode t)
+    (setq evil-undo-system 'undo-tree)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+
+  (evil-mode 1)
+
+  (defun dw/dont-arrow-me-bro ()
+    (interactive)
+    (message "Arrow keys are bad, you know?"))
+
+  ;; Disable arrow keys in normal and visual modes
+  (define-key evil-normal-state-map (kbd "<left>") 'dw/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<right>") 'dw/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<down>") 'dw/dont-arrow-me-bro)
+  (define-key evil-normal-state-map (kbd "<up>") 'dw/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<left>") 'dw/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<right>") 'dw/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<down>") 'dw/dont-arrow-me-bro)
+  (evil-global-set-key 'motion (kbd "<up>") 'dw/dont-arrow-me-bro)
+
+#+end_src
+
+*** Evil Collection
+
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+
+#+end_src
+** General Keybinds
+*** Settings
+#+BEGIN_SRC elisp
+  (rune/leader-keys
+    "s"  '(:ignore t :which-key "settings")
+    "sp" '(counsel-package :which-key "Install Packages")
+    "st" '(counsel-load-theme :which-key "choose theme")
+#+END_SRC
+    
+*** File control
+#+BEGIN_SRC elisp
+  "x"  '(:ignore t :which-key "Delete")
+  "c"  '(:ignore t :which-key "Create")
+  "xf" '(delete-file :which-key "Delete file")
+  "xd" '(delete-directory :which-key "Delete directory")
+  "cf" '(make-empty-file :which-key "Create empty file")
+  "cf" '(make-directory :which-key "Create directory")
+#+END_SRC
+    
+*** Buffers
+#+BEGIN_SRC elisp
+  "b"  '(:ignore t :which-key "Buffers")
+  "bb" '(consult-buffer :which-key "Switch to buffer")
+  "bB" '(consult-buffer-other-window :which-key "Switch to buffer on new window")
+  "bF" '(consult-buffer-other-frame :which-key "Switch to buffer on new frame")
+  "bk" '(kill-buffer :which-key "Kill a buffer")
+  "bK" '(kill-buffer-and-window :which-key "Kill buffer and window")
+  "bc" '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
+#+END_SRC
+
+*** General
+#+BEGIN_SRC elisp
+  "g"  '(:ignore t :which-key "General")
+  "gr" '(counsel-recentf :which-key "Recent files")
+  "gl" '(display-line-numbers-mode :which-key "Line mode")
+#+END_SRC
+
+*** Typing Command
+#+BEGIN_SRC elisp
+  "TAB" '(comment-region :which-key "comment lines")
+#+END_SRC
+
+*** Eshell
+#+BEGIN_SRC elisp
+  "e"  '(:ignore t :which-key "Eshell")
+  "es" '(eshell :which-key "Launch Eshell")
+  "eh" '(counsel-esh-history :which-key "Eshell History")
+#+END_SRC
+
+*** Eval Emacs Expressions
+#+BEGIN_SRC elisp
+  "e"  '(:ignore t :which-key "E-Lisp")
+  "eb" '(eval-buffer :which-key "Evaluate elisp in buffer")
+  "ed" '(eval-defun :which-key "Evaluate defun")
+  "ee" '(eval-expression :which-key "Evaluate elisp expression")
+  "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
+  "er" '(eval-region :which-key "Evaluate elisp in region"))
+#+END_SRC
+    
+** Counsel
+
+#+begin_src emacs-lisp
+  (use-package counsel
+    :bind (("M-x" . counsel-M-x)
+           ("C-x b" . counsel-ibuffer)
+           ("C-x C-f" . counsel-find-file)
+           :map minibuffer-local-map
+           ("C-r" . 'counsel-minibuffer-history))
+    :custom
+    (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only))
+
+#+end_src
+* General Settings
+  Changing some variables
+#+BEGIN_SRC elisp
+  (setq version-control t)
+  (setq vc-follow-symlinks t)
+  (setq ring-bell-function 'ignore)
+  (setq coding-system-for-read 'utf-8)
+  (setq coding-system-write 'utf-8)
+  (setq sentence-end-double-space nil)
+
+#+END_SRC
+* User Interface
+
+** Font
+#+begin_src emacs-lisp
+
+  ;; You will most likely need to adjust this font size for your system!
+  (defvar runemacs/default-font-size 95)
+
+  (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+
+  ;;(setq doom-font (font-spec :family "Source Code Pro" :size 15)
+  ;;     doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
+  ;;	  doom-big-font (font-spec :family "Source Code Pro" :size 24))
+
+#+end_src
+
+** Theme
+Note That I use my own custom theme
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :init (load-theme 'doom-monokai-classic t))
+
+  ;; (load-theme 'haider t)
+#+end_src
+ 
+*** Keybinds
+#+BEGIN_SRC elisp
+  (rune/leader-keys
+    "st" '(counsel-load-theme :which-key "choose theme"))
+#+end_src
+
+** Dashboard
+#+BEGIN_SRC elisp
+
+  ;; (use-package dashboard
+  ;;   :ensure t
+  ;;   :config
+  ;;   (setq dashboard-banner-logo-title "Welcome to Haider's System")
+  ;;   (setq dashboard-startup-banner "/home/haider/Downloads/text.txt")
+  ;;   ;; (setq dashboard-center-content t)
+  ;;   (setq dashboard-init-info "Make sure to check Org Agenda")
+  ;;   (setq dashboard-show-shortcuts nil)
+  ;;   (setq dashboard-set-heading-icons t)
+  ;;   (setq dashboard-set-file-icons t)
+  ;;   (setq dashboard-items '((recents  . 5)
+  ;; 			  (projects . 5)
+  ;; 			  (agenda . 5)))
+  ;;   (dashboard-setup-startup-hook))
+
+#+END_SRC
+** Minimal Visuals
+Make the User interface more minimal.
+#+begin_src emacs-lisp
+
+  (setq inhibit-startup-message t)
+
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+
+  (menu-bar-mode -1)            ; Disable the menu bar
+
+  ;; Set up the visible bell
+  (setq visible-bell t)
+
+#+end_src
+
+** Center Documents
+Center org-mode documents.
+
+#+begin_src emacs-lisp
+  (defun org/org-mode-visual-fill ()
+    (setq visual-fill-column-width 140
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    :hook (org-mode . org/org-mode-visual-fill))
+
+#+end_src
+
+** Set frame transparency and maximize windows by default.
+#+BEGIN_SRC elisp
+
+   (set-frame-parameter (selected-frame) 'alpha '(70 . 70))
+   (add-to-list 'default-frame-alist '(alpha . (70 . 70)))
+   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+   (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+#+END_SRC
+** Scrolling
+Improve scrolling.
+#+begin_src emacs-lisp
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+  (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+  (setq scroll-step 1) ;; keyboard scroll one line at a time
+  (setq use-dialog-box nil) ;; Disable dialog boxes since they weren't working in Mac OSX
+
+#+end_src
+:
+** Line numbers
+#+begin_src emacs-lisp
+
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
+
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  vterm-mode-hook
+                  shell-mode-hook
+                  eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+#+end_src
+
+** Emojify
+   
+#+begin_src emacs-lisp
+  (use-package emojify)
+   (add-hook 'after-init-hook #'global-emojify-mode)
+
+  (rune/leader-keys
+    "a"  '(:ignore t :which-key "Emojify") ;; I know a has no correlation but Im running out of space ok.
+    "ai" '(emojify-insert-emoji :which-key "Insert Emoji"))
+
+  (use-package unicode-fonts)
+
+#+end_src
+** Icons
+*** NOTE:
+The first time you load your configuration on a new machine, you'll
+need to run the following command interactively so that mode line icons
+display correctly:
+
+M-x all-the-icons-install-fonts
+#+begin_src emacs-lisp
+
+  (use-package all-the-icons)
+
+#+end_src
+
+** Doom Modeline
+
+#+begin_src emacs-lisp
+
+  ;; Show the time and date in modeline
+  (setq display-time-day-and-date t)
+
+  ;; Enable the time & date in the modeline
+  ;; (display-time-mode 1)
+  ;; (setq display-time-string-forms '((format-time-string "%H:%M" now)))
+
+  (setq display-time-format "%l:%M %p %b %y"
+        display-time-default-load-average nil)
+
+  (use-package diminish)
+
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 25)))
+
+  (setq doom-modeline-lsp t)
+  (setq doom-modeline-github nil)
+  (setq doom-modeline-irc t)
+  ;; (setq doom-modeline-minor-modes t)
+#+end_src 
+* Interactions
+#+BEGIN_SRC elisp
+
+  ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; Confirm to quit
+  (setq confirm-kill-emacs 'yes-or-no-p)
+
+  ;; Major mode of new buffers
+  ;; (setq initial-major-mode 'org-mode)
+
+#+END_SRC
+* Vertico
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico
+    :ensure t
+    :init
+    (vertico-mode))
+
+#+END_SRC 
+** Consult
+#+BEGIN_SRC elisp
+  (use-package consult
+    :demand t
+    :bind (("C-s" . consult-line)
+           ("C-M-l" . consult-imenu)
+           ("C-M-j" . persp-switch-to-buffer*)
+           :map minibuffer-local-map
+           ("C-r" . consult-history))
+    :custom
+    (completion-in-region-function #'consult-completion-in-region))
+
+#+END_SRC
+* OrgMode
+
+I have customised OrgMode heavily for my environment.
+#+begin_src emacs-lisp
+  (rune/leader-keys
+    "o"  '(:ignore t :which-key "Org")
+    "oa" '(org-agenda :which-key "View Org-Agenda")
+    "ol" '(org-agenda-list :which-key "View Org-Agendalist")
+    "ot" '(org-babel-tangle :which-key "Tangle Document")
+    "ox" '(org-export-dispatch :which-key "Export Document")
+    "od" '(org-deadline :which-key "Deadline")
+    "os" '(org-schedule :which-key "Scedule")
+    "oS" '(org-todo :which-key "OrgMode states"))
+
+  (setq org-agenda-span 10)
+
+  (defun org/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+  (use-package org
+    :config
+    (setq org-ellipsis " ▾")
+
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
+
+    (setq org-agenda-files
+          '("~/Documents/Home/Reminders.org"
+            "~/Documents/Home/TODO.org"
+            "~/Documents/School/Homework.org"
+            "~/Documents/School/School-Reminders.org"))
+
+    (setq org-todo-keywords
+          '((sequence
+             "TODO(t)"
+             "WORK(w)"
+             "DEV(d)"
+             "RESEARCH(r)"
+             "HOLD(h)"
+             "PLAN(p)"
+             "|"
+             "COMPLETED(c)"
+             "FAILED(f)")))
+
+    ;; Save Org buffers after refiling!
+    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+    ;; (setq org-agenda-custom-commands
+    ;; 	'(("n" "Next Tasks"
+    ;; 	    ((todo "TODO"
+    ;; 	     ((org-agenda-overriding-header "Next Tasks")))))))
+
+
+    (org/org-font-setup))
+
+  (use-package org-bullets
+    :after org
+    :hook 
+    (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+#+end_src
+
+** Org-Superstar
+#+BEGIN_SRC elisp
+  (use-package org-superstar
+    :config
+    (setq org-superstar-leading-bullet " ")
+    (setq org-superstar-special-todo-items t) ;; Makes TODO header bullets into boxes
+    (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
+                                            ("WORK" . 9744)
+                                            ("DEV" . 9744)
+                                            ("RESEARCH" . 9744)
+                                            ("HOLD" . 9744)
+                                            ("PLAN" . 9744)
+                                            ("COMPLETED" . 9745)
+                                            ("FAILED" . 9746)))
+    :hook (org-mode . org-superstar-mode))
+
+  ;; Removes gap when you add a new heading
+  (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
+#+END_SRC
+
+** Evil-Org
+#+BEGIN_SRC elisp
+  (use-package evil-org
+    :diminish evil-org-mode
+    :after org
+    :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
+    (add-hook 'evil-org-mode-hook
+              (lambda () (evil-org-set-key-theme))))
+
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
+
+#+END_SRC
+
+** OrgRoam
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/RoamNotes")
+    (org-roam-completion-everywhere t)
+
+    (org-roam-capture-templates
+     '(("d" "default" plain "%?"
+        :if-new (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
+        :unnarrowed t)
+       ("p" "project" plain (file "~/RoamNotes/Templates/ProjectTemplate.org")
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+        :unnarrowed t)
+       )
+     )
+
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i" . completion-at-point)
+           :map org-roam-dailies-map
+           ("Y" . org-roam-dailies-capture-yesterday)
+           ("T" . org-roam-dailies-capture-tomorrow))
+    :bind-keymap
+    ("C-c n d" . org-roam-dailies-map)
+    :config
+    (require 'org-roam-dailies) ;; Ensure the keymap is available
+    (org-roam-db-autosync-mode))
+
+  (rune/leader-keys
+    "or"  '(:ignore t :which-key "Org-Roam")
+    "ori" '(org-roam-node-insert :which-key "Insert")
+    "ord"  '(:ignore t :which-key "Dailies")
+    "ordd" '(org-roam-dailies-goto-today :which-key "Today")
+    "ort" '(org-roam-buffer-toggle :which-key "Toggle")
+    "orf" '(org-roam-node-find :which-key "Find"))
+
+#+end_src
+* YASnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :config
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+    (yas-global-mode 1))
+
+
+  (rune/leader-keys
+    "y"  '(:ignore t :which-key "Yasnippet")
+    "yn" '(yas-new-snippet :which-key "yas-new-snippet"))
+#+end_src
+* Backup
+Stop Emacs from creating backup files.  
+
+#+begin_src emacs-lisp
+  (setq backup-directory-alist `(("." . "~/.saves")))
+
+  (setq backup-by-copying t)
+
+  (setq delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)
+
+#+end_src
+* Tree
+** Neotree
+The tree directory listing in Emacs.
+#+begin_src emacs-lisp
+  (use-package neotree)
+  (setq neo-smart-open t
+        neo-window-fixed-size nil)
+  (setq doom-neotree-enable-variable-pitch t)
+  (rune/leader-keys
+    "n"  '(:ignore t :which-key "Neotree")
+    "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
+    "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
+
+#+end_src
+** Org-Sidebar
+#+BEGIN_SRC elisp
+  ;; (use-package org-sidebar)
+
+  ;; (rune/leader-keys
+  ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
+
+#+END_SRC
+* Chat
+** ERC
+#+BEGIN_SRC elisp
+  (setq erc-server "irc.libera.chat"
+        erc-nick "Haider"    ; Change this!
+        erc-user-full-name "Haider Mirza"  ; And this!
+        erc-track-shorten-start 8
+        erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs"))
+        erc-kill-buffer-on-part t
+        erc-auto-query 'bury)
+
+  (rune/leader-keys
+    "i" '(erc-tls :which-key "irc"))
+
+#+END_SRC
+* Open
+** Open Documents
+These keybindings will open some of my documents.
+#+begin_src emacs-lisp
+
+  (rune/leader-keys
+    "d"  '(:ignore t :which-key "Files")
+    "dt" '((lambda() (interactive) (find-file "~/Documents/Home/TODO.org")) :which-key "TODO")
+    "ds" '((lambda() (interactive) (find-file "~/Documents/Home/Reminders.org")) :which-key "Schedule")
+    "dh" '((lambda() (interactive) (find-file "~/Documents/School/Homework.org")) :which-key "Homework")
+    "dr" '((lambda() (interactive) (find-file "~/Documents/School/School-Reminders.org")) :which-key "Reminders"))
+#+end_src
+
+** Open Configs
+These keybindings will open my systemconfigs.
+#+begin_src emacs-lisp
+
+  (rune/leader-keys
+    "c"  '(:ignore t :which-key "Files")
+    "ce" '((lambda() (interactive) (find-file "~/.dotfiles/.emacs.d/README.org")) :which-key "Emacs")
+    "cd" '((lambda() (interactive) (find-file "~/.dotfiles/.emacs.d/desktop.org")) :which-key "Desktop")
+    "cc" '((lambda() (interactive) (find-file "~/.dotfiles/.config/guix/config.scm")) :which-key "Guix Config")
+
+    "cq"  '(:ignore t :which-key "Qutebrowser")
+    "cqq" '((lambda() (interactive) (find-file "~/.config/qutebrowser/quickmarks")) :which-key "Qute-Quick")
+    "cqc" '((lambda() (interactive) (find-file "~/.config/qutebrowser/config.py")) :which-key "Qute-Conf"))
+
+#+end_src
+* Which key
+  
+#+begin_src emacs-lisp
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode
+    :config
+    (setq which-key-idle-delay 1))
+
+#+end_src
+
+* Mail
+** Mu4e
+  make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
+#+BEGIN_SRC elisp
+  (use-package mu4e
+    :ensure nil
+    :defer 10 ; Wait until 20 seconds after startup
+    :config
+
+    (require 'mu4e-org)
+
+    ;; This is set to 't' to avoid mail syncing issues when using mbsync
+    (setq mu4e-change-filenames-when-moving t)
+
+    (setq org-capture-templates
+	  `(("m" "Email Workflow")
+	    ("mf" "Follow Up" entry (file+headline "~/org/Mail.org" "Follow Up")
+	     "* TODO %a\n\n  %i")
+	    ("mr" "Read Later" entry (file+headline "~/org/Mail.org" "Read Later")
+	     "* TODO %a\n\n  %i")))
+
+    ;; Refresh mail using isync every 10 minutes
+    (setq mu4e-update-interval (* 10 60))
+    (setq mu4e-get-mail-command "mbsync -a")
+    (setq mu4e-maildir "~/Mail")
+
+    ;; Configure the function to use for sending mail
+    (setq message-send-mail-function 'smtpmail-send-it)
+
+    (setq mu4e-contexts
+	  (list
+	   ;; Personal account
+	   (make-mu4e-context
+	    :name "Personal"
+	    :match-func
+	    (lambda (msg)
+	      (when msg
+		(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+	    :vars '((user-mail-address . "x7and7@gmail.com")
+		    (user-full-name    . "Haider Mirza")
+		    (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+		    (smtpmail-smtp-server  . "smtp.gmail.com")
+		    (smtpmail-smtp-service . 465)
+		    (smtpmail-stream-type  . ssl)
+		    (mu4e-drafts-folder  . "/Gmail/[Gmail]/Drafts")
+		    (mu4e-sent-folder  . "/Gmail/[Gmail]/Sent Mail")
+		    (mu4e-refile-folder  . "/Gmail/[Gmail]/All Mail")
+		    (mu4e-trash-folder  . "/Gmail/[Gmail]/Trash")))
+
+	   ;; Work account
+	   (make-mu4e-context
+	    :name "Work"
+	    :match-func
+	    (lambda (msg)
+	      (when msg
+		(string-prefix-p "/Outlook" (mu4e-message-field msg :maildir))))
+	    :vars '((user-mail-address . "ha6mi19@keaston.bham.sch.uk")
+		    (user-full-name    . "Haider Mirza")
+		    (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+		    (smtpmail-smtp-server  . "smtp-mail.outlook.com")
+		    (smtpmail-smtp-service . 587)
+		    (smtpmail-stream-type  . starttls)
+		    (mu4e-drafts-folder  . "/Outlook/Drafts")
+		    (mu4e-sent-folder  . "/Outlook/Sent")
+		    (mu4e-refile-folder  . "/Outlook/Archive")
+		    (mu4e-trash-folder  . "/Outlook/Trash")))))
+
+    (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
+
+    (setq mu4e-context-policy 'pick-first)
+	
+    (setq mu4e-maildir-shortcuts
+	  '((:maildir "/Gmail/Inbox"    :key ?g)
+	    (:maildir "/Outlook/INBOX"     :key ?i))))
+
+  ;; Make sure plain text mails flow correctly for recipients
+  (setq mu4e-compose-format-flowed t)
+
+#+END_SRC
+
+** Mu4e-Alert
+#+BEGIN_SRC elisp
+   (use-package mu4e-alert)
+   (mu4e-alert-set-default-style 'libnotify)
+   (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+
+#+END_SRC
+   
+** Org-mime
+#+BEGIN_SRC elisp
+  (use-package org-mime
+    :ensure t
+    :config
+    (setq org-mime-export-options '(:section-numbers nil
+             			    :with-author nil
+	        		    :with-toc nil)))
+
+  (add-hook 'org-mime-html-hook
+	    (lambda ()
+	      (org-mime-change-element-style
+	       "pre" (format "color: %s; background-color: %s; padding: 0.5em;"
+			     "#E6E1DC" "#232323"))))
+
+  (add-hook 'message-send-hook 'org-mime-htmlize)
+#+END_SRC
+* Development
+** Language servers
+
+#+BEGIN_SRC elisp
+  (use-package lsp-mode
+    :commands lsp
+    :hook ((typescript-mode js2-mode web-mode) . lsp)
+    :bind (:map lsp-mode-map
+                ("TAB" . completion-at-point))
+    :custom (lsp-headerline-breadcrumb-enable nil))
+
+  (rune/leader-keys
+    "l"  '(:ignore t :which-key "lsp")
+    "ld" 'xref-find-definitions
+    "lr" 'xref-find-references
+    "ln" 'lsp-ui-find-next-reference
+    "lp" 'lsp-ui-find-prev-reference
+    "ls" 'counsel-imenu
+    "le" 'lsp-ui-flycheck-list
+    "lS" 'lsp-ui-sideline-mode
+    "lX" 'lsp-execute-code-action)
+
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :config
+    (setq lsp-ui-sideline-enable t)
+    (setq lsp-ui-sideline-show-hover nil)
+    (setq lsp-ui-doc-position 'bottom)
+    (lsp-ui-doc-show))
+
+#+END_SRC
+
+** Languages
+*** Javascript and Typescript
+Setting up development in Javascript.
+
+#+BEGIN_SRC elisp
+  (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :config
+    (setq typescript-indent-level 2))
+
+  (defun dw/set-js-indentation ()
+    (setq js-indent-level 2)
+    (setq evil-shift-width js-indent-level)
+    (setq-default tab-width 2))
+
+  (use-package js2-mode
+    :mode "\\.jsx?\\'"
+    :config
+    ;; Use js2-mode for Node scripts
+    (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+    ;; Don't use built-in syntax checking
+    (setq js2-mode-show-strict-warnings nil)
+
+    ;; Set up proper indentation in JavaScript and JSON files
+    (add-hook 'js2-mode-hook #'dw/set-js-indentation)
+    (add-hook 'json-mode-hook #'dw/set-js-indentation))
+
+
+  (use-package apheleia
+    :config
+    (apheleia-global-mode +1))
+
+  (use-package prettier-js
+    :ensure t
+    ;; :hook ((js2-mode . prettier-js-mode)
+    ;;        (typescript-mode . prettier-js-mode))
+    :config
+    (setq prettier-js-show-errors nil))
+
+#+END_SRC
+*** C/C++
+#+BEGIN_SRC elisp
+  (use-package ccls
+    :hook ((c-mode c++-mode objc-mode cuda-mode) .
+           (lambda () (require 'ccls) (lsp))))
+
+#+END_SRC
+*** Rust
+#+BEGIN_SRC elisp
+  (use-package rust-mode
+    :mode "\\.rs\\'"
+    :init (setq rust-format-on-save t))
+
+  (use-package cargo
+    :defer t)
+
+#+END_SRC
+*** Scheme
+#+BEGIN_SRC elisp
+  ;; TODO: This causes issues for some reason.
+  ;; :bind (:map geiser-mode-map
+  ;;        ("TAB" . completion-at-point))
+
+  (use-package geiser
+    :config
+    ;; (setq geiser-default-implementation 'gambit)
+    ;; (setq geiser-active-implementations '(gambit guile))
+    ;; (setq geiser-implementations-alist '(((regexp "\\.scm$") gambit)
+    ;;                                      ((regexp "\\.sld") gambit)))
+    ;; (setq geiser-repl-default-port 44555) ; For Gambit Scheme
+    (setq geiser-default-implementation 'guile)
+    (setq geiser-active-implementations '(guile))
+    (setq geiser-repl-default-port 44555) ; For Gambit Scheme
+    (setq geiser-implementations-alist '(((regexp "\\.scm$") guile))))
+
+#+END_SRC
+*** HTML
+#+BEGIN_SRC elisp
+  (use-package web-mode
+    :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
+    :config
+    (setq-default web-mode-code-indent-offset 2)
+    (setq-default web-mode-markup-indent-offset 2)
+    (setq-default web-mode-attribute-indent-offset 2))
+
+  ;; 1. Start the server with `httpd-start'
+  ;; 2. Use `impatient-mode' on any buffer
+  (use-package impatient-mode)
+
+  (use-package skewer-mode)
+
+  ;; Run the webserver with command:
+  ;; M-x httpd-serve-directory 
+
+  (use-package simple-httpd
+    :ensure t)
+
+#+END_SRC
+*** YAML
+#+BEGIN_SRC elisp
+  (use-package yaml-mode
+    :mode "\\.ya?ml\\'")
+
+#+END_SRC
+** Smart Parens
+#+BEGIN_SRC elisp
+  (use-package smartparens
+    :hook (prog-mode . smartparens-mode))
+
+#+END_SRC
+** Company mode
+#+BEGIN_SRC elisp
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection))
+    (:map lsp-mode-map
+          ("<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0))
+
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
+
+#+END_SRC 
+** Compilation
+#+BEGIN_SRC elisp
+  (use-package compile
+    :custom
+    (compilation-scroll-output t))
+
+  (defun auto-recompile-buffer ()
+    (interactive)
+    (if (member #'recompile after-save-hook)
+        (remove-hook 'after-save-hook #'recompile t)
+      (add-hook 'after-save-hook #'recompile nil t)))
+
+#+END_SRC
+* VTerm
+#+BEGIN_SRC elisp
+  (use-package vterm
+    :after evil-collection
+    :commands vterm
+    :config
+    (setq vterm-max-scrollback 10000)
+    (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
+
+
+  (rune/leader-keys
+    "v" '(vterm :which-key "launch vterm"))
+
+#+END_SRC
+* Password Manager
+Uses the standard Unix password store "pass".
+
+#+begin_src emacs-lisp
+  (use-package password-store)
+
+#+end_src
+* Magit
+#+BEGIN_SRC elisp
+  ;;     (use-package magit
+  ;;       :custom
+  ;;       (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+  ;; ;;    (use-package evil-magit
+  ;; ;;      :after magit)
+
+
+  (rune/leader-keys
+    "m"  '(:ignore t :which-key "Magit")
+    "ms" '(magit-status :which-key "Magit Status"))
+#+END_SRC
+* Hydra
+
+[[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
+#+BEGIN_SRC elisp
+
+  ;; change the text's scale if required
+  (defhydra hydra-zoom (global-map "<f6>")
+    "zoom"
+    ("g" text-scale-increase "in")
+    ("l" text-scale-decrease "out"))
+
+  ;; Window Management options
+  (defhydra hydra-window (global-map "<f2>")
+    "Window Management"
+    ("q" delete-window "delete window")
+    ("d" delete-other-windows "delete other windows")
+    ("," shrink-window-horizontally "shrink window horizontally")
+    ("." enlarge-window-horizontally "enlarge windows horizontally")
+    ("b" balance-windows "balance windows"))
+
+#+END_SRC 
+* Server
+#+BEGIN_SRC elisp
+  (server-start)
+
+#+END_SRC
+

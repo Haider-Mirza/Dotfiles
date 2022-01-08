@@ -1,3 +1,4 @@
+;; This is to be copied from /etc/config.scm or used directly
 (use-modules (gnu))
 (use-modules (gnu packages emacs))
 (use-modules (gnu packages emacs-xyz))
