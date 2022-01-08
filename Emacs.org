@@ -1,4 +1,5 @@
 #+TITLE: =Emacs configuration=
+#+PROPERTY: header-args:emacs-lisp :tangle /home/haider/.emacs.d/init.el
 #+AUTHOR: Haider Mirza
 * Table of contents :toc:
 - [[#about-this-config][About This Config]]
@@ -1127,4 +1128,7 @@ Uses the standard Unix password store "pass".
   (server-start)
 
 #+END_SRC
-
+* Load Desktop.org
+  #+BEGIN_SRC elisp
+ (load "~/.emacs.d/desktop.el")
+  #+END_SRC

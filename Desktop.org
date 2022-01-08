@@ -1,4 +1,6 @@
 #+TITLE: =Desktop configuration=
+#+PROPERTY: header-args:elisp :tangle /home/haider/.emacs.d/desktop.el
+#+PROPERTY: header-args:conf :tangle /home/haider/.config/polybar/config
 #+AUTHOR: Haider Mirza
 * Table of contents :toc:
 - [[#about-this-config][About This Config]]
@@ -18,33 +20,35 @@
 * Polybar
 ** Emacs 
    Custom Polybar code for control in Emacs.
- #+BEGIN_SRC elisp
-   (defvar poly/polybar-process nil
-     "Holds the process of the running Polybar instance, if any")
+#+BEGIN_SRC elisp
+  (defvar poly/polybar-process nil
+    "Holds the process of the running Polybar instance, if any")
 
-   (defun poly/kill-panel ()
-     (interactive)
-     (when poly/polybar-process
-       (ignore-errors
-	 (kill-process poly/polybar-process)))
-     (setq poly/polybar-process nil))
+  (defun poly/kill-panel ()
+    (interactive)
+    (when poly/polybar-process
+      (ignore-errors
+	(kill-process poly/polybar-process)))
+    (setq poly/polybar-process nil))
 
-   (defun poly/start-panel ()
-     (interactive)
-     (poly/kill-panel)
-     (setq poly/polybar-process (start-process-shell-command "polybar" nil "polybar panel")))
+  (defun poly/start-panel ()
+    (interactive)
+    (poly/kill-panel)
+    (setq poly/polybar-process (start-process-shell-command "polybar" nil "polybar panel")))
 
-   (defun poly/send-polybar-hook (module-name hook-index)
-     (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
+  (defun poly/send-polybar-hook (module-name hook-index)
+    (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" module-name hook-index)))
 
-   (defun poly/send-polybar-exwm-workspace ()
-     (poly/send-polybar-hook "exwm-workspace" 1))
+  (defun poly/send-polybar-exwm-workspace ()
+    (poly/send-polybar-hook "exwm-workspace" 1))
 
-   ;; Update panel indicator when workspace changes
-   (add-hook 'exwm-workspace-switch-hook #'poly/send-polybar-exwm-workspace)
+  ;; Update panel indicator when workspace changes
+  (add-hook 'exwm-workspace-switch-hook #'poly/send-polybar-exwm-workspace)
+
  #+END_SRC
 ** Polybar
    My Polybar config
+   
 #+BEGIN_SRC conf
 
 ; Docs: https://github.com/polybar/polybar

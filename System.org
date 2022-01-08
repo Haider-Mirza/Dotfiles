@@ -7,7 +7,7 @@
   This is my GNU Guix system configuration applied on my system.
 * Config.scm
   This is the config file used in GNU Guix to manage your system.
-  #+BEGIN_SRC scheme
+  #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
     ;; This is to be copied from /etc/config.scm or used directly
     (use-modules (gnu))
     (use-modules (gnu packages emacs))
@@ -86,6 +86,7 @@
 * Channels.scm
   If you dont want to just use the default channels for whatever reason, place this file in ~/.config/guix to use the nonguix and flat channels.
   *NOTE:* I do not recommend this in any capacity. This is only for reference and I dont even personally use it.
+
   #+BEGIN_SRC scheme
     (list (channel
 	    (name 'guix)
