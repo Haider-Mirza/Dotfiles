@@ -769,13 +769,10 @@ These keybindings will open my systemconfigs.
 
   (rune/leader-keys
     "c"  '(:ignore t :which-key "Files")
-    "ce" '((lambda() (interactive) (find-file "~/.dotfiles/.emacs.d/README.org")) :which-key "Emacs")
-    "cd" '((lambda() (interactive) (find-file "~/.dotfiles/.emacs.d/desktop.org")) :which-key "Desktop")
-    "cc" '((lambda() (interactive) (find-file "~/.dotfiles/.config/guix/config.scm")) :which-key "Guix Config")
-
-    "cq"  '(:ignore t :which-key "Qutebrowser")
-    "cqq" '((lambda() (interactive) (find-file "~/.config/qutebrowser/quickmarks")) :which-key "Qute-Quick")
-    "cqc" '((lambda() (interactive) (find-file "~/.config/qutebrowser/config.py")) :which-key "Qute-Conf"))
+    "ce" '((lambda() (interactive) (find-file "~/Dotfiles/Emacs.org")) :which-key "Emacs config")
+    "cd" '((lambda() (interactive) (find-file "~/Dotfiles/Desktop.org")) :which-key "Desktop config")
+    "cs" '((lambda() (interactive) (find-file "~/Dotfiles/System.org")) :which-key "System config")
+    "cp" '((lambda() (interactive) (find-file "~/Dotfiles/Programs.org")) :which-key "Programs config"))
 
 #+end_src
 * Which key
