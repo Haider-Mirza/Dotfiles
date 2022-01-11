@@ -4,7 +4,6 @@
 #+AUTHOR: Haider Mirza
 * Table of contents :toc:
 - [[#about-this-config][About This Config]]
-- [[#polybar][Polybar]]
 - [[#exwm][EXWM]]
   - [[#window-mangement][Window Mangement]]
   - [[#helper-functions][Helper Functions]]
@@ -14,6 +13,12 @@
   - [[#use-package][use-package]]
   - [[#keybinds][Keybinds]]
   - [[#system-functions][System functions]]
+- [[#polybar][Polybar]]
+  - [[#emacs][Emacs]]
+  - [[#polybar-1][Polybar]]
+- [[#xmonad][XMonad]]
+  - [[#xmonadhs][Xmonad.hs]]
+  - [[#xmobarrc][xmobarrc]]
 
 * About This Config
   This is my desktop configuration for my system.
@@ -78,29 +83,27 @@
 #+BEGIN_SRC elisp
 
   (defun exwm/exwm-init ()
+
     (exwm-workspace-switch-create 1)
     (vterm)                                                ;; vterm
 
     (exwm-workspace-switch-create 2)
     (exwm/run-in-background "qutebrowser")                 ;; Qutebrowser
 
-    (exwm-workspace-switch-create 7)
-    (erc-tls)                                              ;; ERC
-
     (exwm-workspace-switch-create 8)
     (mu4e)                                                 ;; Mu4e
 
-    (sleep-for 1)                                          ;; 1 second delay
-  
-    (exwm-workspace-switch-create 9)
-    (exwm/run-in-background "alacritty -t mocp -e mocp")   ;; mocp in Alacritty
+    (sleep-for 1)                                          ;; 1 second delay to wait for mu4e to load
 
-    (sleep-for 1)                                          ;; 1 second delay
+    (exwm-workspace-switch-create 0)
+    (exwm/run-in-background "pavucontrol")                 ;; Pavucontrol (basic audio controls)
+  
     (exwm-workspace-switch-create 1))
 
   (defun exwm/exwm-init-hook ()
     (poly/start-panel)
     (exwm/exwm-init)
+
     (exwm/run-in-background "dunst"))
 
   (defun exwm/configure-window-by-class ()

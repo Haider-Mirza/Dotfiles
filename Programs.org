@@ -937,8 +937,8 @@ config.bind('<Ctrl-k>', 'completion-item-focus --history prev', mode='command')
 config.bind('X', 'wq')
 config.bind('Z', 'hint links spawn mpv {hint-url}')
 config.unbind('d') # I dont even use b so I just unbinded it
-config.bind('b', 'spawn ~/.dotfiles/.config/qutebrowser/scripts/buffer.sh')
-config.bind('z', 'spawn ~/.dotfiles/.config/qutebrowser/scripts/mpv.sh;; spawn mpv {url}')
+config.bind('b', 'spawn ~/.config/qutebrowser/scripts/buffer.sh')
+config.bind('z', 'spawn ~/.config/qutebrowser/scripts/mpv.sh;; spawn mpv {url}')
 config.bind('t', 'set-cmd-text -s :open -t')
 config.bind('xb', 'config-cycle statusbar.show always never')
 config.bind('xt', 'config-cycle tabs.show always never')
@@ -1026,3 +1026,5 @@ Switch workspace to 3 (this workspace is dedicated for videos that are launched 
   emacsclient -e "(exwm-workspace-switch-create 3)"
 
 #+END_SRC
+
+ 

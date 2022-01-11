@@ -1,11 +1,12 @@
 #+TITLE: =Emacs configuration=
-#+PROPERTY: header-args:emacs-lisp :tangle /home/haider/.emacs.d/init.el
+#+PROPERTY: header-args:elisp :tangle /home/haider/.emacs.d/init.el
 #+AUTHOR: Haider Mirza
 * Table of contents :toc:
 - [[#about-this-config][About This Config]]
 - [[#note][Note]]
   - [[#replace-capslock-with-ctrl][Replace Capslock with CTRL]]
 - [[#packages][Packages]]
+- [[#clean][Clean]]
 - [[#keybinds][Keybinds]]
   - [[#general][General]]
   - [[#global-keybindings][Global Keybindings]]
@@ -13,7 +14,9 @@
   - [[#evil-mode][Evil Mode]]
   - [[#general-keybinds][General Keybinds]]
   - [[#counsel][Counsel]]
-- [[#init][Init]]
+- [[#general-settings][General Settings]]
+- [[#haider-theme][Haider Theme]]
+- [[#recentf][Recentf]]
 - [[#user-interface][User Interface]]
   - [[#font][Font]]
   - [[#theme][Theme]]
@@ -34,8 +37,6 @@
   - [[#evil-org][Evil-Org]]
   - [[#orgroam][OrgRoam]]
 - [[#yasnippet][YASnippet]]
-- [[#programming][Programming]]
-  - [[#rust][Rust]]
 - [[#backup][Backup]]
 - [[#tree][Tree]]
   - [[#neotree][Neotree]]
@@ -61,8 +62,7 @@
 - [[#magit][Magit]]
 - [[#hydra][Hydra]]
 - [[#server][Server]]
-- [[#polybar][Polybar]]
-- [[#exwm][EXWM]]
+- [[#desktoporg][Desktop.org]]
 
 * About This Config
   This is my Emacs configuration used in all of my Systems.
@@ -97,7 +97,7 @@ xmodmap ~/.Xmodmap
 #+end_src
 
 * Packages
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   ;; Initialize package sources
   (require 'package)
@@ -122,7 +122,7 @@ xmodmap ~/.Xmodmap
 
 * Clean
   Makes Emacs keep my file directorys clean of unnecessary files.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
   ;; auto-save-mode doesn't create the path automatically!
   (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
@@ -136,7 +136,7 @@ xmodmap ~/.Xmodmap
 * Keybinds
 ** General
   
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package general
     :config
     (general-create-definer rune/leader-keys
@@ -150,7 +150,7 @@ xmodmap ~/.Xmodmap
 #+end_src
 
 ** Global Keybindings
-#+begin_src emacs-lisp
+#+begin_src elisp
   ;; Make ESC quit prompts
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (global-set-key (kbd "C-s-s") 'swiper)
@@ -165,7 +165,7 @@ xmodmap ~/.Xmodmap
 ** Helpful
   
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package helpful
     :custom
     (counsel-describe-function-function #'helpful-callable)
@@ -180,7 +180,7 @@ xmodmap ~/.Xmodmap
 
 ** Evil Mode
    
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   (use-package undo-tree)
   (setq undo-tree-auto-save-history nil)
@@ -226,7 +226,7 @@ xmodmap ~/.Xmodmap
 
 *** Evil Collection
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package evil-collection
     :after evil
     :config
@@ -234,16 +234,9 @@ xmodmap ~/.Xmodmap
 
 #+end_src
 ** General Keybinds
-*** Settings
-#+BEGIN_SRC emacs-lisp
-  (rune/leader-keys
-    "s"  '(:ignore t :which-key "settings")
-    "sp" '(counsel-package :which-key "Install Packages")
-    "st" '(counsel-load-theme :which-key "choose theme")
-#+END_SRC
-    
 *** File control
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
+  (rune/leader-keys
   "x"  '(:ignore t :which-key "Delete")
   "c"  '(:ignore t :which-key "Create")
   "xf" '(delete-file :which-key "Delete file")
@@ -253,7 +246,7 @@ xmodmap ~/.Xmodmap
 #+END_SRC
     
 *** Buffers
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   "b"  '(:ignore t :which-key "Buffers")
   "bb" '(consult-buffer :which-key "Switch to buffer")
   "bB" '(consult-buffer-other-window :which-key "Switch to buffer on new window")
@@ -264,37 +257,25 @@ xmodmap ~/.Xmodmap
 #+END_SRC
 
 *** General
-#+BEGIN_SRC emacs-lisp
-  "g"  '(:ignore t :which-key "General")
-  "gr" '(counsel-recentf :which-key "Recent files")
-  "gl" '(display-line-numbers-mode :which-key "Line mode")
+#+BEGIN_SRC elisp
+  "r" '(counsel-recentf :which-key "Recent files")
 #+END_SRC
 
 *** Typing Command
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   "TAB" '(comment-region :which-key "comment lines")
 #+END_SRC
 
 *** Eshell
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   "e"  '(:ignore t :which-key "Eshell")
   "es" '(eshell :which-key "Launch Eshell")
-  "eh" '(counsel-esh-history :which-key "Eshell History")
+  "eh" '(counsel-esh-history :which-key "Eshell History"))
 #+END_SRC
 
-*** Eval Emacs Expressions
-#+BEGIN_SRC emacs-lisp
-  "e"  '(:ignore t :which-key "E-Lisp")
-  "eb" '(eval-buffer :which-key "Evaluate emacs-lisp in buffer")
-  "ed" '(eval-defun :which-key "Evaluate defun")
-  "ee" '(eval-expression :which-key "Evaluate emacs-lisp expression")
-  "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
-  "er" '(eval-region :which-key "Evaluate emacs-lisp in region"))
-#+END_SRC
-    
 ** Counsel
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package counsel
     :bind (("M-x" . counsel-M-x)
            ("C-x b" . counsel-ibuffer)
@@ -307,19 +288,87 @@ xmodmap ~/.Xmodmap
 #+end_src
 * General Settings
   Changing some variables
-#+BEGIN_SRC emacs-lisp
-  (setq version-control t)
-  (setq vc-follow-symlinks t)
-  (setq ring-bell-function 'ignore)
-  (setq coding-system-for-read 'utf-8)
-  (setq coding-system-write 'utf-8)
-  (setq sentence-end-double-space nil)
+#+BEGIN_SRC elisp
+    (setq version-control t)
+    (setq vc-follow-symlinks t)
+    (setq ring-bell-function 'ignore)
+    (setq coding-system-for-read 'utf-8)
+    (setq coding-system-write 'utf-8)
+    (setq sentence-end-double-space nil)
+
 
 #+END_SRC
+* Haider Theme
+#+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/haider-theme.el"
+  (require 'autothemer)
+
+  (autothemer-deftheme
+   haider "This is a very dark custom emacs theme that is easily modifiable as it is made with autothemer"
+
+   ((((class color) (min-colors #xFFFFFF))) ;; I'm only concerned with graphical Emacs
+
+    ;; Define our color palette
+    (haider-black      "#080D0D")
+    (haider-grey       "#151A1C")
+    (haider-white      "#ffffff")
+    (haider-yellow     "#ECDA23")
+    (haider-red        "red1")
+    (haider-orange     "orange1")
+    (haider-dk-orange  "#eb6123")
+    (haider-blue       "#2986cc")
+    (haider-green      "LightGreen")
+    (haider-pink       "pink")
+    (haider-purple     "purple")
+    (haider-dk-green   "#227722")
+    (haider-region     "#20353B")
+    (haider-code-bg    "#15181C"))
+
+   ;; Customize faces
+   ((default                   (:foreground haider-white :background haider-black))
+    (cursor                    (:background haider-dk-orange))
+    (region                    (:background haider-region))
+    (mode-line                 (:background haider-grey))
+    (font-lock-constant-face   (:foreground haider-pink))
+    (font-lock-string-face     (:foreground haider-orange))
+    (font-lock-keyword-face    (:foreground haider-blue))
+    (font-lock-builtin-face    (:foreground haider-yellow))
+
+    ;; Comments
+    (font-lock-comment-delimiter-face    (:foreground haider-green))
+    (font-lock-comment-face              (:foreground haider-green))
+
+    ;; Org Block
+    (org-block (:background haider-code-bg))
+
+
+    (org-block-end-line         (:backround haider-grey :inherit 'org-block-begin-line))
+    (org-block-begin-line       (:backround haider-grey :foreground haider-dk-green :inherit 'org-block))
+    (org-code                   (:backround haider-grey :foreground haider-dk-orange :inherit 'org-block))
+
+    ;; Org Levels
+    (org-level-1               (:foreground haider-red))
+    (org-level-2               (:foreground haider-orange))
+    (org-level-3               (:foreground haider-yellow))
+    (org-level-4               (:foreground haider-green))
+    (org-level-5               (:foreground haider-blue))
+    (org-level-6               (:foreground haider-pink))
+    (org-level-7               (:foreground haider-purple))))
+
+  (provide-theme 'haider)
+#+END_SRC
+* Recentf
+  Save recent files list periodically, when emacs has been idle for a while, because it will otherwise not be saved when emacs runs in server mode.
+#+BEGIN_SRC elisp
+  (run-with-idle-timer 600 t (lambda ()
+			      (let ((save-silently t))
+			       (recentf-save-list))))
+
+#+END_SRC
+
 * User Interface
 
 ** Font
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   ;; You will most likely need to adjust this font size for your system!
   (defvar runemacs/default-font-size 95)
@@ -334,21 +383,21 @@ xmodmap ~/.Xmodmap
 
 ** Theme
 Note That I use my own custom theme
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package doom-themes
-    :init (load-theme 'doom-monokai-classic t))
+    :init (load-theme 'haider t))
 
   ;; (load-theme 'haider t)
 #+end_src
  
 *** Keybinds
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (rune/leader-keys
     "st" '(counsel-load-theme :which-key "choose theme"))
 #+end_src
 
 ** Dashboard
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 
   ;; (use-package dashboard
   ;;   :ensure t
@@ -368,7 +417,7 @@ Note That I use my own custom theme
 #+END_SRC
 ** Minimal Visuals
 Make the User interface more minimal.
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   (setq inhibit-startup-message t)
 
@@ -387,7 +436,7 @@ Make the User interface more minimal.
 ** Center Documents
 Center org-mode documents.
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (defun org/org-mode-visual-fill ()
     (setq visual-fill-column-width 140
           visual-fill-column-center-text t)
@@ -399,7 +448,7 @@ Center org-mode documents.
 #+end_src
 
 ** Set frame transparency and maximize windows by default.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 
    (set-frame-parameter (selected-frame) 'alpha '(70 . 70))
    (add-to-list 'default-frame-alist '(alpha . (70 . 70)))
@@ -409,7 +458,7 @@ Center org-mode documents.
 #+END_SRC
 ** Scrolling
 Improve scrolling.
-#+begin_src emacs-lisp
+#+begin_src elisp
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
   (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
@@ -419,7 +468,7 @@ Improve scrolling.
 #+end_src
 :
 ** Line numbers
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   (column-number-mode)
   (global-display-line-numbers-mode t)
@@ -436,7 +485,7 @@ Improve scrolling.
 
 ** Emojify
    
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package emojify)
    (add-hook 'after-init-hook #'global-emojify-mode)
 
@@ -454,7 +503,7 @@ need to run the following command interactively so that mode line icons
 display correctly:
 
 M-x all-the-icons-install-fonts
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   (use-package all-the-icons)
 
@@ -462,7 +511,7 @@ M-x all-the-icons-install-fonts
 
 ** Doom Modeline
 
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   ;; Show the time and date in modeline
   (setq display-time-day-and-date t)
@@ -486,7 +535,7 @@ M-x all-the-icons-install-fonts
   ;; (setq doom-modeline-minor-modes t)
 #+end_src 
 * Interactions
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 
   ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
   (fset 'yes-or-no-p 'y-or-n-p)
@@ -499,7 +548,7 @@ M-x all-the-icons-install-fonts
 
 #+END_SRC
 * Vertico
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package vertico
     :ensure t
     :init
@@ -507,7 +556,7 @@ M-x all-the-icons-install-fonts
 
 #+END_SRC 
 ** Consult
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package consult
     :demand t
     :bind (("C-s" . consult-line)
@@ -522,7 +571,7 @@ M-x all-the-icons-install-fonts
 * OrgMode
 
 I have customised OrgMode heavily for my environment.
-#+begin_src emacs-lisp
+#+begin_src elisp
   (rune/leader-keys
     "o"  '(:ignore t :which-key "Org")
     "oa" '(org-agenda :which-key "View Org-Agenda")
@@ -538,18 +587,18 @@ I have customised OrgMode heavily for my environment.
   (defun org/org-font-setup ()
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+			    '(("^ *\\([-]\\) "
+			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     ;; Set faces for heading levels
     (dolist (face '((org-level-1 . 1.2)
-                    (org-level-2 . 1.1)
-                    (org-level-3 . 1.05)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
+		    (org-level-2 . 1.1)
+		    (org-level-3 . 1.05)
+		    (org-level-4 . 1.0)
+		    (org-level-5 . 1.1)
+		    (org-level-6 . 1.1)
+		    (org-level-7 . 1.1)
+		    (org-level-8 . 1.1)))
       (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
@@ -570,22 +619,22 @@ I have customised OrgMode heavily for my environment.
     (setq org-log-into-drawer t)
 
     (setq org-agenda-files
-          '("~/Documents/Home/Reminders.org"
-            "~/Documents/Home/TODO.org"
-            "~/Documents/School/Homework.org"
-            "~/Documents/School/School-Reminders.org"))
+	  '("~/Documents/Home/Reminders.org"
+	    "~/Documents/Home/TODO.org"
+	    "~/Documents/School/Homework.org"
+	    "~/Documents/School/School-Reminders.org"))
 
     (setq org-todo-keywords
-          '((sequence
-             "TODO(t)"
-             "WORK(w)"
-             "DEV(d)"
-             "RESEARCH(r)"
-             "HOLD(h)"
-             "PLAN(p)"
-             "|"
-             "COMPLETED(c)"
-             "FAILED(f)")))
+	  '((sequence
+	     "TODO(t)"
+	     "WORK(w)"
+	     "DEV(d)"
+	     "RESEARCH(r)"
+	     "HOLD(h)"
+	     "PLAN(p)"
+	     "|"
+	     "COMPLETED(c)"
+	     "FAILED(f)")))
 
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -605,10 +654,12 @@ I have customised OrgMode heavily for my environment.
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+    (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+    (add-hook 'org-mode-hook 'toc-org-mode)
 #+end_src
 
 ** Org-Superstar
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package org-superstar
     :config
     (setq org-superstar-leading-bullet " ")
@@ -629,7 +680,7 @@ I have customised OrgMode heavily for my environment.
 #+END_SRC
 
 ** Evil-Org
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package evil-org
     :diminish evil-org-mode
     :after org
@@ -645,7 +696,7 @@ I have customised OrgMode heavily for my environment.
 
 ** OrgRoam
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package org-roam
     :ensure t
     :init
@@ -688,7 +739,7 @@ I have customised OrgMode heavily for my environment.
 
 #+end_src
 * YASnippet
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package yasnippet
     :config
     (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
@@ -702,7 +753,7 @@ I have customised OrgMode heavily for my environment.
 * Backup
 Stop Emacs from creating backup files.  
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (setq backup-directory-alist `(("." . "~/.saves")))
 
   (setq backup-by-copying t)
@@ -714,21 +765,22 @@ Stop Emacs from creating backup files.
 
 #+end_src
 * Tree
+  I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
 ** Neotree
 The tree directory listing in Emacs.
-#+begin_src emacs-lisp
-  (use-package neotree)
-  (setq neo-smart-open t
-        neo-window-fixed-size nil)
-  (setq doom-neotree-enable-variable-pitch t)
-  (rune/leader-keys
-    "n"  '(:ignore t :which-key "Neotree")
-    "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
-    "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
+#+begin_src elisp
+  ;; (use-package neotree)
+  ;; (setq neo-smart-open t
+  ;;       neo-window-fixed-size nil)
+  ;; (setq doom-neotree-enable-variable-pitch t)
+  ;; (rune/leader-keys
+  ;;   "n"  '(:ignore t :which-key "Neotree")
+  ;;   "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
+  ;;   "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
 
 #+end_src
 ** Org-Sidebar
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   ;; (use-package org-sidebar)
 
   ;; (rune/leader-keys
@@ -737,12 +789,13 @@ The tree directory listing in Emacs.
 #+END_SRC
 * Chat
 ** ERC
-#+BEGIN_SRC emacs-lisp
+   ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
+#+BEGIN_SRC elisp
   (setq erc-server "irc.libera.chat"
-        erc-nick "Haider"    ; Change this!
-        erc-user-full-name "Haider Mirza"  ; And this!
+        erc-nick "Haider"
+        erc-user-full-name "Haider Mirza"
         erc-track-shorten-start 8
-        erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs"))
+        erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs" "#guix"))
         erc-kill-buffer-on-part t
         erc-auto-query 'bury)
 
@@ -753,7 +806,7 @@ The tree directory listing in Emacs.
 * Open
 ** Open Documents
 These keybindings will open some of my documents.
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   (rune/leader-keys
     "d"  '(:ignore t :which-key "Files")
@@ -765,7 +818,7 @@ These keybindings will open some of my documents.
 
 ** Open Configs
 These keybindings will open my systemconfigs.
-#+begin_src emacs-lisp
+#+begin_src elisp
 
   (rune/leader-keys
     "c"  '(:ignore t :which-key "Files")
@@ -777,7 +830,7 @@ These keybindings will open my systemconfigs.
 #+end_src
 * Which key
   
-#+begin_src emacs-lisp
+#+begin_src elisp 
   (use-package which-key
     :init (which-key-mode)
     :diminish which-key-mode
@@ -789,7 +842,7 @@ These keybindings will open my systemconfigs.
 * Mail
 ** Mu4e
   make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package mu4e
     :ensure nil
     :defer 10 ; Wait until 20 seconds after startup
@@ -867,7 +920,7 @@ These keybindings will open my systemconfigs.
 #+END_SRC
 
 ** Mu4e-Alert
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
    (use-package mu4e-alert)
    (mu4e-alert-set-default-style 'libnotify)
    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
@@ -875,7 +928,7 @@ These keybindings will open my systemconfigs.
 #+END_SRC
    
 ** Org-mime
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package org-mime
     :ensure t
     :config
@@ -894,7 +947,7 @@ These keybindings will open my systemconfigs.
 * Development
 ** Language servers
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package lsp-mode
     :commands lsp
     :hook ((typescript-mode js2-mode web-mode) . lsp)
@@ -927,7 +980,7 @@ These keybindings will open my systemconfigs.
 *** Javascript and Typescript
 Setting up development in Javascript.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package typescript-mode
     :mode "\\.ts\\'"
     :config
@@ -964,15 +1017,26 @@ Setting up development in Javascript.
     (setq prettier-js-show-errors nil))
 
 #+END_SRC
+*** ELisp
+#+BEGIN_SRC elisp
+
+  (rune/leader-keys
+  "e"  '(:ignore t :which-key "E-Lisp")
+  "eb" '(eval-buffer :which-key "Evaluate elisp in buffer")
+  "ed" '(eval-defun :which-key "Evaluate defun")
+  "ee" '(eval-expression :which-key "Evaluate elisp expression")
+  "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
+  "er" '(eval-region :which-key "Evaluate elisp in region"))
+#+END_SRC
 *** C/C++
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package ccls
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
            (lambda () (require 'ccls) (lsp))))
 
 #+END_SRC
 *** Rust
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package rust-mode
     :mode "\\.rs\\'"
     :init (setq rust-format-on-save t))
@@ -982,26 +1046,20 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** Scheme
-#+BEGIN_SRC emacs-lisp
-  ;; TODO: This causes issues for some reason.
-  ;; :bind (:map geiser-mode-map
-  ;;        ("TAB" . completion-at-point))
-
+#+BEGIN_SRC elisp
   (use-package geiser
     :config
-    ;; (setq geiser-default-implementation 'gambit)
-    ;; (setq geiser-active-implementations '(gambit guile))
-    ;; (setq geiser-implementations-alist '(((regexp "\\.scm$") gambit)
-    ;;                                      ((regexp "\\.sld") gambit)))
-    ;; (setq geiser-repl-default-port 44555) ; For Gambit Scheme
     (setq geiser-default-implementation 'guile)
     (setq geiser-active-implementations '(guile))
     (setq geiser-repl-default-port 44555) ; For Gambit Scheme
     (setq geiser-implementations-alist '(((regexp "\\.scm$") guile))))
 
+  (rune/leader-keys
+  "s"  '(:ignore t :which-key "Scheme")
+  "sr" '(run-guile :which-key "Start a REPL"))
 #+END_SRC
 *** HTML
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package web-mode
     :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
     :config
@@ -1023,19 +1081,20 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** YAML
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package yaml-mode
     :mode "\\.ya?ml\\'")
 
 #+END_SRC
 ** Smart Parens
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package smartparens
     :hook (prog-mode . smartparens-mode))
 
 #+END_SRC
+
 ** Company mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package company
     :after lsp-mode
     :hook (lsp-mode . company-mode)
@@ -1051,8 +1110,9 @@ Setting up development in Javascript.
     :hook (company-mode . company-box-mode))
 
 #+END_SRC 
+
 ** Compilation
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package compile
     :custom
     (compilation-scroll-output t))
@@ -1064,8 +1124,9 @@ Setting up development in Javascript.
       (add-hook 'after-save-hook #'recompile nil t)))
 
 #+END_SRC
+
 * VTerm
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (use-package vterm
     :after evil-collection
     :commands vterm
@@ -1081,12 +1142,13 @@ Setting up development in Javascript.
 * Password Manager
 Uses the standard Unix password store "pass".
 
-#+begin_src emacs-lisp
+#+begin_src elisp
   (use-package password-store)
 
 #+end_src
+
 * Magit
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   ;;     (use-package magit
   ;;       :custom
   ;;       (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
@@ -1102,7 +1164,7 @@ Uses the standard Unix password store "pass".
 * Hydra
 
 [[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 
   ;; change the text's scale if required
   (defhydra hydra-zoom (global-map "<f6>")
@@ -1120,13 +1182,15 @@ Uses the standard Unix password store "pass".
     ("b" balance-windows "balance windows"))
 
 #+END_SRC 
+
 * Server
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
   (server-start)
 
 #+END_SRC
-* Load Desktop.org
+
+* Desktop.org
   This loads EXWM and the rest of my system.
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC elisp
  (load-file "~/.emacs.d/desktop.el")
   #+END_SRC
