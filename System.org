@@ -33,7 +33,7 @@
 
    (users (cons*  (user-account
 		   (name "haider")
-		   (comment "Haider")
+		   (comment "Haider Mirza")
 		   (group "users")
 		   (home-directory "/home/haider")
 		   (supplementary-groups
@@ -43,22 +43,26 @@
 		      "video")))
 
 		  (user-account
-		   (name "guest")
+		   (name "hasan")
+		   (comment "Hasan Mirza")
 		   (password "")
 		   (group "users")
 		   (supplementary-groups
-		    '("audio"               ;sound card
-		      "video"               ;video devices such as webcams
-		      "netdev"))            ;network
-		   (comment "Not Haider"))
-
+		    '("audio"               
+		      "video"               
+		      "netdev")))            
 		  %base-user-accounts))
 
    (packages (append (list
 		      ;; Window Manager
 		      emacs emacs-exwm emacs-desktop-environment
 		      ;; Emacs Packages
-		      emacs-guix mu emacs-ement emacs-plz
+		      emacs-guix
+		      mu
+		      emacs-ement
+		      emacs-plz
+		      emacs-ccls
+		      emacs-company-lsp
 		      ;; terminal emulator
 		      xterm
 		      ;; Text Editor
