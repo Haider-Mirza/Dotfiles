@@ -163,7 +163,7 @@ xmodmap ~/.Xmodmap
       :global-prefix "C-SPC")
 
     (rune/leader-keys
-      "SPC" '(counsel-find-file :which-key "find file")))
+      "SPC" '(find-file :which-key "find file")))
 
 #+end_src
 
@@ -197,7 +197,8 @@ xmodmap ~/.Xmodmap
 #+end_src
 
 ** Evil Mode
-   
+  C-j for return
+  C-i for tab
 #+begin_src elisp
 
   (use-package undo-tree)
@@ -370,7 +371,9 @@ xmodmap ~/.Xmodmap
     (org-level-4               (:foreground haider-green))
     (org-level-5               (:foreground haider-blue))
     (org-level-6               (:foreground haider-pink))
-    (org-level-7               (:foreground haider-purple))))
+    (org-level-7               (:foreground haider-purple))
+  
+    (dashboard-text-banner     (:foreground haider-red))))
 
   (provide-theme 'haider)
 #+END_SRC
@@ -388,14 +391,10 @@ xmodmap ~/.Xmodmap
 ** Font
 #+begin_src elisp
 
-  ;; You will most likely need to adjust this font size for your system!
-  (defvar runemacs/default-font-size 95)
+    ;; You will most likely need to adjust this font size for your system!
+    (defvar runemacs/default-font-size 95)
 
-  (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
-
-  ;;(setq doom-font (font-spec :family "Source Code Pro" :size 15)
-  ;;     doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
-  ;;	  doom-big-font (font-spec :family "Source Code Pro" :size 24))
+    (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
 
 #+end_src
 
@@ -415,23 +414,37 @@ Note That I use my own custom theme
 #+end_src
 
 ** Dashboard
-#+BEGIN_SRC elisp
+*** Emacs config
+ #+BEGIN_SRC elisp
 
-  ;; (use-package dashboard
-  ;;   :ensure t
-  ;;   :config
-  ;;   (setq dashboard-banner-logo-title "Welcome to Haider's System")
-  ;;   (setq dashboard-startup-banner "/home/haider/Downloads/text.txt")
-  ;;   ;; (setq dashboard-center-content t)
-  ;;   (setq dashboard-init-info "Make sure to check Org Agenda")
-  ;;   (setq dashboard-show-shortcuts nil)
-  ;;   (setq dashboard-set-heading-icons t)
-  ;;   (setq dashboard-set-file-icons t)
-  ;;   (setq dashboard-items '((recents  . 5)
-  ;; 			  (projects . 5)
-  ;; 			  (agenda . 5)))
-  ;;   (dashboard-setup-startup-hook))
+   (use-package dashboard
+     :ensure t
+     :config
+     (setq dashboard-banner-logo-title "Welcome to Haider's System")
+     (setq dashboard-startup-banner "/home/haider/.emacs.d/banner.txt")
+     ;; (setq dashboard-center-content t)
+     (setq dashboard-init-info "Make sure to check Org Agenda")
+     (setq dashboard-show-shortcuts nil)
+     (setq dashboard-set-heading-icons t)
+     (setq dashboard-set-file-icons t)
+     (setq dashboard-items '((recents  . 5)
+			     (projects . 5)
+			     (agenda . 5)))
+     (dashboard-setup-startup-hook))
 
+ #+END_SRC
+*** Text Banner
+    Very cool banner I had generated in [[https://textfancy.com/multiline-text-art/][this]] website. 
+#+BEGIN_SRC
+                        ▄▄         ▄▄                                      ▄▄                          
+▀████▀  ▀████▀▀         ██       ▀███                     ▀████▄     ▄███▀ ██                          
+  ██      ██                       ██                       ████    ████                               
+  ██      ██   ▄█▀██▄ ▀███    ▄█▀▀███   ▄▄█▀██▀███▄███      █ ██   ▄█ ██ ▀███ ▀███▄███ █▀▀▀███ ▄█▀██▄  
+  ██████████  ██   ██   ██  ▄██    ██  ▄█▀   ██ ██▀ ▀▀      █  ██  █▀ ██   ██   ██▀ ▀▀ ▀  ███ ██   ██  
+  ██      ██   ▄█████   ██  ███    ██  ██▀▀▀▀▀▀ ██          █  ██▄█▀  ██   ██   ██       ███   ▄█████  
+  ██      ██  ██   ██   ██  ▀██    ██  ██▄    ▄ ██          █  ▀██▀   ██   ██   ██      ███  ▄██   ██  
+▄████▄  ▄████▄▄████▀██▄████▄ ▀████▀███▄ ▀█████▀████▄      ▄███▄ ▀▀  ▄████▄████▄████▄   ███████▀████▀██▄
+                                                                                                       
 #+END_SRC
 ** Minimal Visuals
 Make the User interface more minimal.
@@ -578,12 +591,34 @@ M-x all-the-icons-install-fonts
 #+END_SRC
 * Vertico
 #+BEGIN_SRC elisp
+
   (use-package vertico
     :ensure t
+    :bind (:map vertico-map
+	   ("C-j" . vertico-next)
+	   ("C-k" . vertico-previous)
+	   ("C-f" . vertico-exit)
+	   :map minibuffer-local-map
+	   ("M-h" . backward-kill-word))
+    :custom
+    (vertico-cycle t)
     :init
     (vertico-mode))
 
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  ;; (use-package marginalia
+  ;;   :after vertico
+  ;;   :ensure t
+  ;;   :custom
+  ;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  ;;   :init
+  ;;   (marginalia-mode))
+
 #+END_SRC 
+
 ** Consult
 #+BEGIN_SRC elisp
   (use-package consult
@@ -819,7 +854,11 @@ The tree directory listing in Emacs.
 * Chat
 ** ERC
    ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
+   Useful webpage when configuring ERC [[https://systemcrafters.net/live-streams/june-04-2021/][Systemcrafters-Wiki]].
 #+BEGIN_SRC elisp
+
+  (require 'erc) ;; Notifications require this to be required
+
   (setq erc-server "irc.libera.chat"
 	erc-nick "Haider"
 	erc-user-full-name "Haider Mirza"
@@ -830,7 +869,41 @@ The tree directory listing in Emacs.
 	erc-fill-column 120
 	erc-fill-function 'erc-fill-static
 	erc-fill-static-center 20
-	erc-auto-query 'bury)
+	erc-auto-query 'bury
+	erc-track-exclude '("#emacs")
+	erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+	erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+	erc-track-exclude-server-buffer t
+	erc-track-enable-keybindings t
+	erc-track-visibility nil) ;; Essential if using EXWM
+
+  (defun dw/get-irc-pass ()
+    (interactive)
+    (insert (shell-command-to-string "cat ~/.ircpass")))
+
+  (defun us/connect-irc ()
+    (interactive)
+    (erc-tls
+     :server "irc.libera.chat"
+     :port 6697
+     :nick "Haider"
+     :password (dw/get-irc-pass)
+     ))
+
+  (use-package erc-hl-nicks
+    :ensure t
+    :after erc
+    :config
+    (add-to-list 'erc-modules 'hl-nicks))
+
+  (use-package erc-image
+    :ensure t
+    :after erc
+    :config
+    (setq erc-image-inline-rescale 300)
+    (add-to-list 'erc-modules 'image))
+
+  (add-to-list 'erc-modules 'notifications)
 
   (rune/leader-keys
     "i"  '(:ignore t :which-key "IRC")
@@ -847,6 +920,7 @@ These keybindings will open some of my documents.
   (rune/leader-keys
     "d"  '(:ignore t :which-key "Files")
     "dt" '((lambda() (interactive) (find-file "~/Documents/Home/TODO.org")) :which-key "TODO")
+    "dn" '((lambda() (interactive) (find-file "~/Documents/Home/Notes.org")) :which-key "Notes") ;; Need to use Org Roam Later
     "ds" '((lambda() (interactive) (find-file "~/Documents/Home/Reminders.org")) :which-key "Schedule")
     "dh" '((lambda() (interactive) (find-file "~/Documents/School/Homework.org")) :which-key "Homework")
     "dr" '((lambda() (interactive) (find-file "~/Documents/School/School-Reminders.org")) :which-key "Reminders"))
