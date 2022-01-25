@@ -34,7 +34,9 @@
 - [[#interactions][Interactions]]
 - [[#vertico][Vertico]]
   - [[#consult][Consult]]
-- [[#orgmode][OrgMode]]
+- [[#org][Org]]
+  - [[#orgmode-main-config][OrgMode Main config]]
+  - [[#org-super-agenda][Org-super-agenda]]
   - [[#org-superstar][Org-Superstar]]
   - [[#evil-org][Evil-Org]]
   - [[#orgroam][OrgRoam]]
@@ -632,97 +634,142 @@ M-x all-the-icons-install-fonts
     (completion-in-region-function #'consult-completion-in-region))
 
 #+END_SRC
-* OrgMode
+* Org
 
-I have customised OrgMode heavily for my environment.
-#+begin_src elisp
-  (rune/leader-keys
-    "o"  '(:ignore t :which-key "Org")
-    "oa" '(org-agenda :which-key "View Org-Agenda")
-    "ol" '(org-agenda-list :which-key "View Org-Agendalist")
-    "ot" '(org-babel-tangle :which-key "Tangle Document")
-    "ox" '(org-export-dispatch :which-key "Export Document")
-    "od" '(org-deadline :which-key "Deadline")
-    "os" '(org-schedule :which-key "Scedule")
-    "oS" '(org-todo :which-key "OrgMode states"))
+  Here consists configs for:
+  - Org Mode
+  - Org Agenda
+  - Org Roam
+    
+** OrgMode Main config
+ #+begin_src elisp
+   (rune/leader-keys
+     "o"  '(:ignore t :which-key "Org")
+     "oa" '(org-agenda :which-key "View Org-Agenda")
+     "ol" '(org-agenda-list :which-key "View Org-Agendalist")
+     "ot" '(org-babel-tangle :which-key "Tangle Document")
+     "ox" '(org-export-dispatch :which-key "Export Document")
+     "od" '(org-deadline :which-key "Deadline")
+     "os" '(org-schedule :which-key "Scedule")
+     "oS" '(org-todo :which-key "OrgMode states"))
 
-  (setq org-agenda-span 10)
+   (setq org-agenda-span 10)
 
-  (defun org/org-font-setup ()
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-			    '(("^ *\\([-]\\) "
-			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+   (defun org/org-font-setup ()
+     ;; Replace list hyphen with dot
+     (font-lock-add-keywords 'org-mode
+			     '(("^ *\\([-]\\) "
+				(0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-    ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.2)
-		    (org-level-2 . 1.1)
-		    (org-level-3 . 1.05)
-		    (org-level-4 . 1.0)
-		    (org-level-5 . 1.1)
-		    (org-level-6 . 1.1)
-		    (org-level-7 . 1.1)
-		    (org-level-8 . 1.1)))
-      (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+     ;; Set faces for heading levels
+     (dolist (face '((org-level-1 . 1.2)
+		     (org-level-2 . 1.1)
+		     (org-level-3 . 1.05)
+		     (org-level-4 . 1.0)
+		     (org-level-5 . 1.1)
+		     (org-level-6 . 1.1)
+		     (org-level-7 . 1.1)
+		     (org-level-8 . 1.1)))
+       (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
 
-    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+     (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+     (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+     (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+     (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
-  (use-package org
-    :config
-    (setq org-ellipsis " ▾")
+   (use-package org
+     :config
+     (setq org-ellipsis " ▾")
 
-    (setq org-agenda-start-with-log-mode t)
-    (setq org-log-done 'time)
-    (setq org-log-into-drawer t)
+     (setq org-agenda-start-with-log-mode t)
+     (setq org-log-done 'time)
+     (setq org-log-into-drawer t)
 
-    (setq org-agenda-files
-	  '("~/Documents/Home/Reminders.org"
-	    "~/Documents/Home/TODO.org"
-	    "~/Documents/School/Homework.org"
-	    "~/Documents/School/School-Reminders.org"))
+     (setq org-agenda-files
+	   '("~/Documents/Home/Reminders.org"
+	     "~/Documents/Home/TODO.org"
+	     "~/Documents/School/Homework.org"
+	     "~/Documents/School/School-Reminders.org"))
 
-    (setq org-todo-keywords
-	  '((sequence
-	     "TODO(t)"
-	     "WORK(w)"
-	     "DEV(d)"
-	     "RESEARCH(r)"
-	     "HOLD(h)"
-	     "PLAN(p)"
-	     "|"
-	     "COMPLETED(c)"
-	     "FAILED(f)")))
+     (setq org-todo-keywords
+	   '((sequence
+	      "TODO(t)"
+	      "WORK(w)"
+	      "NEXT(n)"
+	      "DEV(d)"
+	      "RESEARCH(r)"
+	      "HOLD(h)"
+	      "PLAN(p)"
+	      "|"
+	      "COMPLETED(c)"
+	      "FAILED(f)")))
 
-    ;; Save Org buffers after refiling!
-    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+     ;; Save Org buffers after refiling!
+     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    ;; (setq org-agenda-custom-commands
-    ;; 	'(("n" "Next Tasks"
-    ;; 	    ((todo "TODO"
-    ;; 	     ((org-agenda-overriding-header "Next Tasks")))))))
+     ;; (setq org-agenda-custom-commands
+     ;; 	'(("n" "Next Tasks"
+     ;; 	    ((todo "TODO"
+     ;; 	     ((org-agenda-overriding-header "Next Tasks")))))))
 
 
-    (org/org-font-setup))
+     (org/org-font-setup))
 
-  (use-package org-bullets
-    :after org
-    :hook 
-    (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+   (use-package org-bullets
+     :after org
+     :hook 
+     (org-mode . org-bullets-mode)
+     :custom
+     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-    (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
-    (add-hook 'org-mode-hook 'toc-org-mode)
-#+end_src
+     (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+     (add-hook 'org-mode-hook 'toc-org-mode)
+
+ #+END_SRC
+
+** Org-super-agenda
+   Configuring the Org-Agenda view.
+ #+BEGIN_SRC elisp
+
+   (use-package org-super-agenda
+     :after org
+     :config
+     (org-super-agenda-mode 1))
+
+   (setq org-agenda-time-grid '((daily today require-timed) "----------------------" nil)
+	 org-agenda-skip-scheduled-if-done t
+	 org-agenda-skip-deadline-if-done t
+	 org-agenda-include-deadlines t
+	 org-agenda-include-diary t
+	 org-agenda-block-separator nil
+	 org-agenda-compact-blocks t
+	 org-agenda-start-with-log-mode t)
+
+   (setq org-agenda-span 'day)
+   (setq org-super-agenda-groups
+	 '((:name "Important"
+		  :priority "A")
+	   (:name "Overdue"
+		  :deadline past)
+	   (:name "Due Today"
+		  :deadline today)
+	   (:name "Next Items"
+		  :todo "NEXT")
+	   (:name "TODO"
+		  :todo "TODO")
+	   (:name "WORK"
+		  :todo "WORK")
+	   (:name "Due Soon"
+		  :deadline future)))
+
+ #+end_src
 
 ** Org-Superstar
+   Making the bullets look better
 #+BEGIN_SRC elisp
   (use-package org-superstar
     :config
@@ -731,6 +778,7 @@ I have customised OrgMode heavily for my environment.
     (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
                                             ("WORK" . 9744)
                                             ("DEV" . 9744)
+                                            ("NEXT" . 9744)
                                             ("RESEARCH" . 9744)
                                             ("HOLD" . 9744)
                                             ("PLAN" . 9744)
@@ -759,7 +807,7 @@ I have customised OrgMode heavily for my environment.
 #+END_SRC
 
 ** OrgRoam
-
+I dont even use Org roam much anymore. But this is still there.
 #+begin_src elisp
   (use-package org-roam
     :ensure t
@@ -854,7 +902,7 @@ The tree directory listing in Emacs.
 * Chat
 ** ERC
    ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
-   Useful webpage when configuring ERC [[https://systemcrafters.net/live-streams/june-04-2021/][Systemcrafters-Wiki]].
+   Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-streams/june-04-2021/][Systemcrafters-Wiki]].
 #+BEGIN_SRC elisp
 
   (require 'erc) ;; Notifications require this to be required
@@ -875,20 +923,15 @@ The tree directory listing in Emacs.
 	erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
 	erc-track-exclude-server-buffer t
 	erc-track-enable-keybindings t
+	erc-quit-reason (lambda (s) (or s "Ejecting the cyberspace"))
 	erc-track-visibility nil) ;; Essential if using EXWM
 
-  (defun dw/get-irc-pass ()
-    (interactive)
-    (insert (shell-command-to-string "cat ~/.ircpass")))
-
-  (defun us/connect-irc ()
+  (defun chat/connect-irc ()
     (interactive)
     (erc-tls
      :server "irc.libera.chat"
      :port 6697
-     :nick "Haider"
-     :password (dw/get-irc-pass)
-     ))
+     :nick "Haider"))
 
   (use-package erc-hl-nicks
     :ensure t
@@ -955,7 +998,7 @@ These keybindings will open my system's config files.
 #+BEGIN_SRC elisp
   (use-package mu4e
     :ensure nil
-    :defer 10 ; Wait until 20 seconds after startup
+    :defer 10 ; Wait until 10 seconds after startup
     :config
 
     (require 'mu4e-org)
