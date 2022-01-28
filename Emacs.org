@@ -653,8 +653,6 @@ M-x all-the-icons-install-fonts
      "os" '(org-schedule :which-key "Scedule")
      "oS" '(org-todo :which-key "OrgMode states"))
 
-   (setq org-agenda-span 10)
-
    (defun org/org-font-setup ()
      ;; Replace list hyphen with dot
      (font-lock-add-keywords 'org-mode
@@ -740,8 +738,7 @@ M-x all-the-icons-install-fonts
      :config
      (org-super-agenda-mode 1))
 
-   (setq org-agenda-time-grid '((daily today require-timed) "----------------------" nil)
-	 org-agenda-skip-scheduled-if-done t
+   (setq org-agenda-skip-scheduled-if-done t
 	 org-agenda-skip-deadline-if-done t
 	 org-agenda-include-deadlines t
 	 org-agenda-include-diary t
@@ -1051,9 +1048,9 @@ These keybindings will open my system's config files.
 	    :vars '((user-mail-address . "ha6mi19@keaston.bham.sch.uk")
 		    (user-full-name    . "Haider Mirza")
 		    (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
-		    (smtpmail-smtp-server  . "smtp-mail.outlook.com")
-		    (smtpmail-smtp-service . 587)
-		    (smtpmail-stream-type  . starttls)
+		    ;; (smtpmail-smtp-server  . "smtp-mail.outlook.com")
+		    ;; (smtpmail-smtp-service . 587)
+		    ;; (smtpmail-stream-type  . ssl)
 		    (mu4e-drafts-folder  . "/Outlook/Drafts")
 		    (mu4e-sent-folder  . "/Outlook/Sent")
 		    (mu4e-refile-folder  . "/Outlook/Archive")
@@ -1061,8 +1058,11 @@ These keybindings will open my system's config files.
 
     (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
 
+    (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
+    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+
     (setq mu4e-context-policy 'pick-first)
-	
+
     (setq mu4e-maildir-shortcuts
 	  '((:maildir "/Gmail/Inbox"    :key ?g)
 	    (:maildir "/Outlook/INBOX"     :key ?i))))
@@ -1298,6 +1298,12 @@ Uses the standard Unix password store "pass".
 
 #+begin_src elisp
   (use-package password-store)
+
+  (defun efs/lookup-password (&rest keys)
+    (let ((result (apply #'auth-source-search keys)))
+      (if result
+	  (funcall (plist-get (car result) :secret))
+	nil)))
 
 #+end_src
 
