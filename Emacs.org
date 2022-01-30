@@ -5,68 +5,67 @@
 - [[#about-this-config][About This Config]]
 - [[#note][Note]]
   - [[#replace-capslock-with-ctrl][Replace Capslock with CTRL]]
-- [[#packages][Packages]]
+- [[#package-system-setup][Package System Setup]]
   - [[#use-package][use-package]]
   - [[#straightel][straight.el]]
-- [[#clean][Clean]]
-- [[#keybinds][Keybinds]]
+  - [[#automatic-package-updates][Automatic Package Updates]]
+- [[#startup-performance][Startup Performance]]
+- [[#keybinding-configuration][Keybinding Configuration]]
   - [[#general][General]]
-  - [[#global-keybindings][Global Keybindings]]
-  - [[#helpful][Helpful]]
   - [[#evil-mode][Evil Mode]]
-  - [[#general-keybinds][General Keybinds]]
-  - [[#counsel][Counsel]]
-- [[#general-settings][General Settings]]
-- [[#haider-theme][Haider Theme]]
-- [[#recentf][Recentf]]
-- [[#user-interface][User Interface]]
+  - [[#evil-collection][Evil Collection]]
+- [[#ui-configuration][UI Configuration]]
   - [[#font][Font]]
-  - [[#theme][Theme]]
+  - [[#haider-theme][Haider Theme]]
+  - [[#load-theme][Load Theme]]
   - [[#dashboard][Dashboard]]
   - [[#minimal-visuals][Minimal Visuals]]
   - [[#center-documents][Center Documents]]
-  - [[#set-frame-transparency-and-maximize-windows-by-default][Set frame transparency and maximize windows by default.]]
+  - [[#frame-transparency-and-maximize-windows][frame transparency and maximize windows.]]
   - [[#scrolling][Scrolling]]
   - [[#line-numbers][Line numbers]]
-  - [[#emojify][Emojify]]
-  - [[#icons][Icons]]
-  - [[#doom-modeline][Doom Modeline]]
-- [[#interactions][Interactions]]
-- [[#vertico][Vertico]]
-  - [[#consult][Consult]]
-- [[#org][Org]]
-  - [[#orgmode-main-config][OrgMode Main config]]
-  - [[#org-super-agenda][Org-super-agenda]]
-  - [[#org-superstar][Org-Superstar]]
-  - [[#evil-org][Evil-Org]]
-  - [[#orgroam][OrgRoam]]
-- [[#yasnippet][YASnippet]]
-- [[#backup][Backup]]
-- [[#tree][Tree]]
-  - [[#neotree][Neotree]]
-  - [[#org-sidebar][Org-Sidebar]]
-- [[#chat][Chat]]
+  - [[#modeline][Modeline]]
+- [[#general-configuration][General Configuration]]
+  - [[#which-key][Which key]]
+  - [[#buffers][Buffers]]
+  - [[#windows][Windows]]
+  - [[#file-control][File control]]
+  - [[#recentf][Recentf]]
+  - [[#interactions][Interactions]]
+  - [[#counsel][Counsel]]
+  - [[#vertico][Vertico]]
+  - [[#helpful][Helpful]]
+  - [[#hydra][Hydra]]
+- [[#keep-directories-clean][Keep Directories Clean]]
+- [[#editing-files-configuration][Editing Files Configuration]]
+  - [[#swiper][Swiper]]
+  - [[#comment-lines][Comment Lines]]
+  - [[#yasnippet][YASnippet]]
+  - [[#org][Org]]
+- [[#chatting-configuration][Chatting Configuration]]
   - [[#erc][ERC]]
-- [[#open][Open]]
+  - [[#emojify][Emojify]]
+- [[#keybinds-to-open-files][Keybinds to open files]]
   - [[#open-documents][Open Documents]]
   - [[#open-configs][Open Configs]]
-- [[#which-key][Which key]]
-- [[#mail][Mail]]
+- [[#mu4e-email-configuration][MU4E EMail Configuration]]
   - [[#mu4e][Mu4e]]
   - [[#mu4e-alert][Mu4e-Alert]]
   - [[#org-mime][Org-mime]]
-- [[#development][Development]]
+- [[#development-configuration][Development Configuration]]
+  - [[#magit][Magit]]
   - [[#language-servers][Language servers]]
   - [[#languages][Languages]]
   - [[#smart-parens][Smart Parens]]
   - [[#company-mode][Company mode]]
   - [[#compilation][Compilation]]
-- [[#vterm][VTerm]]
-- [[#password-manager][Password Manager]]
-- [[#magit][Magit]]
-- [[#hydra][Hydra]]
-- [[#server][Server]]
-- [[#desktoporg][Desktop.org]]
+  - [[#tree][Tree]]
+- [[#terminal-configurations][Terminal Configurations]]
+  - [[#vterm][VTerm]]
+  - [[#eshell][Eshell]]
+- [[#password-managment][Password Managment]]
+- [[#emacs-server-mode][Emacs server-mode]]
+- [[#load-desktoporg][Load Desktop.org]]
 
 * About This Config
   This is my Emacs configuration used in all of my Systems.
@@ -74,33 +73,35 @@
 
 * Note
 ** Replace Capslock with CTRL
-You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
-Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
-So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
-Doing this will prevent you from having to bend your pinky down all day long to hit all those fabled Emacs keybindings,
-allowing you to keep your hands on the home row of the keyboard.
+   You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
+   Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
+   So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
+   Doing this will prevent you from having to bend your pinky down all day long to hit all those fabled Emacs keybindings,
+   allowing you to keep your hands on the home row of the keyboard.
 
-There are many ways to accomplish this in Linux, but the easiest (and most repeatable) I’ve found is to use xmodmap.
-First, make sure you have it xmodmap installed.
-Then, create a file named .Xmodmap in your home folder and populate it like so:
+   There are many ways to accomplish this in Linux, but the easiest (and most repeatable) I’ve found is to use xmodmap.
+   First, make sure you have it xmodmap installed.
+   Then, create a file named .Xmodmap in your home folder and populate it like so:
 
-#+BEGIN_SRC
-clear lock
-clear control
-keycode 66 = Control_L
-add control = Control_L
-add Lock = Control_R
-#+end_src
+   #+BEGIN_SRC
+   clear lock
+   clear control
+   keycode 66 = Control_L
+   add control = Control_L
+   add Lock = Control_R
+   #+end_src
 
-This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case you ever need to use it.
-Most login systems (GDM, KDM, etc) will load this file when you log in so you might not need to do anything extra for it to take effect, just log out and log back in again.
-If that doesn’t seem to work, you can add this line to one of your startup files (.xinitrc, .profile, window manager configuration, etc):
-(I have already enabled this in my EXWM config (desktop.org))
-#+BEGIN_SRC
-xmodmap ~/.Xmodmap
-#+end_src
+   This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case you ever need to use it.
+   Most login systems (GDM, KDM, etc) will load this file when you log in so you might not need to do anything extra for it to take effect, just log out and log back in again.
+   If that doesn’t seem to work, you can add this line to one of your startup files (.xinitrc, .profile, window manager configuration, etc):
+   (I have already enabled this in my EXWM config (desktop.org))
+   #+BEGIN_SRC
+   xmodmap ~/.Xmodmap
+   #+end_src
 
-* Packages
+* Package System Setup
+  Emacs has a built in package manager but it doesn’t make it easy to automatically install packages on a new system the first time you pull down your configuration.
+  use-package is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use.
 ** use-package
  #+begin_src elisp
 
@@ -140,24 +141,41 @@ xmodmap ~/.Xmodmap
     (load bootstrap-file nil 'nomessage))
 
 #+END_SRC
-* Clean
-  Makes Emacs keep my file directorys clean of unnecessary files.
+** Automatic Package Updates
+The auto-package-update package helps us keep our Emacs packages up to date!
+It will prompt you after a certain number of days either at startup or at a specific time of day to remind you to update your packages.
+You can also use M-x auto-package-update-now to update right now!
 #+BEGIN_SRC elisp
-  (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
-  ;; auto-save-mode doesn't create the path automatically!
-  (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
 
-  (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
-	auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
-
-  (use-package no-littering)
+  (use-package auto-package-update
+    :defer 10
+    :custom
+    (auto-package-update-interval 7)
+    (auto-package-update-prompt-before-update t)
+    (auto-package-update-hide-results t)
+    :config
+    (auto-package-update-maybe)
+    (auto-package-update-at-time "09:00"))
 
 #+END_SRC
-* Keybinds
+* Startup Performance
+#+BEGIN_SRC elisp
+  (defun efs/display-startup-time ()
+    (message "Emacs loaded in %s with %d garbage collections."
+	     (format "%.2f seconds"
+		     (float-time
+		     (time-subtract after-init-time before-init-time)))
+	     gcs-done))
+
+  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+
+#+END_SRC
+* Keybinding Configuration
 ** General
   
 #+begin_src elisp
   (use-package general
+    :after evil
     :config
     (general-create-definer rune/leader-keys
       :keymaps '(normal insert visual emacs)
@@ -166,35 +184,6 @@ xmodmap ~/.Xmodmap
 
     (rune/leader-keys
       "SPC" '(find-file :which-key "find file")))
-
-#+end_src
-
-** Global Keybindings
-#+begin_src elisp
-  ;; Make ESC quit prompts
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  (global-set-key (kbd "C-s-s") 'swiper)
-  (global-set-key (kbd "s-v") 'vterm)
-  (global-set-key (kbd "<s-left>") 'windmove-left)
-  (global-set-key (kbd "<s-right>") 'windmove-right)
-  (global-set-key (kbd "<s-up>") 'windmove-up)
-  (global-set-key (kbd "<s-down>") 'windmove-down)
-
-#+end_src
-
-** Helpful
-  
-
-#+begin_src elisp
-  (use-package helpful
-    :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
-    :bind
-    ([remap describe-function] . counsel-describe-function)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
 
 #+end_src
 
@@ -229,23 +218,11 @@ xmodmap ~/.Xmodmap
 
   (evil-mode 1)
 
-  (defun dw/dont-arrow-me-bro ()
-    (interactive)
-    (message "Arrow keys are bad, you know?"))
-
-  ;; Disable arrow keys in normal and visual modes
-  (define-key evil-normal-state-map (kbd "<left>") 'dw/dont-arrow-me-bro)
-  (define-key evil-normal-state-map (kbd "<right>") 'dw/dont-arrow-me-bro)
-  (define-key evil-normal-state-map (kbd "<down>") 'dw/dont-arrow-me-bro)
-  (define-key evil-normal-state-map (kbd "<up>") 'dw/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<left>") 'dw/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<right>") 'dw/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<down>") 'dw/dont-arrow-me-bro)
-  (evil-global-set-key 'motion (kbd "<up>") 'dw/dont-arrow-me-bro)
-
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
-*** Evil Collection
+** Evil Collection
 
 #+begin_src elisp
   (use-package evil-collection
@@ -254,163 +231,85 @@ xmodmap ~/.Xmodmap
     (evil-collection-init))
 
 #+end_src
-** General Keybinds
-*** File control
-#+BEGIN_SRC elisp
-  (rune/leader-keys
-  "x"  '(:ignore t :which-key "Delete")
-  "c"  '(:ignore t :which-key "Create")
-  "xf" '(delete-file :which-key "Delete file")
-  "xd" '(delete-directory :which-key "Delete directory")
-  "cf" '(make-empty-file :which-key "Create empty file")
-  "cf" '(make-directory :which-key "Create directory")
-#+END_SRC
-    
-*** Buffers
-#+BEGIN_SRC elisp
-  "b"  '(:ignore t :which-key "Buffers")
-  "bb" '(consult-buffer :which-key "Switch to buffer")
-  "bB" '(consult-buffer-other-window :which-key "Switch to buffer on new window")
-  "bF" '(consult-buffer-other-frame :which-key "Switch to buffer on new frame")
-  "bk" '(kill-buffer :which-key "Kill a buffer")
-  "bK" '(kill-buffer-and-window :which-key "Kill buffer and window")
-  "bc" '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
-#+END_SRC
 
-*** General
-#+BEGIN_SRC elisp
-  "r" '(counsel-recentf :which-key "Recent files")
-#+END_SRC
-
-*** Typing Command
-#+BEGIN_SRC elisp
-  "TAB" '(comment-region :which-key "comment lines")
-#+END_SRC
-
-*** Eshell
-#+BEGIN_SRC elisp
-  "e"  '(:ignore t :which-key "Eshell")
-  "es" '(eshell :which-key "Launch Eshell")
-  "eh" '(counsel-esh-history :which-key "Eshell History"))
-#+END_SRC
-
-** Counsel
-
-#+begin_src elisp
-  (use-package counsel
-    :bind (("M-x" . counsel-M-x)
-           ("C-x b" . counsel-ibuffer)
-           ("C-x C-f" . counsel-find-file)
-           :map minibuffer-local-map
-           ("C-r" . 'counsel-minibuffer-history))
-    :custom
-    (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only))
-
-#+end_src
-* General Settings
-  Changing some variables
-#+BEGIN_SRC elisp
-    (setq version-control t)
-    (setq vc-follow-symlinks t)
-    (setq ring-bell-function 'ignore)
-    (setq coding-system-for-read 'utf-8)
-    (setq coding-system-write 'utf-8)
-    (setq sentence-end-double-space nil)
-
-
-#+END_SRC
-* Haider Theme
-#+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/haider-theme.el"
-  (require 'autothemer)
-
-  (autothemer-deftheme
-   haider "This is a very dark custom emacs theme that is easily modifiable as it is made with autothemer"
-
-   ((((class color) (min-colors #xFFFFFF))) ;; I'm only concerned with graphical Emacs
-
-    ;; Define our color palette
-    (haider-black      "#080D0D")
-    (haider-grey       "#151A1C")
-    (haider-white      "#ffffff")
-    (haider-yellow     "#ECDA23")
-    (haider-red        "red1")
-    (haider-orange     "orange1")
-    (haider-dk-orange  "#eb6123")
-    (haider-blue       "#2986cc")
-    (haider-green      "LightGreen")
-    (haider-pink       "pink")
-    (haider-purple     "purple")
-    (haider-dk-green   "#227722")
-    (haider-region     "#20353B")
-    (haider-code-bg    "#15181C"))
-
-   ;; Customize faces
-   ((default                   (:foreground haider-white :background haider-black))
-    (cursor                    (:background haider-dk-orange))
-    (region                    (:background haider-region))
-    (mode-line                 (:background haider-grey))
-    (font-lock-constant-face   (:foreground haider-pink))
-    (font-lock-string-face     (:foreground haider-orange))
-    (font-lock-keyword-face    (:foreground haider-blue))
-    (font-lock-builtin-face    (:foreground haider-yellow))
-
-    ;; Comments
-    (font-lock-comment-delimiter-face    (:foreground haider-green))
-    (font-lock-comment-face              (:foreground haider-green))
-
-    ;; Org Block
-    (org-block (:background haider-code-bg))
-
-
-    (org-block-end-line         (:backround haider-grey :inherit 'org-block-begin-line))
-    (org-block-begin-line       (:backround haider-grey :foreground haider-dk-green :inherit 'org-block))
-    (org-code                   (:backround haider-grey :foreground haider-dk-orange :inherit 'org-block))
-
-    ;; Org Levels
-    (org-level-1               (:foreground haider-red))
-    (org-level-2               (:foreground haider-orange))
-    (org-level-3               (:foreground haider-yellow))
-    (org-level-4               (:foreground haider-green))
-    (org-level-5               (:foreground haider-blue))
-    (org-level-6               (:foreground haider-pink))
-    (org-level-7               (:foreground haider-purple))
-  
-    (dashboard-text-banner     (:foreground haider-red))))
-
-  (provide-theme 'haider)
-#+END_SRC
-* Recentf
-  Save recent files list periodically, when emacs has been idle for a while, because it will otherwise not be saved when emacs runs in server mode.
-#+BEGIN_SRC elisp
-  (run-with-idle-timer 600 t (lambda ()
-			      (let ((save-silently t))
-			       (recentf-save-list))))
-
-#+END_SRC
-
-* User Interface
-
+* UI Configuration
 ** Font
+   Make sure "font-fira-code" is installed on your system.
+   The name may be different depending on your Operating System.
 #+begin_src elisp
 
     ;; You will most likely need to adjust this font size for your system!
-    (defvar runemacs/default-font-size 95)
+    (defvar runemacs/default-font-size 80)
 
     (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
 
 #+end_src
 
-** Theme
-Note That I use my own custom theme
-#+begin_src elisp
-  (use-package doom-themes
-    :init (load-theme 'haider t))
+** Haider Theme
+ #+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/haider-theme.el"
+   (require 'autothemer)
 
-  ;; (load-theme 'haider t)
-#+end_src
- 
-*** Keybinds
-#+BEGIN_SRC elisp
+   (autothemer-deftheme
+    haider "This is a very dark custom emacs theme that is easily modifiable as it is made with autothemer"
+
+    ((((class color) (min-colors #xFFFFFF))) ;; I'm only concerned with graphical Emacs
+
+     ;; Define our color palette
+     (haider-black      "#080D0D")
+     (haider-grey       "#151A1C")
+     (haider-white      "#ffffff")
+     (haider-yellow     "#ECDA23")
+     (haider-red        "red1")
+     (haider-orange     "orange1")
+     (haider-dk-orange  "#eb6123")
+     (haider-blue       "#2986cc")
+     (haider-green      "LightGreen")
+     (haider-pink       "pink")
+     (haider-purple     "purple")
+     (haider-dk-green   "#227722")
+     (haider-region     "#20353B")
+     (haider-code-bg    "#15181C"))
+
+    ;; Customize faces
+    ((default                   (:foreground haider-white :background haider-black))
+     (cursor                    (:background haider-dk-orange))
+     (region                    (:background haider-region))
+     (mode-line                 (:background haider-grey))
+     (font-lock-constant-face   (:foreground haider-pink))
+     (font-lock-string-face     (:foreground haider-orange))
+     (font-lock-keyword-face    (:foreground haider-blue))
+     (font-lock-builtin-face    (:foreground haider-yellow))
+
+     ;; Comments
+     (font-lock-comment-delimiter-face    (:foreground haider-green))
+     (font-lock-comment-face              (:foreground haider-green))
+
+     ;; Org Block
+     (org-block (:background haider-code-bg))
+
+
+     (org-block-end-line         (:backround haider-grey :inherit 'org-block-begin-line))
+     (org-block-begin-line       (:backround haider-grey :foreground haider-dk-green :inherit 'org-block))
+     (org-code                   (:backround haider-grey :foreground haider-dk-orange :inherit 'org-block))
+
+     ;; Org Levels
+     (org-level-1               (:foreground haider-red))
+     (org-level-2               (:foreground haider-orange))
+     (org-level-3               (:foreground haider-yellow))
+     (org-level-4               (:foreground haider-green))
+     (org-level-5               (:foreground haider-blue))
+     (org-level-6               (:foreground haider-pink))
+     (org-level-7               (:foreground haider-purple))
+  
+     (dashboard-text-banner     (:foreground haider-red))))
+
+   (provide-theme 'haider)
+ #+END_SRC
+** Load Theme
+   Note That I use my own custom theme
+#+begin_src elisp
+  (load-theme 'haider t)
+
   (rune/leader-keys
     "st" '(counsel-load-theme :which-key "choose theme"))
 #+end_src
@@ -419,20 +318,19 @@ Note That I use my own custom theme
 *** Emacs config
  #+BEGIN_SRC elisp
 
-   (use-package dashboard
-     :ensure t
-     :config
-     (setq dashboard-banner-logo-title "Welcome to Haider's System")
-     (setq dashboard-startup-banner "/home/haider/.emacs.d/banner.txt")
-     ;; (setq dashboard-center-content t)
-     (setq dashboard-init-info "Make sure to check Org Agenda")
-     (setq dashboard-show-shortcuts nil)
-     (setq dashboard-set-heading-icons t)
-     (setq dashboard-set-file-icons t)
-     (setq dashboard-items '((recents  . 5)
-			     (projects . 5)
-			     (agenda . 5)))
-     (dashboard-setup-startup-hook))
+   ;; (use-package dashboard
+   ;;   :config
+   ;;   (setq dashboard-banner-logo-title "Welcome to Haider's System")
+   ;;   (setq dashboard-startup-banner "/home/haider/.emacs.d/banner.txt")
+   ;;   ;; (setq dashboard-center-content t)
+   ;;   (setq dashboard-init-info "Make sure to check Org Agenda")
+   ;;   (setq dashboard-show-shortcuts nil)
+   ;;   (setq dashboard-set-heading-icons t)
+   ;;   (setq dashboard-set-file-icons t)
+   ;;   (setq dashboard-items '((recents  . 5)
+   ;; 			  (projects . 5)
+   ;; 			  (agenda . 5)))
+   ;;   (dashboard-setup-startup-hook))
 
  #+END_SRC
 *** Text Banner
@@ -471,7 +369,7 @@ Center org-mode documents.
 
 #+begin_src elisp
   (defun org/org-mode-visual-fill ()
-    (setq visual-fill-column-width 140
+    (setq visual-fill-column-width 180
           visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
 
@@ -480,7 +378,7 @@ Center org-mode documents.
 
 #+end_src
 
-** Set frame transparency and maximize windows by default.
+** frame transparency and maximize windows. 
 #+BEGIN_SRC elisp
 
    (set-frame-parameter (selected-frame) 'alpha '(70 . 70))
@@ -499,7 +397,7 @@ Improve scrolling.
   (setq use-dialog-box nil) ;; Disable dialog boxes since they weren't working in Mac OSX
 
 #+end_src
-:
+
 ** Line numbers
 #+begin_src elisp
 
@@ -516,387 +414,446 @@ Improve scrolling.
 
 #+end_src
 
-** Emojify
-   
-#+begin_src elisp
-  (use-package emojify)
-   (add-hook 'after-init-hook #'global-emojify-mode)
-
-  (rune/leader-keys
-    "a"  '(:ignore t :which-key "Emojify") ;; I know a has no correlation but Im running out of space ok.
-    "ai" '(emojify-insert-emoji :which-key "Insert Emoji"))
-
-  (use-package unicode-fonts)
-
-#+end_src
-** Icons
-*** NOTE:
-The first time you load your configuration on a new machine, you'll
-need to run the following command interactively so that mode line icons
-display correctly:
-
-M-x all-the-icons-install-fonts
-#+begin_src elisp
-
-  (use-package all-the-icons)
-
-#+end_src
-
-** Doom Modeline
+** Modeline
 
 #+begin_src elisp
 
-  ;; Show the time and date in modeline
-  (setq display-time-day-and-date t)
+ ;; (use-package simple-modeline
+ ;;   :hook (after-init . simple-modeline-mode))
 
-  ;; Enable the time & date in the modeline
-  ;; (display-time-mode 1)
-  ;; (setq display-time-string-forms '((format-time-string "%H:%M" now)))
+    (use-package all-the-icons)
 
-  (setq display-time-format "%l:%M %p %b %y"
-	display-time-default-load-average nil)
+    (use-package doom-modeline
+      :init (doom-modeline-mode 1)
+      :custom (doom-modeline-height 17)
+      :config 
+      (setq doom-modeline-lsp t)
+      (setq doom-modeline-buffer-encoding nil)
+      (setq doom-modeline-github nil)
+      (setq doom-modeline-project-detection 'auto)
+      (setq doom-modeline-number-limit 99)
+      (setq doom-modeline-mu4e t)
+      (setq doom-modeline-irc t)
 
-  (use-package diminish)
-
-  (use-package doom-modeline
-    :init (doom-modeline-mode 1)
-    :custom ((doom-modeline-height 25)))
-
-  ;; If want to change font size
-  ;;  (custom-set-faces
-  ;;    '(mode-line ((t (:family "Noto Sans" :height 0.9))))
-  ;;    '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
-
-  (setq doom-modeline-lsp t)
-  (setq doom-modeline-buffer-encoding nil)
-  (setq doom-modeline-github nil)
-  (setq doom-modeline-project-detection 'auto)
-  (setq doom-modeline-number-limit 99)
-  (mu4e-alert-enable-mode-line-display)
-  (setq doom-modeline-mu4e t)
-  (setq doom-modeline-irc t)
+      ;; Show the time and date in modeline
+      (setq display-time-day-and-date t)
+      ;; Enable the time & date in the modeline
+      (display-time-mode 1)
+      (setq display-time-string-forms '((format-time-string "%H:%M" now)))
+      ;; Format Date and time
+      (setq display-time-format "%l:%M %p %b %y"
+	    display-time-default-load-average nil))
 
 #+end_src 
-* Interactions
+
+* General Configuration
+** Which key
   
-#+BEGIN_SRC elisp
-
-  ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
-  (fset 'yes-or-no-p 'y-or-n-p)
-
-  ;; Confirm to quit
-  (setq confirm-kill-emacs 'yes-or-no-p)
-
-  ;; Major mode of new buffers
-  ;; (setq initial-major-mode 'org-mode)
-
-#+END_SRC
-* Vertico
-#+BEGIN_SRC elisp
-
-  (use-package vertico
-    :ensure t
-    :bind (:map vertico-map
-	   ("C-j" . vertico-next)
-	   ("C-k" . vertico-previous)
-	   ("C-f" . vertico-exit)
-	   :map minibuffer-local-map
-	   ("M-h" . backward-kill-word))
-    :custom
-    (vertico-cycle t)
-    :init
-    (vertico-mode))
-
-  (use-package savehist
-    :init
-    (savehist-mode))
-
-  ;; (use-package marginalia
-  ;;   :after vertico
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  ;;   :init
-  ;;   (marginalia-mode))
-
-#+END_SRC 
-
-** Consult
-#+BEGIN_SRC elisp
-  (use-package consult
-    :demand t
-    :bind (("C-s" . consult-line)
-           ("C-M-l" . consult-imenu)
-           ("C-M-j" . persp-switch-to-buffer*)
-           :map minibuffer-local-map
-           ("C-r" . consult-history))
-    :custom
-    (completion-in-region-function #'consult-completion-in-region))
-
-#+END_SRC
-* Org
-
-  Here consists configs for:
-  - Org Mode
-  - Org Agenda
-  - Org Roam
-    
-** OrgMode Main config
- #+begin_src elisp
-   (rune/leader-keys
-     "o"  '(:ignore t :which-key "Org")
-     "oa" '(org-agenda :which-key "View Org-Agenda")
-     "ol" '(org-agenda-list :which-key "View Org-Agendalist")
-     "ot" '(org-babel-tangle :which-key "Tangle Document")
-     "ox" '(org-export-dispatch :which-key "Export Document")
-     "od" '(org-deadline :which-key "Deadline")
-     "os" '(org-schedule :which-key "Scedule")
-     "oS" '(org-todo :which-key "OrgMode states"))
-
-   (defun org/org-font-setup ()
-     ;; Replace list hyphen with dot
-     (font-lock-add-keywords 'org-mode
-			     '(("^ *\\([-]\\) "
-				(0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-     ;; Set faces for heading levels
-     (dolist (face '((org-level-1 . 1.2)
-		     (org-level-2 . 1.1)
-		     (org-level-3 . 1.05)
-		     (org-level-4 . 1.0)
-		     (org-level-5 . 1.1)
-		     (org-level-6 . 1.1)
-		     (org-level-7 . 1.1)
-		     (org-level-8 . 1.1)))
-       (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
-
-     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-     (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-     (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-     (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-     (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-     (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-     (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-     (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
-
-   (use-package org
+ #+begin_src elisp 
+   (use-package which-key
+     :defer 20
+     :diminish which-key-mode
      :config
-     (setq org-ellipsis " ▾")
-
-     (setq org-agenda-start-with-log-mode t)
-     (setq org-log-done 'time)
-     (setq org-log-into-drawer t)
-
-     (setq org-agenda-files
-	   '("~/Documents/Home/Reminders.org"
-	     "~/Documents/Home/TODO.org"
-	     "~/Documents/School/Homework.org"
-	     "~/Documents/School/School-Reminders.org"))
-
-     (setq org-todo-keywords
-	   '((sequence
-	      "TODO(t)"
-	      "WORK(w)"
-	      "NEXT(n)"
-	      "DEV(d)"
-	      "RESEARCH(r)"
-	      "HOLD(h)"
-	      "PLAN(p)"
-	      "|"
-	      "COMPLETED(c)"
-	      "FAILED(f)")))
-
-     ;; Save Org buffers after refiling!
-     (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-     ;; (setq org-agenda-custom-commands
-     ;; 	'(("n" "Next Tasks"
-     ;; 	    ((todo "TODO"
-     ;; 	     ((org-agenda-overriding-header "Next Tasks")))))))
-
-
-     (org/org-font-setup))
-
-   (use-package org-bullets
-     :after org
-     :hook 
-     (org-mode . org-bullets-mode)
-     :custom
-     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-     (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
-     (add-hook 'org-mode-hook 'toc-org-mode)
-
- #+END_SRC
-
-** Org-super-agenda
-   Configuring the Org-Agenda view.
- #+BEGIN_SRC elisp
-
-   (use-package org-super-agenda
-     :after org
-     :config
-     (org-super-agenda-mode 1))
-
-   (setq org-agenda-skip-scheduled-if-done t
-	 org-agenda-skip-deadline-if-done t
-	 org-agenda-include-deadlines t
-	 org-agenda-include-diary t
-	 org-agenda-block-separator nil
-	 org-agenda-compact-blocks t
-	 org-agenda-start-with-log-mode t)
-
-   (setq org-agenda-span 'day)
-   (setq org-super-agenda-groups
-	 '((:name "Important"
-		  :priority "A")
-	   (:name "Overdue"
-		  :deadline past)
-	   (:name "Due Today"
-		  :deadline today)
-	   (:name "Next Items"
-		  :todo "NEXT")
-	   (:name "TODO"
-		  :todo "TODO")
-	   (:name "WORK"
-		  :todo "WORK")
-	   (:name "Due Soon"
-		  :deadline future)))
+     (which-key-mode)
+     (setq which-key-idle-delay 1))
 
  #+end_src
-
-** Org-Superstar
-   Making the bullets look better
+** Buffers
 #+BEGIN_SRC elisp
-  (use-package org-superstar
-    :config
-    (setq org-superstar-leading-bullet " ")
-    (setq org-superstar-special-todo-items t) ;; Makes TODO header bullets into boxes
-    (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
-                                            ("WORK" . 9744)
-                                            ("DEV" . 9744)
-                                            ("NEXT" . 9744)
-                                            ("RESEARCH" . 9744)
-                                            ("HOLD" . 9744)
-                                            ("PLAN" . 9744)
-                                            ("COMPLETED" . 9745)
-                                            ("FAILED" . 9746)))
-    :hook (org-mode . org-superstar-mode))
-
-  ;; Removes gap when you add a new heading
-  (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (rune/leader-keys
+  "b"  '(:ignore t :which-key "Buffers")
+  "bb" '(consult-buffer :which-key "Switch to buffer")
+  "bB" '(consult-buffer-other-window :which-key "Switch to buffer on new window")
+  "bF" '(consult-buffer-other-frame :which-key "Switch to buffer on new frame")
+  "bk" '(kill-buffer :which-key "Kill a buffer")
+  "bK" '(kill-buffer-and-window :which-key "Kill buffer and window")
+  "bc" '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window"))
 
 #+END_SRC
+** Windows
+  #+BEGIN_SRC elisp
+    (global-set-key (kbd "<s-left>") 'windmove-left)
+    (global-set-key (kbd "<s-right>") 'windmove-right)
+    (global-set-key (kbd "<s-up>") 'windmove-up)
+    (global-set-key (kbd "<s-down>") 'windmove-down)
 
-** Evil-Org
+  #+END_SRC 
+** File control
 #+BEGIN_SRC elisp
-  (use-package evil-org
-    :diminish evil-org-mode
-    :after org
-    :config
-    (add-hook 'org-mode-hook 'evil-org-mode)
-    (add-hook 'evil-org-mode-hook
-              (lambda () (evil-org-set-key-theme))))
-
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys)
+  (rune/leader-keys
+  "x"  '(:ignore t :which-key "Delete")
+  "c"  '(:ignore t :which-key "Create")
+  "xf" '(delete-file :which-key "Delete file")
+  "xd" '(delete-directory :which-key "Delete directory")
+  "cf" '(make-empty-file :which-key "Create empty file")
+  "cf" '(make-directory :which-key "Create directory"))
 
 #+END_SRC
+** Recentf
+   Save recent files list periodically, when emacs has been idle for a while, because it will otherwise not be saved when emacs runs in server mode.
+ #+BEGIN_SRC elisp
+    (run-with-idle-timer 600 t (lambda ()
+				(let ((save-silently t))
+				 (recentf-save-list))))
 
-** OrgRoam
-I dont even use Org roam much anymore. But this is still there.
+
+   (rune/leader-keys
+   "r" '(counsel-recentf :which-key "Recent files"))
+
+ #+END_SRC
+** Interactions
+  
+ #+BEGIN_SRC elisp
+
+   ;; When emacs asks for "yes" or "no", let "y" or "n" suffice
+   (fset 'yes-or-no-p 'y-or-n-p)
+
+   ;; Confirm to quit
+   (setq confirm-kill-emacs 'yes-or-no-p)
+
+   ;; Major mode of new buffers
+   ;; (setq initial-major-mode 'org-mode)
+
+ #+END_SRC
+** Counsel
+Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
 #+begin_src elisp
-  (use-package org-roam
-    :ensure t
-    :init
-    (setq org-roam-v2-ack t)
+  (use-package counsel
+    :bind (("M-x" . counsel-M-x)
+           ("C-x b" . counsel-ibuffer)
+           ("C-x C-f" . counsel-find-file)
+           :map minibuffer-local-map
+           ("C-r" . 'counsel-minibuffer-history))
     :custom
-    (org-roam-directory "~/RoamNotes")
-    (org-roam-completion-everywhere t)
-
-    (org-roam-capture-templates
-     '(("d" "default" plain "%?"
-        :if-new (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
-        :unnarrowed t)
-       ("p" "project" plain (file "~/RoamNotes/Templates/ProjectTemplate.org")
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-        :unnarrowed t)
-       )
-     )
-
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point)
-           :map org-roam-dailies-map
-           ("Y" . org-roam-dailies-capture-yesterday)
-           ("T" . org-roam-dailies-capture-tomorrow))
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
-    :config
-    (require 'org-roam-dailies) ;; Ensure the keymap is available
-    (org-roam-db-autosync-mode))
-
-  (rune/leader-keys
-    "or"  '(:ignore t :which-key "Org-Roam")
-    "ori" '(org-roam-node-insert :which-key "Insert")
-    "ord"  '(:ignore t :which-key "Dailies")
-    "ordd" '(org-roam-dailies-goto-today :which-key "Today")
-    "ort" '(org-roam-buffer-toggle :which-key "Toggle")
-    "orf" '(org-roam-node-find :which-key "Find"))
+    (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only))
 
 #+end_src
-* YASnippet
-#+begin_src elisp
-  (use-package yasnippet
-    :config
-    (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-    (yas-global-mode 1))
 
+** Vertico
+ #+BEGIN_SRC elisp
 
-  (rune/leader-keys
-    "y"  '(:ignore t :which-key "Yasnippet")
-    "yn" '(yas-new-snippet :which-key "yas-new-snippet"))
-#+end_src
-* Backup
-Stop Emacs from creating backup files.  
+   (use-package vertico
+     :bind (:map vertico-map
+		 ("C-j" . vertico-next)
+		 ("C-k" . vertico-previous)
+		 ("C-f" . vertico-exit)
+		 :map minibuffer-local-map
+		 ("M-h" . backward-kill-word))
+     :custom
+     (vertico-cycle t)
+     :init
+     (vertico-mode))
 
-#+begin_src elisp
-  (setq backup-directory-alist `(("." . "~/.saves")))
+   ;; Persist history over Emacs restarts. Vertico sorts by history position.
+   (use-package savehist
+     :after vertico
+     :config
+     (savehist-mode))
+
+ #+END_SRC 
+** Helpful
+   Helpful adds a lot of very helpful (get it?) information to Emacs’ describe- command buffers.
+   For example, if you use describe-function, you will not only get the documentation about the function,
+   you will also see the source code of the function and where it gets used in other places in the Emacs configuration.
+   It is very useful for figuring out how things work in Emacs.
+ #+begin_src elisp
+   (use-package helpful
+     :custom
+     (counsel-describe-function-function #'helpful-callable)
+     (counsel-describe-variable-function #'helpful-variable)
+     :bind
+     ([remap describe-function] . counsel-describe-function)
+     ([remap describe-command] . helpful-command)
+     ([remap describe-variable] . counsel-describe-variable)
+     ([remap describe-key] . helpful-key))
+
+ #+end_src
+** Hydra
+
+ [[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
+ #+BEGIN_SRC elisp
+   ;; (use-package hydra
+   ;;   :defer t)
+
+   ;;    ;; change the text's scale if required
+   ;;    (defhydra hydra-zoom (global-map "<f6>")
+   ;;      "zoom"
+   ;;      ("g" text-scale-increase "in")
+   ;;      ("l" text-scale-decrease "out"))
+
+   ;;    ;; Window Management options
+   ;;    (defhydra hydra-window (global-map "<f2>")
+   ;;      "Window Management"
+   ;;      ("q" delete-window "delete window")
+   ;;      ("d" delete-other-windows "delete other windows")
+   ;;      ("," shrink-window-horizontally "shrink window horizontally")
+   ;;      ("." enlarge-window-horizontally "enlarge windows horizontally")
+   ;;      ("b" balance-windows "balance windows"))
+
+ #+END_SRC 
+* Keep Directories Clean
+  Makes Emacs keep my file directorys clean of unnecessary files.
+#+BEGIN_SRC elisp
+  (use-package no-littering)
 
   (setq backup-by-copying t)
 
   (setq delete-old-versions t
-        kept-new-versions 6
-        kept-old-versions 2
-        version-control t)
+	kept-new-versions 6
+	kept-old-versions 2
+	version-control t)
 
-#+end_src
-* Tree
-  I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
-** Neotree
-The tree directory listing in Emacs.
-#+begin_src elisp
-  ;; (use-package neotree)
-  ;; (setq neo-smart-open t
-  ;;       neo-window-fixed-size nil)
-  ;; (setq doom-neotree-enable-variable-pitch t)
-  ;; (rune/leader-keys
-  ;;   "n"  '(:ignore t :which-key "Neotree")
-  ;;   "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
-  ;;   "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
+  (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+  ;; auto-save-mode doesn't create the path automatically!
+  (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
 
-#+end_src
-** Org-Sidebar
-#+BEGIN_SRC elisp
-  ;; (use-package org-sidebar)
-
-  ;; (rune/leader-keys
-  ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
+  (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
+	auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
 
 #+END_SRC
-* Chat
+
+* Editing Files Configuration
+** Swiper
+   #+BEGIN_SRC elisp
+  (global-set-key (kbd "C-s-s") 'swiper)
+   #+END_SRC
+** Comment Lines
+#+BEGIN_SRC elisp
+  (rune/leader-keys
+  "TAB" '(comment-region :which-key "comment lines"))
+#+END_SRC
+** YASnippet
+ #+begin_src elisp
+   (use-package yasnippet
+     :config
+     (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+     (yas-global-mode 1))
+
+
+   (rune/leader-keys
+     "y"  '(:ignore t :which-key "Yasnippet")
+     "yn" '(yas-new-snippet :which-key "yas-new-snippet"))
+ #+end_src
+** Org
+
+   Here consists configs for:
+   - Org Mode
+   - Org Agenda
+   - Org Roam
+    
+*** OrgMode Main config
+  #+begin_src elisp
+    (rune/leader-keys
+      "o"  '(:ignore t :which-key "Org")
+      "oa" '(org-agenda :which-key "View Org-Agenda")
+      "ol" '(org-agenda-list :which-key "View Org-Agendalist")
+      "ot" '(org-babel-tangle :which-key "Tangle Document")
+      "ox" '(org-export-dispatch :which-key "Export Document")
+      "od" '(org-deadline :which-key "Deadline")
+      "os" '(org-schedule :which-key "Scedule")
+      "oS" '(org-todo :which-key "OrgMode states"))
+
+    (defun org/org-font-setup ()
+      ;; Replace list hyphen with dot
+      (font-lock-add-keywords 'org-mode
+			      '(("^ *\\([-]\\) "
+				 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+      ;; Set faces for heading levels
+      (dolist (face '((org-level-1 . 1.2)
+		      (org-level-2 . 1.1)
+		      (org-level-3 . 1.05)
+		      (org-level-4 . 1.0)
+		      (org-level-5 . 1.1)
+		      (org-level-6 . 1.1)
+		      (org-level-7 . 1.1)
+		      (org-level-8 . 1.1)))
+	(set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+    (use-package org
+      :config
+      (setq org-ellipsis " ▾")
+
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
+
+      (setq org-agenda-files
+	    '("~/Documents/Home/Reminders.org"
+	      "~/Documents/Home/TODO.org"
+	      "~/Documents/School/Homework.org"
+	      "~/Documents/School/School-Reminders.org"))
+
+      (setq org-todo-keywords
+	    '((sequence
+	       "TODO(t)"
+	       "WORK(w)"
+	       "NEXT(n)"
+	       "DEV(d)"
+	       "RESEARCH(r)"
+	       "HOLD(h)"
+	       "PLAN(p)"
+	       "|"
+	       "COMPLETED(c)"
+	       "FAILED(f)")))
+
+      ;; Save Org buffers after refiling!
+      (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+      ;; (setq org-agenda-custom-commands
+      ;; 	'(("n" "Next Tasks"
+      ;; 	    ((todo "TODO"
+      ;; 	     ((org-agenda-overriding-header "Next Tasks")))))))
+
+
+      (org/org-font-setup))
+
+    (use-package org-bullets
+      :after org
+      :hook 
+      (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+      (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+      (add-hook 'org-mode-hook 'toc-org-mode)
+
+  #+END_SRC
+ 
+*** ox-pandoc
+    Expand org-mode's exporting capabilities
+    Make sure the pandoc is installed on your system.
+ #+BEGIN_SRC elisp
+    (use-package ox-pandoc)
+ #+END_SRC
+*** Org-super-agenda
+    Configuring the Org-Agenda view.
+  #+BEGIN_SRC elisp
+
+    (use-package org-super-agenda
+      :after org
+      :config
+      (org-super-agenda-mode 1))
+
+    (setq org-agenda-skip-scheduled-if-done t
+	  org-agenda-skip-deadline-if-done t
+	  org-agenda-include-deadlines t
+	  org-agenda-include-diary t
+	  org-agenda-block-separator nil
+	  org-agenda-compact-blocks t
+	  org-agenda-start-with-log-mode t)
+
+    (setq org-agenda-span 'day)
+    (setq org-super-agenda-groups
+	  '((:name "Important"
+		   :priority "A")
+	    (:name "Overdue"
+		   :deadline past)
+	    (:name "Due Today"
+		   :deadline today)
+	    (:name "Next Items"
+		   :todo "NEXT")
+	    (:name "TODO"
+		   :todo "TODO")
+	    (:name "WORK"
+		   :todo "WORK")
+	    (:name "Due Soon"
+		   :deadline future)))
+
+  #+end_src
+
+*** Org-Superstar
+    Making the bullets look better
+ #+BEGIN_SRC elisp
+   (use-package org-superstar
+     :config
+     (setq org-superstar-leading-bullet " ")
+     (setq org-superstar-special-todo-items t) ;; Makes TODO header bullets into boxes
+     (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
+                                             ("WORK" . 9744)
+                                             ("DEV" . 9744)
+                                             ("NEXT" . 9744)
+                                             ("RESEARCH" . 9744)
+                                             ("HOLD" . 9744)
+                                             ("PLAN" . 9744)
+                                             ("COMPLETED" . 9745)
+                                             ("FAILED" . 9746)))
+     :hook (org-mode . org-superstar-mode))
+
+   ;; Removes gap when you add a new heading
+   (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
+ #+END_SRC
+
+*** Evil-Org
+ #+BEGIN_SRC elisp
+   (use-package evil-org
+     :diminish evil-org-mode
+     :after org
+     :config
+     (add-hook 'org-mode-hook 'evil-org-mode)
+     (add-hook 'evil-org-mode-hook
+               (lambda () (evil-org-set-key-theme))))
+
+   (require 'evil-org-agenda)
+   (evil-org-agenda-set-keys)
+
+ #+END_SRC
+
+*** OrgRoam
+ I dont even use Org roam much anymore. But this is still there.
+ #+begin_src elisp
+   ;; (use-package org-roam
+   ;;   :ensure t
+   ;;   :init
+   ;;   (setq org-roam-v2-ack t)
+   ;;   :custom
+   ;;   (org-roam-directory "~/RoamNotes")
+   ;;   (org-roam-completion-everywhere t)
+
+   ;;   (org-roam-capture-templates
+   ;;    '(("d" "default" plain "%?"
+   ;;       :if-new (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
+   ;;       :unnarrowed t)
+   ;;      ("p" "project" plain (file "~/RoamNotes/Templates/ProjectTemplate.org")
+   ;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+   ;;       :unnarrowed t)
+   ;;      )
+   ;;    )
+
+   ;;   :bind (("C-c n l" . org-roam-buffer-toggle)
+   ;;          ("C-c n f" . org-roam-node-find)
+   ;;          ("C-c n i" . org-roam-node-insert)
+   ;;          :map org-mode-map
+   ;;          ("C-M-i" . completion-at-point)
+   ;;          :map org-roam-dailies-map
+   ;;          ("Y" . org-roam-dailies-capture-yesterday)
+   ;;          ("T" . org-roam-dailies-capture-tomorrow))
+   ;;   :bind-keymap
+   ;;   ("C-c n d" . org-roam-dailies-map)
+   ;;   :config
+   ;;   (require 'org-roam-dailies) ;; Ensure the keymap is available
+   ;;   (org-roam-db-autosync-mode))
+
+   ;; (rune/leader-keys
+   ;;   "or"  '(:ignore t :which-key "Org-Roam")
+   ;;   "ori" '(org-roam-node-insert :which-key "Insert")
+   ;;   "ord"  '(:ignore t :which-key "Dailies")
+   ;;   "ordd" '(org-roam-dailies-goto-today :which-key "Today")
+   ;;   "ort" '(org-roam-buffer-toggle :which-key "Toggle")
+   ;;   "orf" '(org-roam-node-find :which-key "Find"))
+
+ #+end_src
+* Chatting Configuration
 ** ERC
    ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
    Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-streams/june-04-2021/][Systemcrafters-Wiki]].
@@ -952,7 +909,20 @@ The tree directory listing in Emacs.
 
 #+END_SRC
 
-* Open
+** Emojify
+   
+#+begin_src elisp
+  (use-package emojify)
+   (add-hook 'after-init-hook #'global-emojify-mode)
+
+  (rune/leader-keys
+    "a"  '(:ignore t :which-key "Emojify") ;; I know a has no correlation but Im running out of space ok.
+    "ai" '(emojify-insert-emoji :which-key "Insert Emoji"))
+
+  (use-package unicode-fonts)
+
+#+end_src
+* Keybinds to open files
 ** Open Documents
 These keybindings will open some of my documents.
 #+begin_src elisp
@@ -978,18 +948,7 @@ These keybindings will open my system's config files.
     "cp" '((lambda() (interactive) (find-file "~/Dotfiles/Programs.org")) :which-key "Programs config"))
 
 #+end_src
-* Which key
-  
-#+begin_src elisp 
-  (use-package which-key
-    :init (which-key-mode)
-    :diminish which-key-mode
-    :config
-    (setq which-key-idle-delay 1))
-
-#+end_src
-
-* Mail
+* MU4E EMail Configuration
 ** Mu4e
   make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
 #+BEGIN_SRC elisp
@@ -1074,9 +1033,10 @@ These keybindings will open my system's config files.
 
 ** Mu4e-Alert
 #+BEGIN_SRC elisp
-   (use-package mu4e-alert)
-   (mu4e-alert-set-default-style 'libnotify)
-   (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+  (use-package mu4e-alert)
+  (mu4e-alert-enable-mode-line-display)
+  (mu4e-alert-set-default-style 'libnotify)
+  (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 
 #+END_SRC
    
@@ -1097,7 +1057,17 @@ These keybindings will open my system's config files.
 
   (add-hook 'message-send-hook 'org-mime-htmlize)
 #+END_SRC
-* Development
+* Development Configuration
+** Magit
+ #+BEGIN_SRC elisp
+   (use-package magit
+     :custom
+     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+   (rune/leader-keys
+     "m"  '(:ignore t :which-key "Magit")
+     "ms" '(magit-status :which-key "Magit Status"))
+ #+END_SRC
 ** Language servers
 
 #+BEGIN_SRC elisp
@@ -1279,26 +1249,59 @@ Setting up development in Javascript.
 
 #+END_SRC
 
-* VTerm
+** Tree
+   I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
+*** Neotree
+ The tree directory listing in Emacs.
+ #+begin_src elisp
+   ;; (use-package neotree)
+   ;; (setq neo-smart-open t
+   ;;       neo-window-fixed-size nil)
+   ;; (setq doom-neotree-enable-variable-pitch t)
+   ;; (rune/leader-keys
+   ;;   "n"  '(:ignore t :which-key "Neotree")
+   ;;   "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
+   ;;   "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
+
+ #+end_src
+*** Org-Sidebar
+ #+BEGIN_SRC elisp
+   ;; (use-package org-sidebar)
+
+   ;; (rune/leader-keys
+   ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
+
+ #+END_SRC
+* Terminal Configurations
+** VTerm
+ #+BEGIN_SRC elisp
+   (use-package vterm
+     :after evil-collection
+     :commands vterm
+     :config
+     (setq vterm-max-scrollback 10000)
+     (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
+
+   (rune/leader-keys
+     "v" '(vterm :which-key "launch vterm"))
+
+  (global-set-key (kbd "s-v") 'vterm)
+ #+END_SRC
+** Eshell
 #+BEGIN_SRC elisp
-  (use-package vterm
-    :after evil-collection
-    :commands vterm
-    :config
-    (setq vterm-max-scrollback 10000)
-    (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
-
-
   (rune/leader-keys
-    "v" '(vterm :which-key "launch vterm"))
+  "e"  '(:ignore t :which-key "Eshell")
+  "es" '(eshell :which-key "Launch Eshell")
+  "eh" '(counsel-esh-history :which-key "Eshell History"))
 
-#+END_SRC
-* Password Manager
+ #+END_SRC 
+* Password Managment
 Uses the standard Unix password store "pass".
 
 #+begin_src elisp
   (use-package password-store)
 
+;; Used to access passwords through emacs using Emacs's server-mode
   (defun efs/lookup-password (&rest keys)
     (let ((result (apply #'auth-source-search keys)))
       (if result
@@ -1307,49 +1310,13 @@ Uses the standard Unix password store "pass".
 
 #+end_src
 
-* Magit
-#+BEGIN_SRC elisp
-  ;;     (use-package magit
-  ;;       :custom
-  ;;       (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-  ;; ;;    (use-package evil-magit
-  ;; ;;      :after magit)
-
-
-  (rune/leader-keys
-    "m"  '(:ignore t :which-key "Magit")
-    "ms" '(magit-status :which-key "Magit Status"))
-#+END_SRC
-* Hydra
-
-[[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
-#+BEGIN_SRC elisp
-
-  ;; change the text's scale if required
-  (defhydra hydra-zoom (global-map "<f6>")
-    "zoom"
-    ("g" text-scale-increase "in")
-    ("l" text-scale-decrease "out"))
-
-  ;; Window Management options
-  (defhydra hydra-window (global-map "<f2>")
-    "Window Management"
-    ("q" delete-window "delete window")
-    ("d" delete-other-windows "delete other windows")
-    ("," shrink-window-horizontally "shrink window horizontally")
-    ("." enlarge-window-horizontally "enlarge windows horizontally")
-    ("b" balance-windows "balance windows"))
-
-#+END_SRC 
-
-* Server
+* Emacs server-mode
 #+BEGIN_SRC elisp
   (server-start)
 
 #+END_SRC
 
-* Desktop.org
+* Load Desktop.org
   This loads EXWM and the rest of my system.
   #+BEGIN_SRC elisp
  (load-file "~/.emacs.d/desktop.el")
