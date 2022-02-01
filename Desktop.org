@@ -130,23 +130,29 @@
 #+END_SRC
 ** Polybar Panel
 #+BEGIN_SRC elisp
-    (defun poly/polybar-exwm-workspace ()
-      (pcase exwm-workspace-current-index
-	(0 "Dashboard")
-	(1 "Terminal")
-	(2 "Web Browser")
-	(3 "Videos")
-	(4 "Documentation")
-	(5 "Development")
-	(6 "Blender")
-	(7 "Chat")
-	(8 "Mu4e")
-	(9 "Mocp")))
+  (defun poly/polybar-exwm-workspace ()
+    (pcase exwm-workspace-current-index
+      (0 "Dashboard")
+      (1 "Terminal")
+      (2 "Web Browser")
+      (3 "Videos")
+      (4 "Documentation")
+      (5 "Development")
+      (6 "Blender")
+      (7 "Chat")
+      (8 "Mu4e")
+      (9 "Mocp")))
 
-    ;; Notifications when switching Desktops 
-    (add-hook 'exwm-workspace-switch-hook
-	      (lambda ()
-		  (message (poly/polybar-exwm-workspace))))
+  ;; Notifications when switching Desktops 
+  ;; (add-hook 'exwm-workspace-switch-hook
+  ;; 	  (lambda ()
+  ;; 	      (message (poly/polybar-exwm-workspace))))
+
+  ;; Command to find out what workspace this is
+  (defun exwm/which-workspace ()
+    (interactive)
+    (message (poly/polybar-exwm-workspace)))
+
 #+END_SRC
 ** use-package
 #+BEGIN_SRC elisp

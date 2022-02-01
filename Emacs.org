@@ -5,6 +5,7 @@
 - [[#about-this-config][About This Config]]
 - [[#note][Note]]
   - [[#replace-capslock-with-ctrl][Replace Capslock with CTRL]]
+- [[#tweak-garbage-collector][Tweak Garbage Collector]]
 - [[#package-system-setup][Package System Setup]]
   - [[#use-package][use-package]]
   - [[#straightel][straight.el]]
@@ -27,6 +28,7 @@
   - [[#modeline][Modeline]]
 - [[#general-configuration][General Configuration]]
   - [[#which-key][Which key]]
+  - [[#visual-bell][Visual Bell]]
   - [[#buffers][Buffers]]
   - [[#windows][Windows]]
   - [[#file-control][File control]]
@@ -40,7 +42,6 @@
 - [[#editing-files-configuration][Editing Files Configuration]]
   - [[#swiper][Swiper]]
   - [[#comment-lines][Comment Lines]]
-  - [[#yasnippet][YASnippet]]
   - [[#org][Org]]
 - [[#chatting-configuration][Chatting Configuration]]
   - [[#erc][ERC]]
@@ -53,6 +54,7 @@
   - [[#mu4e-alert][Mu4e-Alert]]
   - [[#org-mime][Org-mime]]
 - [[#development-configuration][Development Configuration]]
+  - [[#yasnippet][YASnippet]]
   - [[#magit][Magit]]
   - [[#language-servers][Language servers]]
   - [[#languages][Languages]]
@@ -66,6 +68,7 @@
 - [[#password-managment][Password Managment]]
 - [[#emacs-server-mode][Emacs server-mode]]
 - [[#load-desktoporg][Load Desktop.org]]
+- [[#garbage-collecter-hack][Garbage Collecter Hack]]
 
 * About This Config
   This is my Emacs configuration used in all of my Systems.
@@ -98,7 +101,13 @@
    #+BEGIN_SRC
    xmodmap ~/.Xmodmap
    #+end_src
+* Tweak Garbage Collector
+  This veriable will se set to normal at the end of my config.
+  #+BEGIN_SRC elisp
+    ;; The default is 800 kilobytes.  Measured in bytes.
+    (setq gc-cons-threshold (* 50 1000 1000))
 
+  #+END_SRC
 * Package System Setup
   Emacs has a built in package manager but it doesn’t make it easy to automatically install packages on a new system the first time you pull down your configuration.
   use-package is a really helpful package used in this configuration to make it a lot easier to automate the installation and configuration of everything else we use.
@@ -148,17 +157,11 @@ You can also use M-x auto-package-update-now to update right now!
 #+BEGIN_SRC elisp
 
   (use-package auto-package-update
-    :defer 10
-    :custom
-    (auto-package-update-interval 7)
-    (auto-package-update-prompt-before-update t)
-    (auto-package-update-hide-results t)
-    :config
-    (auto-package-update-maybe)
-    (auto-package-update-at-time "09:00"))
+    :defer 10)
 
 #+END_SRC
 * Startup Performance
+  Find out how long it had taken to load Emacs.
 #+BEGIN_SRC elisp
   (defun efs/display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
@@ -418,31 +421,31 @@ Improve scrolling.
 
 #+begin_src elisp
 
- ;; (use-package simple-modeline
- ;;   :hook (after-init . simple-modeline-mode))
+  ;; (use-package simple-modeline
+  ;;   :hook (after-init . simple-modeline-mode))
 
-    (use-package all-the-icons)
+  (use-package all-the-icons)
 
-    (use-package doom-modeline
-      :init (doom-modeline-mode 1)
-      :custom (doom-modeline-height 17)
-      :config 
-      (setq doom-modeline-lsp t)
-      (setq doom-modeline-buffer-encoding nil)
-      (setq doom-modeline-github nil)
-      (setq doom-modeline-project-detection 'auto)
-      (setq doom-modeline-number-limit 99)
-      (setq doom-modeline-mu4e t)
-      (setq doom-modeline-irc t)
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom (doom-modeline-height 17)
+    :config 
+    (setq doom-modeline-lsp t
+	  doom-modeline-buffer-encoding nil
+	  doom-modeline-github nil
+	  doom-modeline-project-detection 'auto
+	  doom-modeline-number-limit 99
+	  doom-modeline-mu4e t
+	  doom-modeline-irc t)
 
-      ;; Show the time and date in modeline
-      (setq display-time-day-and-date t)
-      ;; Enable the time & date in the modeline
-      (display-time-mode 1)
-      (setq display-time-string-forms '((format-time-string "%H:%M" now)))
-      ;; Format Date and time
-      (setq display-time-format "%l:%M %p %b %y"
-	    display-time-default-load-average nil))
+    ;; Show the time and date in modeline
+    (setq display-time-day-and-date t)
+    ;; Enable the time & date in the modeline
+    (display-time-mode 1)
+    (setq display-time-string-forms '((format-time-string "%H:%M" now)))
+    ;; Format Date and time
+    (setq display-time-format "%l:%M %p %b %y"
+	  display-time-default-load-average nil))
 
 #+end_src 
 
@@ -458,6 +461,11 @@ Improve scrolling.
      (setq which-key-idle-delay 1))
 
  #+end_src
+** Visual Bell
+   After ages of using Emacs I had just found out that the anoyying flashing I see all the time is just a variable called visible-bell.
+   #+BEGIN_SRC elisp
+(setq visible-bell nil)
+   #+END_SRC
 ** Buffers
 #+BEGIN_SRC elisp
   (rune/leader-keys
@@ -622,18 +630,6 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
   (rune/leader-keys
   "TAB" '(comment-region :which-key "comment lines"))
 #+END_SRC
-** YASnippet
- #+begin_src elisp
-   (use-package yasnippet
-     :config
-     (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-     (yas-global-mode 1))
-
-
-   (rune/leader-keys
-     "y"  '(:ignore t :which-key "Yasnippet")
-     "yn" '(yas-new-snippet :which-key "yas-new-snippet"))
- #+end_src
 ** Org
 
    Here consists configs for:
@@ -880,22 +876,20 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 	erc-quit-reason (lambda (s) (or s "Ejecting the cyberspace"))
 	erc-track-visibility nil) ;; Essential if using EXWM
 
-  (defun chat/connect-irc ()
-    (interactive)
-    (erc-tls
-     :server "irc.libera.chat"
-     :port 6697
-     :nick "Haider"))
+  ;;  (defun chat/connect-irc ()
+  ;;    (interactive)
+  ;;    (erc-tls
+  ;;     :server "irc.libera.chat"
+  ;;     :port 6697
+  ;;     :nick "Haider"))
 
   (use-package erc-hl-nicks
-    :ensure t
-    :after erc
+    :defer 10
     :config
     (add-to-list 'erc-modules 'hl-nicks))
 
   (use-package erc-image
-    :ensure t
-    :after erc
+    :defer 10
     :config
     (setq erc-image-inline-rescale 300)
     (add-to-list 'erc-modules 'image))
@@ -1043,11 +1037,11 @@ These keybindings will open my system's config files.
 ** Org-mime
 #+BEGIN_SRC elisp
   (use-package org-mime
-    :ensure t
+    :defer 10
     :config
     (setq org-mime-export-options '(:section-numbers nil
-             			    :with-author nil
-	        		    :with-toc nil)))
+						     :with-author nil
+						     :with-toc nil)))
 
   (add-hook 'org-mime-html-hook
 	    (lambda ()
@@ -1058,9 +1052,23 @@ These keybindings will open my system's config files.
   (add-hook 'message-send-hook 'org-mime-htmlize)
 #+END_SRC
 * Development Configuration
+** YASnippet
+ #+begin_src elisp
+   (use-package yasnippet
+     :defer 10
+     :config
+     (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+     (yas-global-mode 1))
+
+
+   (rune/leader-keys
+     "y"  '(:ignore t :which-key "Yasnippet")
+     "yn" '(yas-new-snippet :which-key "yas-new-snippet"))
+ #+end_src
 ** Magit
  #+BEGIN_SRC elisp
    (use-package magit
+     :defer 5
      :custom
      (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
@@ -1100,14 +1108,10 @@ These keybindings will open my system's config files.
 #+END_SRC
 
 ** Languages
-*** Javascript and Typescript
+*** Javascript
 Setting up development in Javascript.
 
 #+BEGIN_SRC elisp
-  (use-package typescript-mode
-    :mode "\\.ts\\'"
-    :config
-    (setq typescript-indent-level 2))
 
   (defun dw/set-js-indentation ()
     (setq js-indent-level 2)
@@ -1129,11 +1133,12 @@ Setting up development in Javascript.
 
 
   (use-package apheleia
+    :defer 10
     :config
     (apheleia-global-mode +1))
 
   (use-package prettier-js
-    :ensure t
+    :defer 10
     ;; :hook ((js2-mode . prettier-js-mode)
     ;;        (typescript-mode . prettier-js-mode))
     :config
@@ -1141,22 +1146,23 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** ELisp
-#+BEGIN_SRC elisp
+     #+BEGIN_SRC elisp
 
-  (rune/leader-keys
-  "e"  '(:ignore t :which-key "E-Lisp")
-  "eb" '(eval-buffer :which-key "Evaluate elisp in buffer")
-  "ed" '(eval-defun :which-key "Evaluate defun")
-  "ee" '(eval-expression :which-key "Evaluate elisp expression")
-  "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
-  "er" '(eval-region :which-key "Evaluate elisp in region"))
+       (rune/leader-keys
+	 "e"  '(:ignore t :which-key "E-Lisp")
+	 "eb" '(eval-buffer :which-key "Evaluate elisp in buffer")
+	 "ed" '(eval-defun :which-key "Evaluate defun")
+	 "ee" '(eval-expression :which-key "Evaluate elisp expression")
+	 "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
+	 "er" '(eval-region :which-key "Evaluate elisp in region"))
 
-#+END_SRC
+	 #+END_SRC
 *** C/C++
 #+BEGIN_SRC elisp
   (use-package ccls
+    :defer 5
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
-           (lambda () (require 'ccls) (lsp))))
+	   (lambda () (require 'ccls) (lsp))))
 
 #+END_SRC
 *** Rust
@@ -1193,15 +1199,17 @@ Setting up development in Javascript.
 
   ;; 1. Start the server with `httpd-start'
   ;; 2. Use `impatient-mode' on any buffer
-  (use-package impatient-mode)
+  (use-package impatient-mode
+    :defer 5)
 
-  (use-package skewer-mode)
+  (use-package skewer-mode
+    :defer 5)
 
   ;; Run the webserver with command:
   ;; M-x httpd-serve-directory 
 
   (use-package simple-httpd
-    :ensure t)
+    :defer 5)
 
 #+END_SRC
 *** YAML
@@ -1299,14 +1307,15 @@ Setting up development in Javascript.
 Uses the standard Unix password store "pass".
 
 #+begin_src elisp
-  (use-package password-store)
+    (use-package password-store
+      :defer 0)
 
-;; Used to access passwords through emacs using Emacs's server-mode
-  (defun efs/lookup-password (&rest keys)
-    (let ((result (apply #'auth-source-search keys)))
-      (if result
-	  (funcall (plist-get (car result) :secret))
-	nil)))
+  ;; Used to access passwords through emacs using Emacs's server-mode
+    (defun efs/lookup-password (&rest keys)
+      (let ((result (apply #'auth-source-search keys)))
+	(if result
+	    (funcall (plist-get (car result) :secret))
+	  nil)))
 
 #+end_src
 
@@ -1320,4 +1329,10 @@ Uses the standard Unix password store "pass".
   This loads EXWM and the rest of my system.
   #+BEGIN_SRC elisp
  (load-file "~/.emacs.d/desktop.el")
+  #+END_SRC
+
+* Garbage Collecter Hack
+  #+BEGIN_SRC elisp
+    ;; Make gc pauses faster by decreasing the threshold.
+    (setq gc-cons-threshold (* 2 1000 1000))
   #+END_SRC
