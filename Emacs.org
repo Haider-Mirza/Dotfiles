@@ -28,7 +28,6 @@
   - [[#modeline][Modeline]]
 - [[#general-configuration][General Configuration]]
   - [[#which-key][Which key]]
-  - [[#visual-bell][Visual Bell]]
   - [[#buffers][Buffers]]
   - [[#windows][Windows]]
   - [[#file-control][File control]]
@@ -362,8 +361,8 @@ Make the User interface more minimal.
 
   (menu-bar-mode -1)            ; Disable the menu bar
 
-  ;; Set up the visible bell
-  (setq visible-bell t)
+  ;; Disable this anoyying visible bell
+  (setq visible-bell nil)
 
 #+end_src
 
@@ -461,11 +460,6 @@ Improve scrolling.
      (setq which-key-idle-delay 1))
 
  #+end_src
-** Visual Bell
-   After ages of using Emacs I had just found out that the anoyying flashing I see all the time is just a variable called visible-bell.
-   #+BEGIN_SRC elisp
-(setq visible-bell nil)
-   #+END_SRC
 ** Buffers
 #+BEGIN_SRC elisp
   (rune/leader-keys
