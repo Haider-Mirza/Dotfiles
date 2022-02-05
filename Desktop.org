@@ -254,8 +254,7 @@
 
       (defun exwm/run-alacritty ()
 	(exwm/run-in-background "alacritty")
-	(message "Launching Alacritty")
-	(exwm-workspace-switch-create 1))
+	(message "Launching Alacritty"))
 
       (defun exwm/run-mocp ()
 	(exwm/run-in-background "alacritty -e mocp")

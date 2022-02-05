@@ -1,8 +1,11 @@
+:REVEAL_PROPERTIES:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_REVEAL_JS_VERSION: 4
+:END:
 #+TITLE: =Emacs configuration=
 #+PROPERTY: header-args:elisp :tangle /home/haider/.emacs.d/init.el
 #+AUTHOR: Haider Mirza
 * Table of contents :toc:
-- [[#about-this-config][About This Config]]
 - [[#note][Note]]
   - [[#replace-capslock-with-ctrl][Replace Capslock with CTRL]]
 - [[#tweak-garbage-collector][Tweak Garbage Collector]]
@@ -60,7 +63,9 @@
   - [[#smart-parens][Smart Parens]]
   - [[#company-mode][Company mode]]
   - [[#compilation][Compilation]]
+  - [[#flycheck][Flycheck]]
   - [[#tree][Tree]]
+  - [[#debugging][Debugging]]
 - [[#terminal-configurations][Terminal Configurations]]
   - [[#vterm][VTerm]]
   - [[#eshell][Eshell]]
@@ -68,10 +73,6 @@
 - [[#emacs-server-mode][Emacs server-mode]]
 - [[#load-desktoporg][Load Desktop.org]]
 - [[#garbage-collecter-hack][Garbage Collecter Hack]]
-
-* About This Config
-  This is my Emacs configuration used in all of my Systems.
-  This is *VERY* heavily customised for my workflow and therefore not recommended as a drop-in replacement for your config.
 
 * Note
 ** Replace Capslock with CTRL
@@ -101,7 +102,7 @@
    xmodmap ~/.Xmodmap
    #+end_src
 * Tweak Garbage Collector
-  This veriable will se set to normal at the end of my config.
+  This variable will set to normal at the end of my config.
   #+BEGIN_SRC elisp
     ;; The default is 800 kilobytes.  Measured in bytes.
     (setq gc-cons-threshold (* 50 1000 1000))
@@ -310,6 +311,7 @@ You can also use M-x auto-package-update-now to update right now!
 ** Load Theme
    Note That I use my own custom theme
 #+begin_src elisp
+  (load-theme 'sanityinc-tomorrow-bright t)
   (load-theme 'haider t)
 
   (rune/leader-keys
@@ -359,7 +361,7 @@ Make the User interface more minimal.
   (tooltip-mode -1)           ; Disable tooltips
   (set-fringe-mode 10)        ; Give some breathing room
 
-  (menu-bar-mode -1)            ; Disable the menu bar
+  (menu-bar-mode -1)          ; Disable the menu bar
 
   ;; Disable this anoyying visible bell
   (setq visible-bell nil)
@@ -500,7 +502,7 @@ Improve scrolling.
 
 
    (rune/leader-keys
-   "r" '(counsel-recentf :which-key "Recent files"))
+   "t" '(counsel-recentf :which-key "Recent files"))
 
  #+END_SRC
 ** Interactions
@@ -718,7 +720,6 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       (add-hook 'org-mode-hook 'toc-org-mode)
 
   #+END_SRC
- 
 *** ox-pandoc
     Expand org-mode's exporting capabilities
     Make sure the pandoc is installed on your system.
@@ -756,6 +757,8 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 		   :todo "TODO")
 	    (:name "WORK"
 		   :todo "WORK")
+	    (:name "COMPLETED"
+		   :todo "COMPLETED")
 	    (:name "Due Soon"
 		   :deadline future)))
 
@@ -807,7 +810,7 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
    ;;   :init
    ;;   (setq org-roam-v2-ack t)
    ;;   :custom
-   ;;   (org-roam-directory "~/RoamNotes")
+   ;;   (org-roam-directory "~/Notes/")
    ;;   (org-roam-completion-everywhere t)
 
    ;;   (org-roam-capture-templates
@@ -1052,6 +1055,9 @@ These keybindings will open my system's config files.
      :defer 10
      :config
      (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+     (yas-reload-all)
+     (add-hook 'prog-mode-hook 'yas-minor-mode)
+     (add-hook 'text-mode-hook 'yas-minor-mode)
      (yas-global-mode 1))
 
 
@@ -1073,13 +1079,27 @@ These keybindings will open my system's config files.
 ** Language servers
 
 #+BEGIN_SRC elisp
+  
   (use-package lsp-mode
+    :ensure
     :commands lsp
-    :hook ((typescript-mode js2-mode web-mode) . lsp)
-    :bind (:map lsp-mode-map
-                ("TAB" . completion-at-point))
-    :custom (lsp-headerline-breadcrumb-enable nil))
+    :custom
+    ;; what to use when checking on-save. "check" is default, I prefer clippy
+    (lsp-rust-analyzer-cargo-watch-command "clippy")
+    (lsp-eldoc-render-all t)
+    (lsp-idle-delay 0.6)
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    :config
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
+  (use-package lsp-ui
+    :ensure
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-doc-enable nil))
+  
   (rune/leader-keys
     "l"  '(:ignore t :which-key "lsp")
     "ld" 'xref-find-definitions
@@ -1090,15 +1110,6 @@ These keybindings will open my system's config files.
     "le" 'lsp-ui-flycheck-list
     "lS" 'lsp-ui-sideline-mode
     "lX" 'lsp-execute-code-action)
-
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :config
-    (setq lsp-ui-sideline-enable t)
-    (setq lsp-ui-sideline-show-hover nil)
-    (setq lsp-ui-doc-position 'bottom)
-    (lsp-ui-doc-show))
-
 #+END_SRC
 
 ** Languages
@@ -1152,22 +1163,54 @@ Setting up development in Javascript.
 
 	 #+END_SRC
 *** C/C++
+Make sure you have ccls installed
 #+BEGIN_SRC elisp
   (use-package ccls
     :defer 5
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
 	   (lambda () (require 'ccls) (lsp))))
-
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
-  (use-package rust-mode
-    :mode "\\.rs\\'"
-    :init (setq rust-format-on-save t))
+  (use-package rustic
+    :ensure
+    :bind (:map rustic-mode-map
+		("M-j" . lsp-ui-imenu)
+		("M-?" . lsp-find-references)
+		("C-c C-c l" . flycheck-list-errors)
+		("C-c C-c a" . lsp-execute-code-action)
+		("C-c C-c r" . lsp-rename)
+		("C-c C-c q" . lsp-workspace-restart)
+		("C-c C-c Q" . lsp-workspace-shutdown)
+		("C-c C-c s" . lsp-rust-analyzer-status)
+		("C-c C-c e" . lsp-rust-analyzer-expand-macro)
+		("C-c C-c d" . dap-hydra)
+		("C-c C-c h" . lsp-ui-doc-glance))
+    :config
+    ;; uncomment for less flashiness
+    ;; (setq lsp-eldoc-hook nil)
+    ;; (setq lsp-enable-symbol-highlighting nil)
+    ;; (setq lsp-signature-auto-activate nil)
 
-  (use-package cargo
-    :defer t)
+    ;; comment to disable rustfmt on save
+    (setq rustic-format-on-save t)
+    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
+  (defun rk/rustic-mode-hook ()
+    ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+    ;; save rust buffers that are not file visiting. Once
+    ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+    ;; no longer be necessary.
+    (when buffer-file-name
+      (setq-local buffer-save-without-query t)))
+
+    (use-package rust-playground :ensure)
+
+    (use-package toml-mode :ensure)
+  
+  (rune/leader-keys
+    "r"  '(:ignore t :which-key "Rust")
+    "rr" 'cargo-process-run)
 #+END_SRC
 *** Scheme
 #+BEGIN_SRC elisp
@@ -1223,18 +1266,44 @@ Setting up development in Javascript.
 #+BEGIN_SRC elisp
   (use-package company
     :after lsp-mode
-    :hook (lsp-mode . company-mode)
-    :bind (:map company-active-map
-                ("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-          ("<tab>" . company-indent-or-complete-common))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0))
-
+    :bind
+    (:map company-active-map
+	  ("C-n". company-select-next)
+	  ("C-p". company-select-previous)
+	  ("M-<". company-select-first)
+	  ("M->". company-select-last)
+	  ("<tab>". tab-indent-or-complete)
+	  ("TAB". tab-indent-or-complete)))
+    
   (use-package company-box
     :hook (company-mode . company-box-mode))
 
+    (defun company-yasnippet-or-completion ()
+      (interactive)
+      (or (do-yas-expand)
+	  (company-complete-common)))
+
+    (defun check-expansion ()
+      (save-excursion
+	(if (looking-at "\\_>") t
+	  (backward-char 1)
+	  (if (looking-at "\\.") t
+	    (backward-char 1)
+	    (if (looking-at "::") t nil)))))
+
+    (defun do-yas-expand ()
+      (let ((yas/fallback-behavior 'return-nil))
+	(yas/expand)))
+
+    (defun tab-indent-or-complete ()
+      (interactive)
+      (if (minibufferp)
+	  (minibuffer-complete)
+	(if (or (not yas/minor-mode)
+		(null (do-yas-expand)))
+	    (if (check-expansion)
+		(company-complete-common)
+	      (indent-for-tab-command)))))
 #+END_SRC 
 
 ** Compilation
@@ -1250,7 +1319,10 @@ Setting up development in Javascript.
       (add-hook 'after-save-hook #'recompile nil t)))
 
 #+END_SRC
-
+** Flycheck
+#+BEGIN_SRC elisp
+(use-package flycheck :ensure)
+#+END_SRC
 ** Tree
    I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
 *** Neotree
@@ -1274,6 +1346,36 @@ Setting up development in Javascript.
    ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
 
  #+END_SRC
+** Debugging
+dap-mode
+#+BEGIN_SRC elisp
+
+  (use-package exec-path-from-shell
+    :ensure
+    :init (exec-path-from-shell-initialize))
+
+  (when (executable-find "lldb-mi")
+    (use-package dap-mode
+      :ensure
+      :config
+      (dap-ui-mode)
+      (dap-ui-controls-mode 1)
+
+      (require 'dap-lldb)
+      (require 'dap-gdb-lldb)
+      ;; installs .extension/vscode
+      (dap-gdb-lldb-setup)
+      (dap-register-debug-template
+       "Rust::LLDB Run Configuration"
+       (list :type "lldb"
+	     :request "launch"
+	     :name "LLDB::Run"
+	     :gdbpath "rust-lldb"
+	     ;; uncomment if lldb-mi is not in PATH
+	     ;; :lldbmipath "path/to/lldb-mi"
+	     ))))
+#+END_SRC
+	   
 * Terminal Configurations
 ** VTerm
  #+BEGIN_SRC elisp

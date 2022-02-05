@@ -18,6 +18,7 @@
   (use-modules (gnu packages certs))
   (use-modules (gnu packages mail))
   (use-modules (gnu packages vim))
+  (use-modules (gnu packages gcc))
   (use-service-modules
    cups
    desktop
@@ -57,11 +58,11 @@
 		      ;; Window Manager
 		      emacs emacs-exwm emacs-desktop-environment
 		      ;; Emacs Packages
+		      gcc
+		      emacs-org-roam
 		      emacs-guix
+		      emacs-org-reveal
 		      mu
-		      emacs-ement
-		      emacs-plz
-		      emacs-ccls
 		      emacs-company-lsp
 		      ;; terminal emulator
 		      xterm
