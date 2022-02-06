@@ -634,7 +634,11 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
    - Org Mode
    - Org Agenda
    - Org Roam
-    
+   - Org pandoc
+   - Org reveal
+   - Org superstar
+   - Org appear
+     
 *** OrgMode Main config
   #+begin_src elisp
     (use-package prettier)
@@ -644,6 +648,7 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       "oa" '(org-agenda :which-key "View Org-Agenda")
       "oT" '(org-time-stamp-inactive :which-key "Org Timestamp")
       "ol" '(org-agenda-list :which-key "View Org-Agendalist")
+      "oL" '(org-insert-link :which-key "View Org-Agendalist")
       "ot" '(org-babel-tangle :which-key "Tangle Document")
       "ox" '(org-export-dispatch :which-key "Export Document")
       "od" '(org-deadline :which-key "Deadline")
@@ -732,6 +737,18 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
  #+BEGIN_SRC elisp
     (use-package ox-pandoc)
  #+END_SRC
+*** org-appear
+ #+BEGIN_SRC elisp
+(use-package org-appear
+  :commands (org-appear-mode)
+  :hook (org-mode . org-appear-mode)
+  :init
+  (setq org-hide-emphasis-markers t) ;; A default setting that needs to be t for org-appear
+
+  (setq org-appear-autoemphasis t)  ;; Enable org-appear on emphasis (bold, italics, etc)
+  (setq org-appear-autolinks t) ;; Enable on links
+  (setq org-appear-autosubmarkers t)) ;; Enable on subscript and superscript
+ #+END_SRC
 *** ox-reveal
 Export Orgmode to presentations.
 This Emacs file has been installed by Guix.
@@ -775,21 +792,21 @@ https://revealjs.com/fragments/
 
     (setq org-agenda-span 'day)
     (setq org-super-agenda-groups
-	  '((:name "important"
+	  '((:name "Important"
 		   :priority "a")
-	    (:name "overdue"
-		   :deadline past)
-	    (:name "due today"
+	    (:name "Due today"
 		   :deadline today)
-	    (:name "next items"
+	    (:name "Overdue"
+		   :deadline past)
+	    (:name "Next items"
 		   :todo "next")
-	    (:name "todo"
+	    (:name "Todo"
 		   :todo "todo")
-	    (:name "work"
+	    (:name "Work"
 		   :todo "work")
-	    (:name "completed"
+	    (:name "Completed"
 		   :todo "completed")
-	    (:name "due soon"
+	    (:name "Due soon"
 		   :deadline future)))
 
   #+end_src
@@ -833,7 +850,7 @@ https://revealjs.com/fragments/
  #+END_SRC
 
 *** OrgRoam
- I dont even use Org roam much anymore. But this is still there.
+If OrgRoam is setup on this system, you can click here for more information: [[id:8317049b-5a2b-4176-9d39-111f310061c7][Org Roam]]
  #+begin_src elisp
    ;; (use-package org-roam
    ;;   :ensure t
@@ -867,13 +884,23 @@ https://revealjs.com/fragments/
    ;;   (require 'org-roam-dailies) ;; Ensure the keymap is available
    ;;   (org-roam-db-autosync-mode))
 
-   ;; (rune/leader-keys
-   ;;   "or"  '(:ignore t :which-key "Org-Roam")
-   ;;   "ori" '(org-roam-node-insert :which-key "Insert")
-   ;;   "ord"  '(:ignore t :which-key "Dailies")
-   ;;   "ordd" '(org-roam-dailies-goto-today :which-key "Today")
-   ;;   "ort" '(org-roam-buffer-toggle :which-key "Toggle")
-   ;;   "orf" '(org-roam-node-find :which-key "Find"))
+   (use-package org-roam
+     :ensure t
+     :init
+     (setq org-roam-v2-ack t)
+     :custom
+     (org-roam-directory "~/Notes/OrgRoam")
+     :config
+     (org-roam-setup))
+
+   (rune/leader-keys
+     "or"  '(:ignore t :which-key "Org-Roam")
+     "orc" '(org-roam-capture :which-key "Capture")
+     "ori" '(org-roam-node-insert :which-key "Insert")
+     "orf" '(org-roam-node-find :which-key "Find")
+     "ort" '(org-roam-buffer-toggle :which-key "Toggle")
+     "ord"  '(:ignore t :which-key "Dailies")
+     "ordd" '(org-roam-dailies-goto-today :which-key "Today"))
 
  #+end_src
 * Chatting Configuration
