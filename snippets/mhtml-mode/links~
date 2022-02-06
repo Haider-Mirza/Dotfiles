@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name:link 
+# key: <h
+# --
+<a href='${1:URL}'>${0:Link Text}</a>

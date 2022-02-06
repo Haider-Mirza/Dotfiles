@@ -1,10 +1,7 @@
-:REVEAL_PROPERTIES:
-#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
-#+REVEAL_REVEAL_JS_VERSION: 4
-:END:
 #+TITLE: =Emacs configuration=
 #+PROPERTY: header-args:elisp :tangle /home/haider/.emacs.d/init.el
 #+AUTHOR: Haider Mirza
+
 * Table of contents :toc:
 - [[#note][Note]]
   - [[#replace-capslock-with-ctrl][Replace Capslock with CTRL]]
@@ -249,6 +246,7 @@ You can also use M-x auto-package-update-now to update right now!
 #+end_src
 
 ** Haider Theme
+I had used this before I switched back to doom-one
  #+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/haider-theme.el"
    (require 'autothemer)
 
@@ -311,11 +309,14 @@ You can also use M-x auto-package-update-now to update right now!
 ** Load Theme
    Note That I use my own custom theme
 #+begin_src elisp
-  (load-theme 'sanityinc-tomorrow-bright t)
-  (load-theme 'haider t)
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-one t))
 
-  (rune/leader-keys
-    "st" '(counsel-load-theme :which-key "choose theme"))
+    (rune/leader-keys
+      "st" '(counsel-load-theme :which-key "choose theme"))
 #+end_src
 
 ** Dashboard
@@ -450,6 +451,7 @@ Improve scrolling.
 
 #+end_src 
 
+x-re
 * General Configuration
 ** Which key
   
@@ -635,9 +637,12 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
     
 *** OrgMode Main config
   #+begin_src elisp
+    (use-package prettier)
+    
     (rune/leader-keys
       "o"  '(:ignore t :which-key "Org")
       "oa" '(org-agenda :which-key "View Org-Agenda")
+      "oT" '(org-time-stamp-inactive :which-key "Org Timestamp")
       "ol" '(org-agenda-list :which-key "View Org-Agendalist")
       "ot" '(org-babel-tangle :which-key "Tangle Document")
       "ox" '(org-export-dispatch :which-key "Export Document")
@@ -679,6 +684,13 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       (setq org-log-done 'time)
       (setq org-log-into-drawer t)
 
+      (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
+      (setq org-startup-folded t) ;; Org files start up folded by default
+      (setq org-image-actual-width nil)
+
+      (setq org-list-demote-modify-bullet
+      '(("+" . "*") ("*" . "-") ("-" . "+")))
+
       (setq org-agenda-files
 	    '("~/Documents/Home/Reminders.org"
 	      "~/Documents/Home/TODO.org"
@@ -701,12 +713,6 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       ;; Save Org buffers after refiling!
       (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-      ;; (setq org-agenda-custom-commands
-      ;; 	'(("n" "Next Tasks"
-      ;; 	    ((todo "TODO"
-      ;; 	     ((org-agenda-overriding-header "Next Tasks")))))))
-
-
       (org/org-font-setup))
 
     (use-package org-bullets
@@ -716,8 +722,8 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       :custom
       (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-      (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
-      (add-hook 'org-mode-hook 'toc-org-mode)
+    (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+    (add-hook 'org-mode-hook 'toc-org-mode)
 
   #+END_SRC
 *** ox-pandoc
@@ -726,9 +732,33 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
  #+BEGIN_SRC elisp
     (use-package ox-pandoc)
  #+END_SRC
-*** Org-super-agenda
-    Configuring the Org-Agenda view.
-  #+BEGIN_SRC elisp
+*** ox-reveal
+Export Orgmode to presentations.
+This Emacs file has been installed by Guix.
+Here is my configuration; Place this at the top of your OrgMode document then export with *org export dispach*
+Here is the git repository https://github.com/yjwen/org-reveal/
+Documenation can also be found here: https://revealjs.com/
+**** main config
+#+begin_src fundamental
+:reveal_properties:
+#+reveal_root: https://cdn.jsdelivr.net/npm/reveal.js
+#+reveal_reveal_js_version: 4
+#+reveal_theme: serif
+#+options: timestamp:nil toc:1 num:nil
+:end:
+#+end_src
+**** every line per space
+https://revealjs.com/fragments/
+#+begin_src fundamental
+#+aatr_reveal: :frag (appear)
+#+end_src
+**** images
+#+begin_src fundamental
+#+aatr_html: :width 45% :align center
+#+end_src
+*** org-super-agenda
+    configuring the org-agenda view.
+  #+begin_src elisp
 
     (use-package org-super-agenda
       :after org
@@ -745,21 +775,21 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 
     (setq org-agenda-span 'day)
     (setq org-super-agenda-groups
-	  '((:name "Important"
-		   :priority "A")
-	    (:name "Overdue"
+	  '((:name "important"
+		   :priority "a")
+	    (:name "overdue"
 		   :deadline past)
-	    (:name "Due Today"
+	    (:name "due today"
 		   :deadline today)
-	    (:name "Next Items"
-		   :todo "NEXT")
-	    (:name "TODO"
-		   :todo "TODO")
-	    (:name "WORK"
-		   :todo "WORK")
-	    (:name "COMPLETED"
-		   :todo "COMPLETED")
-	    (:name "Due Soon"
+	    (:name "next items"
+		   :todo "next")
+	    (:name "todo"
+		   :todo "todo")
+	    (:name "work"
+		   :todo "work")
+	    (:name "completed"
+		   :todo "completed")
+	    (:name "due soon"
 		   :deadline future)))
 
   #+end_src
@@ -1060,6 +1090,8 @@ These keybindings will open my system's config files.
      (add-hook 'text-mode-hook 'yas-minor-mode)
      (yas-global-mode 1))
 
+   (require 'warnings)
+   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
    (rune/leader-keys
      "y"  '(:ignore t :which-key "Yasnippet")
