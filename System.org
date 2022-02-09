@@ -55,9 +55,9 @@
 		  %base-user-accounts))
 
    (packages (append (list
-		      ;; Window Manager
-		      emacs emacs-exwm emacs-desktop-environment
-		      ;; Emacs Packages
+		      emacs
+		      emacs-exwm
+		      emacs-desktop-environment
 		      gcc
 		      emacs-org-roam
 		      emacs-guix

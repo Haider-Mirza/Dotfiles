@@ -111,21 +111,22 @@
    
 #+BEGIN_SRC elisp
 
-    (defun exwm/exwm-init-hook ()
-      (exwm/run-in-background "dunst"))                      ;; Launch Dunst
+  (defun exwm/exwm-init-hook ()
+    (exwm-workspace-switch-create 1)
+    (exwm/run-in-background "dunst"))                      ;; Launch Dunst
 
-    (defun exwm/configure-window-by-class ()
-      (interactive)
-      (pcase exwm-class-name
-	("qutebrowser" (exwm-workspace-move-window 2))
-	("firefox" (exwm-workspace-move-window 2))
-	("blender" (exwm-workspace-move-window 6))
-	("mpv" (exwm-workspace-move-window 3))))
+  (defun exwm/configure-window-by-class ()
+    (interactive)
+    (pcase exwm-class-name
+      ("qutebrowser" (exwm-workspace-move-window 2))
+      ("firefox" (exwm-workspace-move-window 2))
+      ("blender" (exwm-workspace-move-window 6))
+      ("mpv" (exwm-workspace-move-window 3))))
 
-    ;; Hide the modeline on all floating windows
-    (add-hook 'exwm-floating-setup-hook
-	      (lambda ()
-		(exwm-layout-hide-mode-line)))
+  ;; Hide the modeline on all floating windows
+  (add-hook 'exwm-floating-setup-hook
+	    (lambda ()
+	      (exwm-layout-hide-mode-line)))
 
 #+END_SRC
 ** Polybar Panel
