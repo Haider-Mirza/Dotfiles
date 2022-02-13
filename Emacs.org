@@ -716,7 +716,6 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 	    '((sequence
 	       "TODO(t)"
 	       "WORK(w)"
-	       "NEXT(n)"
 	       "DEV(d)"
 	       "RESEARCH(r)"
 	       "HOLD(h)"
@@ -808,16 +807,12 @@ https://revealjs.com/fragments/
 		   :deadline today)
 	    (:name "Overdue"
 		   :deadline past)
-	    (:name "Next items"
-		   :todo "next")
-	    (:name "Todo"
-		   :todo "todo")
-	    (:name "Work"
-		   :todo "work")
+	    (:name "Things todo"
+		   :todo "TODO")
+	    (:name "School work"
+		   :todo "WORK")
 	    (:name "Completed"
-		   :todo "completed")
-	    (:name "Due soon"
-		   :deadline future)))
+		   :todo "COMPLETED")))
 
   #+end_src
 
@@ -831,7 +826,6 @@ https://revealjs.com/fragments/
      (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
                                              ("WORK" . 9744)
                                              ("DEV" . 9744)
-                                             ("NEXT" . 9744)
                                              ("RESEARCH" . 9744)
                                              ("HOLD" . 9744)
                                              ("PLAN" . 9744)
