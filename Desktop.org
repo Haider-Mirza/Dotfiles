@@ -121,6 +121,7 @@
       ("qutebrowser" (exwm-workspace-move-window 2))
       ("firefox" (exwm-workspace-move-window 2))
       ("blender" (exwm-workspace-move-window 6))
+      ("Testing GLFW" (exwm-floating-toggle-floating)) ;; Testing GLFW so I made it float when launched 
       ("mpv" (exwm-workspace-move-window 3))))
 
   ;; Hide the modeline on all floating windows

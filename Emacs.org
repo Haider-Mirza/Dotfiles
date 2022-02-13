@@ -465,6 +465,15 @@ x-re
 
  #+end_src
 ** Buffers
+*** Perspective.el
+#+BEGIN_SRC elisp
+(use-package perspective
+  :ensure t
+  :init
+  (persp-mode))
+
+#+END_SRC
+*** Keybinds
 #+BEGIN_SRC elisp
   (rune/leader-keys
   "b"  '(:ignore t :which-key "Buffers")
@@ -496,15 +505,16 @@ x-re
 
 #+END_SRC
 ** Recentf
-   Save recent files list periodically, when emacs has been idle for a while, because it will otherwise not be saved when emacs runs in server mode.
  #+BEGIN_SRC elisp
-    (run-with-idle-timer 600 t (lambda ()
-				(let ((save-silently t))
-				 (recentf-save-list))))
 
+   (recentf-mode 1)
+   (setq recentf-max-menu-items 25)
+   (setq recentf-max-saved-items 25)
+
+   (run-at-time nil (* 5 60) 'recentf-save-list)
 
    (rune/leader-keys
-   "t" '(counsel-recentf :which-key "Recent files"))
+     "t" '(counsel-recentf :which-key "Recent files"))
 
  #+END_SRC
 ** Interactions
