@@ -39,6 +39,7 @@
   - [[#hydra][Hydra]]
 - [[#keep-directories-clean][Keep Directories Clean]]
 - [[#editing-files-configuration][Editing Files Configuration]]
+  - [[#flyspell][Flyspell]]
   - [[#swiper][Swiper]]
   - [[#comment-lines][Comment Lines]]
   - [[#org][Org]]
@@ -629,6 +630,12 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 #+END_SRC
 
 * Editing Files Configuration
+** Flyspell
+Unlike everyone, I cant spell properly so I added this small code that launched flyspell-mode when opening a org-mode document.
+#+BEGIN_SRC elisp
+(dolist (hook '(org-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+#+END_SRC
 ** Swiper
    #+BEGIN_SRC elisp
   (global-set-key (kbd "C-s-s") 'swiper)
