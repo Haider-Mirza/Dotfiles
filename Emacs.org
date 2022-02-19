@@ -56,14 +56,13 @@
 - [[#development-configuration][Development Configuration]]
   - [[#yasnippet][YASnippet]]
   - [[#magit][Magit]]
-  - [[#language-servers][Language servers]]
+  - [[#lsp-mode][Lsp-mode]]
   - [[#languages][Languages]]
   - [[#smart-parens][Smart Parens]]
   - [[#company-mode][Company mode]]
   - [[#compilation][Compilation]]
   - [[#flycheck][Flycheck]]
   - [[#tree][Tree]]
-  - [[#debugging][Debugging]]
 - [[#terminal-configurations][Terminal Configurations]]
   - [[#vterm][VTerm]]
   - [[#eshell][Eshell]]
@@ -632,9 +631,10 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 * Editing Files Configuration
 ** Flyspell
 Unlike everyone, I cant spell properly so I added this small code that launched flyspell-mode when opening a org-mode document.
+I have disabled it as it can be anoyying.
 #+BEGIN_SRC elisp
-(dolist (hook '(org-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
+  ;; (dolist (hook '(org-mode-hook))
+  ;;   (add-hook hook (lambda () (flyspell-mode 1))))
 #+END_SRC
 ** Swiper
    #+BEGIN_SRC elisp
@@ -1146,7 +1146,7 @@ These keybindings will open my system's config files.
      "m"  '(:ignore t :which-key "Magit")
      "ms" '(magit-status :which-key "Magit Status"))
  #+END_SRC
-** Language servers
+** Lsp-mode
 
 #+BEGIN_SRC elisp
   
@@ -1181,7 +1181,6 @@ These keybindings will open my system's config files.
     "lS" 'lsp-ui-sideline-mode
     "lX" 'lsp-execute-code-action)
 #+END_SRC
-
 ** Languages
 *** Javascript
 Setting up development in Javascript.
@@ -1416,36 +1415,6 @@ Make sure you have ccls installed
    ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
 
  #+END_SRC
-** Debugging
-dap-mode
-#+BEGIN_SRC elisp
-
-  (use-package exec-path-from-shell
-    :ensure
-    :init (exec-path-from-shell-initialize))
-
-  (when (executable-find "lldb-mi")
-    (use-package dap-mode
-      :ensure
-      :config
-      (dap-ui-mode)
-      (dap-ui-controls-mode 1)
-
-      (require 'dap-lldb)
-      (require 'dap-gdb-lldb)
-      ;; installs .extension/vscode
-      (dap-gdb-lldb-setup)
-      (dap-register-debug-template
-       "Rust::LLDB Run Configuration"
-       (list :type "lldb"
-	     :request "launch"
-	     :name "LLDB::Run"
-	     :gdbpath "rust-lldb"
-	     ;; uncomment if lldb-mi is not in PATH
-	     ;; :lldbmipath "path/to/lldb-mi"
-	     ))))
-#+END_SRC
-	   
 * Terminal Configurations
 ** VTerm
  #+BEGIN_SRC elisp
