@@ -1008,6 +1008,8 @@ elpa https://elpa.gnu.org/
 gnu https://www.gnu.org/
 gu https://guix.gnu.org/
 guma https://guix.gnu.org/manual/en/guix.html
+mon https://monkeytype.com/login
+ed https://www.edclub.com/sportal/program-3.game
 #+END_SRC
 ** Scripts
 Here are some small scripts used in qutebrowser

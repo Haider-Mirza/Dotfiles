@@ -22,6 +22,7 @@
   - [[#dashboard][Dashboard]]
   - [[#minimal-visuals][Minimal Visuals]]
   - [[#center-documents][Center Documents]]
+  - [[#marginalia][Marginalia]]
   - [[#frame-transparency-and-maximize-windows][frame transparency and maximize windows.]]
   - [[#scrolling][Scrolling]]
   - [[#line-numbers][Line numbers]]
@@ -382,7 +383,10 @@ Center org-mode documents.
     :hook (org-mode . org/org-mode-visual-fill))
 
 #+end_src
-
+** Marginalia
+#+BEGIN_SRC elisp
+(marginalia-mode)
+#+END_SRC
 ** frame transparency and maximize windows. 
 #+BEGIN_SRC elisp
 
@@ -466,12 +470,49 @@ x-re
  #+end_src
 ** Buffers
 *** Perspective.el
+I dont really want to use it for now.
 #+BEGIN_SRC elisp
-(use-package perspective
-  :ensure t
-  :init
-  (persp-mode))
+  ;; (use-package perspective
+  ;;   :ensure t
+  ;;   :init
+  ;;   (persp-mode))
 
+  ;; (rune/leader-keys
+  ;;   "p"  '(:ignore t :which-key "Perspective")
+  ;;   "ps" '(persp-switch :which-key "Switch perspective")
+  ;;   "pn" '(persp-next :which-key "Switch to next perspective")
+  ;;   "pp" '(persp-prev :which-key "Switch to previous perspective")
+  ;;   "pa" '(persp-add-buffer :which-key "Add perspective")
+  ;;   "pS" '(persp-set-buffer :which-key "Set perspective"))
+#+END_SRC
+*** Bufler
+There is a org-roam note about this and possible errors: [[id:c2647c82-ae0a-4d26-aa62-706a6a8051d4][Bufler]] 
+It is possibly my favourite way of buffer management.
+#+BEGIN_SRC elisp
+  (use-package bufler)
+
+  (setf bufler-groups
+	(bufler-defgroups
+	  ;; Subgroup collecting all named workspaces.
+	  (group (auto-workspace))
+	  ;; Subgroup collecting buffers in a projectile project.
+	  (group (auto-projectile))
+	  ;; Grouping browser windows
+	  (group
+	   (group-or "Browsers"
+		     (name-match "Qutebrowser" (rx bos "Qutebrowser"))
+		     (name-match "Icecat" (rx bos "Icecat"))))
+	  (group
+	   ;; Subgroup collecting these "special special" buffers
+	   ;; separately for convenience.
+	   (name-match "**Special**"
+		       (rx bos "*" (or "Messages" "Warnings" "scratch" "Backtrace") "*")))
+	  ;; Group remaining buffers by major mode.
+	  (auto-mode)))
+
+  (rune/leader-keys
+    "p"  '(:ignore t :which-key "Bufler")
+    "ps" '(bufler-switch-buffer :which-key "Bufler switch buffers"))
 #+END_SRC
 *** Keybinds
 #+BEGIN_SRC elisp
@@ -934,8 +975,8 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 	erc-fill-static-center 20
 	erc-auto-query 'bury
 	erc-track-exclude '("#emacs")
-	erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
-	erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+	;; erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+	;; erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
 	erc-track-exclude-server-buffer t
 	erc-track-enable-keybindings t
 	erc-quit-reason (lambda (s) (or s "Ejecting the cyberspace"))
@@ -1076,6 +1117,7 @@ These keybindings will open my system's config files.
 
     (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
 
+    ;; Sign all of my emails with opengpg keys 
     (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
     (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
