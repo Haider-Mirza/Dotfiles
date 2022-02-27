@@ -810,7 +810,7 @@ plist_time				= blue		black
   save-position-on-quit
 
   # Limit the resolution of YouTube videos
-  # ytdl-format=bestvideo[height<=?1080]+bestaudio/best
+  ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 
   # Keep the player open after the file finishes
   keep-open

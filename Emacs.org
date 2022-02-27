@@ -340,7 +340,7 @@ I had used this before I switched back to doom-one
 #+END_SRC
 *** Emacs config
  #+BEGIN_SRC elisp
-   (setq initial-scratch-message (concat title "\n\nWelcome to Emacs,\n\nMake sure to launch xmodmap: (exwm/run-xmodmap)\nAlso make sure to check Org-Agenda"))
+   (setq initial-scratch-message (concat title "\n\nWelcome to Emacs,\n\nMake sure to launch xmodmap: (exwm/run-xmodmap)\nAlso make sure to check Org-Agenda and Org-Roam"))
 
       ;; (use-package dashboard
       ;;   :config

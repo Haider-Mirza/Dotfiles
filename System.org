@@ -46,8 +46,8 @@
 		  (user-account
 		   (name "hasan")
 		   (comment "Hasan Mirza")
-		   (password "")
 		   (group "users")
+		   (password "")
 		   (supplementary-groups
 		    '("audio"               
 		      "video"               
