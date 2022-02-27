@@ -13,6 +13,7 @@
   - [[#use-package][use-package]]
   - [[#keybinds][Keybinds]]
   - [[#launch-applications][Launch Applications]]
+  - [[#audio-control][Audio Control]]
   - [[#system-functions][System functions]]
 - [[#polybar][Polybar]]
   - [[#emacs][Emacs]]
@@ -26,6 +27,7 @@
   This is my desktop configuration for my system.
 * EXWM
   EXWM is my Window Manager That I use becuase It fits very well to my workflow and is highly keyboard-based. 
+  Make sure alsa-utils is installed.
 ** Window Mangement
 #+BEGIN_SRC elisp
   (defun win/position-window-left-corner ()
@@ -110,6 +112,7 @@
 
   (defun exwm/exwm-init-hook ()
     (exwm-workspace-switch-create 1)
+    (exwm/run-xmodmap)
     (exwm/run-in-background "dunst"))                      ;; Launch Dunst
 
   (defun exwm/configure-window-by-class ()
@@ -179,61 +182,64 @@
 #+END_SRC
 ** Keybinds
 #+BEGIN_SRC elisp
-      (setq exwm-input-prefix-keys
-	    '(?\C-x
-	      ?\C-u
-	      ?\C-h
-	      ?\M-x
-	      ?\M-`
-	      ?\M-&
-	      ?\s-q
-	      ?\s-f
-	      ?\M-:
-	      ?\C-\M-j  ;; Buffer list
-	      ?\C-\ ))  ;; Ctrl+Space
+  (setq exwm-input-prefix-keys
+	'(?\C-x
+	  ?\C-u
+	  ?\C-h
+	  ?\M-x
+	  ?\M-`
+	  ?\M-&
+	  ?\s-q
+	  ?\s-f
+	  ?\M-:
+	  ?\C-\M-j  ;; Buffer list
+	  ?\C-\ ))  ;; Ctrl+Space
 
-      (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+  (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-      ;; (exwm/bind-command
-      ;; "s-p" "playerctl play-pause"
-      ;; "s-[" "playerctl previous"
-      ;; "s-]" "playerctl next")
+  ;; (exwm/bind-command
+  ;; "s-p" "playerctl play-pause"
+  ;; "s-[" "playerctl previous"
+  ;; "s-]" "playerctl next")
 
-      ;; Set up global key bindings.  These always work, no matter the input state!
-      ;; Keep in mind that changing this list after EXWM initializes has no effect.
-      (setq exwm-input-global-keys
-	    `(
-	      ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-	      ([?\s-r] . exwm-reset)
-	      ([?\s-f] . exwm-layout-toggle-fullscreen)
-	      ([?\s-z] . exwm-layout-toggle-mode-line)
-	      ([?\s-b] . consult-buffer)
-	      ([?\s-n] . bufler-switch-buffer)
-	      ([?\s-x] . exwm-floating-toggle-floating)
-	      ([?\s-j] . win/position-window-left-corner)
-	      ([?\s-k] . win/position-window-right-corner)
-	      ([?\s-m] . exwm/mpv-float)
+  ;; Set up global key bindings.  These always work, no matter the input state!
+  ;; Keep in mind that changing this list after EXWM initializes has no effect.
+  (setq exwm-input-global-keys
+	`(
+	  ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+	  ([?\s-r] . exwm-reset)
+	  ([?\s-f] . exwm-layout-toggle-fullscreen)
+	  ([?\s-z] . exwm-layout-toggle-mode-line)
+	  ([?\s-b] . consult-buffer)
+	  ([\f6] . desktop-environment-toggle-mute)
+	  ([\f7] . desktop-environment-volume-decrement)
+	  ([\f8] . desktop-environment-volume-increment)
+	  ([?\s-n] . bufler-switch-buffer)
+	  ([?\s-x] . exwm-floating-toggle-floating)
+	  ([?\s-j] . win/position-window-left-corner)
+	  ([?\s-k] . win/position-window-right-corner)
+	  ([?\s-m] . exwm/mpv-float)
 
-	      ;; Launch applications via shell command
-	      ([?\s-&] . (lambda (command)
-			   (interactive (list (read-shell-command "$ ")))
-			   (start-process-shell-command command nil command)))
+	  ;; Launch applications via shell command
+	  ([?\s-&] . (lambda (command)
+		       (interactive (list (read-shell-command "$ ")))
+		       (start-process-shell-command command nil command)))
 
-	      ;; Switch workspace
-	      ([?\s-w] . exwm-workspace-switch)
+	  ;; Switch workspace
+	  ([?\s-w] . exwm-workspace-switch)
 
-	      ([?\s-E] . (lambda () (interactive) (dired "~")))
-	      ([?\s-Q] . (lambda () (interactive) (kill-buffer)))
+	  ([?\s-E] . (lambda () (interactive) (dired "~")))
+	  ([?\s-Q] . (lambda () (interactive) (kill-buffer)))
 
-	      ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-	      ,@(mapcar (lambda (i)
-			  `(,(kbd (format "s-%d" i)) .
-			    (lambda ()
-			      (interactive)
-			      (exwm-workspace-switch-create ,i))))
-			(number-sequence 0 9))))
+	  ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+	  ,@(mapcar (lambda (i)
+		      `(,(kbd (format "s-%d" i)) .
+			(lambda ()
+			  (interactive)
+			  (exwm-workspace-switch-create ,i))))
+		    (number-sequence 0 9))))
 
-      (exwm-enable))
+  (exwm-enable))
 
 #+END_SRC
 
@@ -300,6 +306,9 @@
 
     (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
 
+#+END_SRC
+** Audio Control
+#+BEGIN_SRC elisp
 #+END_SRC
 ** System functions
 #+BEGIN_SRC elisp

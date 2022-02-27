@@ -810,7 +810,7 @@ plist_time				= blue		black
   save-position-on-quit
 
   # Limit the resolution of YouTube videos
-  ytdl-format=bestvideo[height<=?1080]+bestaudio/best
+  # ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 
   # Keep the player open after the file finishes
   keep-open
@@ -870,9 +870,9 @@ c.fonts.statusbar = '10pt "Source Code Pro"'
 
 # Use dark mode where possible
 c.colors.webpage.preferred_color_scheme = "dark"
-c.colors.webpage.darkmode.enabled = True
-c.colors.webpage.darkmode.policy.images = "never"
-c.colors.webpage.bg = "black"
+# c.colors.webpage.darkmode.enabled = True
+# c.colors.webpage.darkmode.policy.images = "never"
+# c.colors.webpage.bg = "black"
 
 # Set Downloads Directory
 c.downloads.location.directory = '~/Downloads'
@@ -1010,6 +1010,9 @@ gu https://guix.gnu.org/
 guma https://guix.gnu.org/manual/en/guix.html
 mon https://monkeytype.com/login
 ed https://www.edclub.com/sportal/program-3.game
+sys https://systemcrafters.net/
+gl https://learnopengl.com/
+ch https://lichess.org/
 #+END_SRC
 ** Scripts
 Here are some small scripts used in qutebrowser

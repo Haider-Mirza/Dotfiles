@@ -28,6 +28,9 @@
   - [[#line-numbers][Line numbers]]
   - [[#modeline][Modeline]]
 - [[#general-configuration][General Configuration]]
+  - [[#sustom-variables][Sustom variables]]
+  - [[#save-place-mode][Save-place mode]]
+  - [[#auto-revert-buffers][Auto Revert buffers]]
   - [[#which-key][Which key]]
   - [[#buffers][Buffers]]
   - [[#windows][Windows]]
@@ -321,37 +324,39 @@ I had used this before I switched back to doom-one
 #+end_src
 
 ** Dashboard
-*** Emacs config
- #+BEGIN_SRC elisp
-
-   ;; (use-package dashboard
-   ;;   :config
-   ;;   (setq dashboard-banner-logo-title "Welcome to Haider's System")
-   ;;   (setq dashboard-startup-banner "/home/haider/.emacs.d/banner.txt")
-   ;;   ;; (setq dashboard-center-content t)
-   ;;   (setq dashboard-init-info "Make sure to check Org Agenda")
-   ;;   (setq dashboard-show-shortcuts nil)
-   ;;   (setq dashboard-set-heading-icons t)
-   ;;   (setq dashboard-set-file-icons t)
-   ;;   (setq dashboard-items '((recents  . 5)
-   ;; 			  (projects . 5)
-   ;; 			  (agenda . 5)))
-   ;;   (dashboard-setup-startup-hook))
-
- #+END_SRC
 *** Text Banner
     Very cool banner I had generated in [[https://textfancy.com/multiline-text-art/][this]] website. 
-#+BEGIN_SRC
-                        ▄▄         ▄▄                                      ▄▄                          
+#+BEGIN_SRC elisp
+(setq title
+"                        ▄▄         ▄▄                                      ▄▄                          
 ▀████▀  ▀████▀▀         ██       ▀███                     ▀████▄     ▄███▀ ██                          
   ██      ██                       ██                       ████    ████                               
   ██      ██   ▄█▀██▄ ▀███    ▄█▀▀███   ▄▄█▀██▀███▄███      █ ██   ▄█ ██ ▀███ ▀███▄███ █▀▀▀███ ▄█▀██▄  
   ██████████  ██   ██   ██  ▄██    ██  ▄█▀   ██ ██▀ ▀▀      █  ██  █▀ ██   ██   ██▀ ▀▀ ▀  ███ ██   ██  
   ██      ██   ▄█████   ██  ███    ██  ██▀▀▀▀▀▀ ██          █  ██▄█▀  ██   ██   ██       ███   ▄█████  
   ██      ██  ██   ██   ██  ▀██    ██  ██▄    ▄ ██          █  ▀██▀   ██   ██   ██      ███  ▄██   ██  
-▄████▄  ▄████▄▄████▀██▄████▄ ▀████▀███▄ ▀█████▀████▄      ▄███▄ ▀▀  ▄████▄████▄████▄   ███████▀████▀██▄
+▄████▄  ▄████▄▄████▀██▄████▄ ▀████▀███▄ ▀█████▀████▄      ▄███▄ ▀▀  ▄████▄████▄████▄   ███████▀████▀██▄")
                                                                                                        
 #+END_SRC
+*** Emacs config
+ #+BEGIN_SRC elisp
+   (setq initial-scratch-message (concat title "\n\nWelcome to Emacs,\n\nMake sure to launch xmodmap: (exwm/run-xmodmap)\nAlso make sure to check Org-Agenda"))
+
+      ;; (use-package dashboard
+      ;;   :config
+      ;;   (setq dashboard-banner-logo-title "Welcome to Haider's System")
+      ;;   (setq dashboard-startup-banner "/home/haider/.emacs.d/banner.txt")
+      ;;   ;; (setq dashboard-center-content t)
+      ;;   (setq dashboard-init-info "Make sure to check Org Agenda")
+      ;;   (setq dashboard-show-shortcuts nil)
+      ;;   (setq dashboard-set-heading-icons t)
+      ;;   (setq dashboard-set-file-icons t)
+      ;;   (setq dashboard-items '((recents  . 5)
+      ;; 			  (projects . 5)
+      ;; 			  (agenda . 5)))
+      ;;   (dashboard-setup-startup-hook))
+
+ #+END_SRC
 ** Minimal Visuals
 Make the User interface more minimal.
 #+begin_src elisp
@@ -390,10 +395,11 @@ Center org-mode documents.
 ** frame transparency and maximize windows. 
 #+BEGIN_SRC elisp
 
-   (set-frame-parameter (selected-frame) 'alpha '(70 . 70))
-   (add-to-list 'default-frame-alist '(alpha . (70 . 70)))
-   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-   (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;;(set-frame-parameter (selected-frame) 'alpha '(70 . 70))
+  ;;(add-to-list 'default-frame-alist '(alpha . (70 . 70)))
+
+  (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 #+END_SRC
 ** Scrolling
@@ -457,6 +463,31 @@ Improve scrolling.
 
 x-re
 * General Configuration
+** Sustom variables
+Sometimes Emacs will add some variables or something to your init.el, to prevent this, we can move then to another file.
+#+BEGIN_SRC elisp
+  ;; Move customization variables to a separate file and load it
+  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
+  (load custom-file 'noerror 'nomessage)
+
+#+END_SRC
+** Save-place mode
+#+BEGIN_SRC elisp
+(save-place-mode 1)
+#+END_SRC
+** Auto Revert buffers
+#+BEGIN_SRC elisp
+  ;; Revert buffers when the underlying file has changed
+  (global-auto-revert-mode 1)
+
+#+END_SRC
+*** Dired
+This can also happen in Dired.
+#+BEGIN_SRC elisp
+  ;; Revert Dired and other buffers
+  (setq global-auto-revert-non-file-buffers t)
+
+#+END_SRC
 ** Which key
   
  #+begin_src elisp 
@@ -684,7 +715,7 @@ I have disabled it as it can be anoyying.
 ** Comment Lines
 #+BEGIN_SRC elisp
   (rune/leader-keys
-  "TAB" '(comment-region :which-key "comment lines"))
+  "TAB" '(comment-dwim :which-key "comment lines"))
 #+END_SRC
 ** Org
 
@@ -904,37 +935,6 @@ https://revealjs.com/fragments/
 *** OrgRoam
 If OrgRoam is setup on this system, you can click here for more information: [[id:8317049b-5a2b-4176-9d39-111f310061c7][Org Roam]]
  #+begin_src elisp
-   ;; (use-package org-roam
-   ;;   :ensure t
-   ;;   :init
-   ;;   (setq org-roam-v2-ack t)
-   ;;   :custom
-   ;;   (org-roam-directory "~/Notes/")
-   ;;   (org-roam-completion-everywhere t)
-
-   ;;   (org-roam-capture-templates
-   ;;    '(("d" "default" plain "%?"
-   ;;       :if-new (file+head "${slug}.org" "#+title: ${title}\n#+date: %U\n")
-   ;;       :unnarrowed t)
-   ;;      ("p" "project" plain (file "~/RoamNotes/Templates/ProjectTemplate.org")
-   ;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-   ;;       :unnarrowed t)
-   ;;      )
-   ;;    )
-
-   ;;   :bind (("C-c n l" . org-roam-buffer-toggle)
-   ;;          ("C-c n f" . org-roam-node-find)
-   ;;          ("C-c n i" . org-roam-node-insert)
-   ;;          :map org-mode-map
-   ;;          ("C-M-i" . completion-at-point)
-   ;;          :map org-roam-dailies-map
-   ;;          ("Y" . org-roam-dailies-capture-yesterday)
-   ;;          ("T" . org-roam-dailies-capture-tomorrow))
-   ;;   :bind-keymap
-   ;;   ("C-c n d" . org-roam-dailies-map)
-   ;;   :config
-   ;;   (require 'org-roam-dailies) ;; Ensure the keymap is available
-   ;;   (org-roam-db-autosync-mode))
 
    (use-package org-roam
      :ensure t
@@ -942,19 +942,57 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
      (setq org-roam-v2-ack t)
      :custom
      (org-roam-directory "~/Notes/OrgRoam")
+     (org-roam-completion-everywhere t)
+     (org-roam-dailies-capture-templates
+      '(("d" "default" entry "* %<%I:%M %p>: %?"
+	 :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+     
+     (org-roam-capture-templates
+      '(
+	("d" "default" plain "%?"
+	 :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+	 :unnarrowed t)
+
+	("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+	 :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+	 :unnarrowed t)
+
+	("s" "school" plain "\n%?"
+	 :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
+	 :unnarrowed t)))
+
+     :bind (:map org-mode-map
+		 ("C-M-i" . completion-at-point))
      :config
      (org-roam-setup))
 
+   (defun org-roam-node-insert-immediate (arg &rest args)
+     (interactive "P")
+     (let ((args (cons arg args))
+	   (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+						     '(:immediate-finish t)))))
+       (apply #'org-roam-node-insert args)))
+
    (rune/leader-keys
      "or"  '(:ignore t :which-key "Org-Roam")
-     "orc" '(org-roam-capture :which-key "Capture")
-     "ori" '(org-roam-node-insert :which-key "Insert")
-     "orf" '(org-roam-node-find :which-key "Find")
+     "orc" '(org-roam-capture :which-key "Capture a node")
+     "ori" '(org-roam-node-insert :which-key "Insert note")
+     "orI" '(org-roam-node-insert-immediate :which-key "Insert and create a new node without opening it")
+     "orf" '(org-roam-node-find :which-key "Find a node")
      "ort" '(org-roam-buffer-toggle :which-key "Toggle")
-     "ord"  '(:ignore t :which-key "Dailies")
-     "ordd" '(org-roam-dailies-goto-today :which-key "Today"))
+
+     "w"  '(:ignore t :which-key "Dailies")
+     "wct" '(org-roam-dailies-capture-today :which-key "Capture daily for Today")
+     "wcy" '(org-roam-dailies-capture-today :which-key "Capture daily for Yesterday")
+     "wcT" '(org-roam-dailies-capture-today :which-key "Capture daily for Tomorrow")
+     "wcd" '(org-roam-dailies-capture-date :which-key "Capture daily for certain date")
+     "wgt" '(org-roam-dailies-goto-today :which-key "Check Today's daily")
+     "wgy" '(org-roam-dailies-goto-yesterday :which-key "Check Yesterday's daily")
+     "wgT" '(org-roam-dailies-goto-tomorrow :which-key "Check Tommorow's daily")
+     "wgd" '(org-roam-dailies-goto-date :which-key "Check daily for a specific date"))
 
  #+end_src
+ 
 * Chatting Configuration
 ** ERC
    ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
@@ -979,15 +1017,18 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 	;; erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
 	erc-track-exclude-server-buffer t
 	erc-track-enable-keybindings t
-	erc-quit-reason (lambda (s) (or s "Ejecting the cyberspace"))
+	erc-quit-reason (lambda (s) (or s "./Shutdown-Brain"))
 	erc-track-visibility nil) ;; Essential if using EXWM
 
-  ;;  (defun chat/connect-irc ()
-  ;;    (interactive)
-  ;;    (erc-tls
-  ;;     :server "irc.libera.chat"
-  ;;     :port 6697
-  ;;     :nick "Haider"))
+  (defun chat/connect-irc ()
+    (interactive)
+    (setq erc-password (read-passwd "Password: "))
+    (erc-tls
+     :server "irc.libera.chat"
+     :port 6697
+     :nick "Haider"
+     :password erc-password))
+
 
   (use-package erc-hl-nicks
     :defer 10
@@ -1004,7 +1045,7 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 
   (rune/leader-keys
     "i"  '(:ignore t :which-key "IRC")
-    "ii" '(erc-tls :which-key "launch IRC")
+    "ii" '(chat/connect-irc :which-key "launch IRC")
     "ib" '(erc-switch-to-buffer :which-key "Switch Buffer"))
 
 #+END_SRC
@@ -1431,8 +1472,9 @@ Make sure you have ccls installed
 
 #+END_SRC
 ** Flycheck
+Flycheck kinda calls everything to be an error. Kind of anoyying
 #+BEGIN_SRC elisp
-(use-package flycheck :ensure)
+  ;; (use-package flycheck :ensure)
 #+END_SRC
 ** Tree
    I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
