@@ -1169,7 +1169,10 @@ These keybindings will open my system's config files.
 
     (setq mu4e-maildir-shortcuts
 	  '((:maildir "/Gmail/Inbox"    :key ?g)
-	    (:maildir "/Outlook/INBOX"     :key ?i))))
+	    (:maildir "/Outlook/INBOX"     :key ?i)
+	    (:maildir "/Gmail/[Gmail]/Sent Mail" :key ?s)
+	    (:maildir "/Outlook/Sent" :key ?S)
+	    )))
 
   ;; Make sure plain text mails flow correctly for recipients
   (setq mu4e-compose-format-flowed t)
