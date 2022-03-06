@@ -897,23 +897,24 @@ https://revealjs.com/fragments/
 
 *** Org-Superstar
     Making the bullets look better
+    (In my opinion, these are just bloat and uneccessary so I commented these out. Not for me)
  #+BEGIN_SRC elisp
-   (use-package org-superstar
-     :config
-     (setq org-superstar-leading-bullet " ")
-     (setq org-superstar-special-todo-items t) ;; Makes TODO header bullets into boxes
-     (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
-                                             ("WORK" . 9744)
-                                             ("DEV" . 9744)
-                                             ("RESEARCH" . 9744)
-                                             ("HOLD" . 9744)
-                                             ("PLAN" . 9744)
-                                             ("COMPLETED" . 9745)
-                                             ("FAILED" . 9746)))
-     :hook (org-mode . org-superstar-mode))
+   ;; (use-package org-superstar
+   ;;   :config
+   ;;   (setq org-superstar-leading-bullet " ")
+   ;;   (setq org-superstar-special-todo-items t) ;; Makes TODO header bullets into boxes
+   ;;   (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
+   ;;                                           ("WORK" . 9744)
+   ;;                                           ("DEV" . 9744)
+   ;;                                           ("RESEARCH" . 9744)
+   ;;                                           ("HOLD" . 9744)
+   ;;                                           ("PLAN" . 9744)
+   ;;                                           ("COMPLETED" . 9745)
+   ;;                                           ("FAILED" . 9746)))
+   ;;   :hook (org-mode . org-superstar-mode))
 
-   ;; Removes gap when you add a new heading
-   (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+   ;; ;; Removes gap when you add a new heading
+   ;; (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
  #+END_SRC
 
