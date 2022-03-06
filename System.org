@@ -58,14 +58,13 @@
 		      emacs
 		      emacs-exwm
 		      emacs-desktop-environment
-		      gcc
+
 		      emacs-org-roam
-		      emacs-guix
 		      emacs-org-reveal
 		      mu
-		      emacs-company-lsp
 		      ;; terminal emulator
 		      xterm
+		      emacs-vterm
 		      ;; Text Editor
 		      vim
 		      ;; for HTTPS access
