@@ -11,20 +11,22 @@
   This is the config file used in GNU Guix to manage your system.
 #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
   ;; This file should be edited in ~/Dotfiles/System.org then tangled.
-  (use-modules (gnu))
-  (use-modules (gnu packages emacs))
-  (use-modules (gnu packages emacs-xyz))
-  (use-modules (gnu packages xorg))
-  (use-modules (gnu packages certs))
-  (use-modules (gnu packages mail))
-  (use-modules (gnu packages vim))
-  (use-modules (gnu packages gcc))
+  (use-modules (gnu)
+	       (gnu packages emacs)
+	       (gnu packages emacs-xyz)
+	       (gnu packages xorg)
+	       (gnu packages certs)
+	       (gnu packages mail)
+	       (gnu packages vim)
+	       (gnu packages gcc))
+
   (use-service-modules
    cups
    desktop
    networking
    ssh
-   xorg)
+   xorg
+   virtualization)
 
   (operating-system
    (locale "en_GB.utf8")
@@ -41,7 +43,8 @@
 		    '("wheel"
 		      "netdev"
 		      "audio"
-		      "video")))
+		      "video"
+		      "kvm")))
 
 		  (user-account
 		   (name "hasan")
@@ -71,14 +74,17 @@
 		      nss-certs)
 		     %base-packages))
 
-   (services
-    (append
-     (list (service xfce-desktop-service-type)
-	   (service openssh-service-type)
-	   (set-xorg-configuration
-	    (xorg-configuration
-	     (keyboard-layout keyboard-layout))))
-     %desktop-services))
+   (services (cons*
+	      (service xfce-desktop-service-type)
+	      (service openssh-service-type)
+	      (service libvirt-service-type
+		       (libvirt-configuration
+			(unix-sock-group "libvirt")
+			(tls-port "16555")))
+	      (set-xorg-configuration
+	       (xorg-configuration
+		(keyboard-layout keyboard-layout)))
+	      %desktop-services))
 
    (bootloader
     (bootloader-configuration

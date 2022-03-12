@@ -250,7 +250,6 @@ You can also use M-x auto-package-update-now to update right now!
     (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
 
 #+end_src
-
 ** Haider Theme
 I had used this before I switched back to doom-one
  #+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/haider-theme.el"
@@ -390,9 +389,38 @@ Center org-mode documents.
     :hook (org-mode . org/org-mode-visual-fill))
 
 #+end_src
+** Vertico
+ #+BEGIN_SRC elisp
+
+   (use-package vertico
+     :bind (:map vertico-map
+		 ("C-j" . vertico-next)
+		 ("C-k" . vertico-previous)
+		 ("C-f" . vertico-exit)
+		 :map minibuffer-local-map
+		 ("M-h" . backward-kill-word))
+     :custom
+     (vertico-cycle t)
+     :init
+     (vertico-mode))
+
+   ;; Persist history over Emacs restarts. Vertico sorts by history position.
+   (use-package savehist
+     :after vertico
+     :config
+     (savehist-mode))
+
+ #+END_SRC 
 ** Marginalia
 #+BEGIN_SRC elisp
-(marginalia-mode)
+  (use-package marginalia
+    :after vertico
+    :ensure t
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :init
+    (marginalia-mode))
+
 #+END_SRC
 ** frame transparency and maximize windows. 
 #+BEGIN_SRC elisp
@@ -619,28 +647,6 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 
 #+end_src
 
-** Vertico
- #+BEGIN_SRC elisp
-
-   (use-package vertico
-     :bind (:map vertico-map
-		 ("C-j" . vertico-next)
-		 ("C-k" . vertico-previous)
-		 ("C-f" . vertico-exit)
-		 :map minibuffer-local-map
-		 ("M-h" . backward-kill-word))
-     :custom
-     (vertico-cycle t)
-     :init
-     (vertico-mode))
-
-   ;; Persist history over Emacs restarts. Vertico sorts by history position.
-   (use-package savehist
-     :after vertico
-     :config
-     (savehist-mode))
-
- #+END_SRC 
 ** Helpful
    Helpful adds a lot of very helpful (get it?) information to Emacs’ describe- command buffers.
    For example, if you use describe-function, you will not only get the documentation about the function,
@@ -947,9 +953,17 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
      (org-roam-directory "~/Notes/OrgRoam")
      (org-roam-completion-everywhere t)
      (org-roam-dailies-capture-templates
-      '(("d" "default" entry "* %<%I:%M %p>: %?"
-	 :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
-     
+      '(
+	("d" "default" entry "* %<%I:%M %p>: %?"
+	 :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
+
+	("t" "todo" entry "* TODO: \n%?"
+	 :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
+	
+	("d" "diary" entry "* Diary: \n%?"
+	 :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary"))
+	))
+
      (org-roam-capture-templates
       '(
 	("d" "default" plain "%?"
@@ -986,8 +1000,8 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 
      "w"  '(:ignore t :which-key "Dailies")
      "wct" '(org-roam-dailies-capture-today :which-key "Capture daily for Today")
-     "wcy" '(org-roam-dailies-capture-today :which-key "Capture daily for Yesterday")
-     "wcT" '(org-roam-dailies-capture-today :which-key "Capture daily for Tomorrow")
+     "wcy" '(org-roam-dailies-capture-yesterday :which-key "Capture daily for Yesterday")
+     "wcT" '(org-roam-dailies-capture-tomorrow :which-key "Capture daily for Tomorrow")
      "wcd" '(org-roam-dailies-capture-date :which-key "Capture daily for certain date")
      "wgt" '(org-roam-dailies-goto-today :which-key "Check Today's daily")
      "wgy" '(org-roam-dailies-goto-yesterday :which-key "Check Yesterday's daily")
@@ -1151,6 +1165,7 @@ These keybindings will open my system's config files.
 	    :vars '((user-mail-address . "ha6mi19@keaston.bham.sch.uk")
 		    (user-full-name    . "Haider Mirza")
 		    (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+		    ;; (mu4e-compose-signature . nil) ;; Mu4e signature comes out to be another seperate file.
 		    ;; (smtpmail-smtp-server  . "smtp-mail.outlook.com")
 		    ;; (smtpmail-smtp-service . 587)
 		    ;; (smtpmail-stream-type  . ssl)
@@ -1162,8 +1177,8 @@ These keybindings will open my system's config files.
     (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
 
     ;; Sign all of my emails with opengpg keys 
-    (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
-    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    ;; (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
+    ;; (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
     (setq mu4e-context-policy 'pick-first)
 
@@ -1233,42 +1248,58 @@ These keybindings will open my system's config files.
 
    (rune/leader-keys
      "m"  '(:ignore t :which-key "Magit")
-     "ms" '(magit-status :which-key "Magit Status"))
+     "ms" '(magit-status :which-key "Magit Status")
+     "mj" '(magit-status-jump :which-key "Magit jump"))
  #+END_SRC
 ** Lsp-mode
 
 #+BEGIN_SRC elisp
-  
-  (use-package lsp-mode
-    :ensure
-    :commands lsp
-    :custom
-    ;; what to use when checking on-save. "check" is default, I prefer clippy
-    (lsp-rust-analyzer-cargo-watch-command "clippy")
-    (lsp-eldoc-render-all t)
-    (lsp-idle-delay 0.6)
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-    :config
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-  (use-package lsp-ui
-    :ensure
-    :commands lsp-ui-mode
-    :custom
-    (lsp-ui-peek-always-show t)
-    (lsp-ui-sideline-show-hover t)
-    (lsp-ui-doc-enable nil))
+  ;; (use-package lsp-mode
+  ;;   :ensure
+  ;;   :commands lsp
+  ;;   :custom
+  ;;   ;; what to use when checking on-save. "check" is default, I prefer clippy
+  ;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
+  ;;   (lsp-eldoc-render-all t)
+  ;;   (lsp-idle-delay 0.6)
+  ;;   (lsp-rust-analyzer-server-display-inlay-hints t)
+  ;;   :config
+  ;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  ;; (use-package lsp-ui
+  ;;   :ensure
+  ;;   :commands lsp-ui-mode
+  ;;   :custom
+  ;;   (lsp-ui-peek-always-show t)
+  ;;   (lsp-ui-sideline-show-hover t)
+  ;;   (lsp-ui-doc-enable nil))
+
+  ;; (rune/leader-keys
+  ;;   "l"  '(:ignore t :which-key "lsp")
+  ;;   "ld" 'xref-find-definitions
+  ;;   "lr" 'xref-find-references
+  ;;   "ln" 'lsp-ui-find-next-reference
+  ;;   "lp" 'lsp-ui-find-prev-reference
+  ;;   "ls" 'counsel-imenu
+  ;;   "le" 'lsp-ui-flycheck-list
+  ;;   "lS" 'lsp-ui-sideline-mode
+  ;;   "lX" 'lsp-execute-code-action)
+#+END_SRC
+** Eglot
+#+BEGIN_SRC elisp
+  (defvar haider-clangd-sh (executable-find "clangd")
+    "clangd executable path")
+
+  (use-package eglot
+    :ensure t)
+
+  (add-to-list 'eglot-server-programs '((c++ mode c-mode) . (eglot-cquery "cquery")))
   
-  (rune/leader-keys
-    "l"  '(:ignore t :which-key "lsp")
-    "ld" 'xref-find-definitions
-    "lr" 'xref-find-references
-    "ln" 'lsp-ui-find-next-reference
-    "lp" 'lsp-ui-find-prev-reference
-    "ls" 'counsel-imenu
-    "le" 'lsp-ui-flycheck-list
-    "lS" 'lsp-ui-sideline-mode
-    "lX" 'lsp-execute-code-action)
+  (defun dd/projectile-proj-find-function (dir)
+  (let ((root (projectile-project-root dir)))
+    (and root (cons 'transient root))))
+
 #+END_SRC
 ** Languages
 *** Javascript
@@ -1327,6 +1358,24 @@ Make sure you have ccls installed
     :defer 5
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
 	   (lambda () (require 'ccls) (lsp))))
+  
+  (defun dd/cpp-eglot-enable ()
+    "enable variables and hooks for eglot cpp IDE"
+    (interactive)
+    (setq company-backends
+	  (cons 'company-capf
+		(remove 'company-capf company-backends)))
+    (with-eval-after-load 'project
+      (add-to-list 'project-find-functions
+		   'dd/projectile-proj-find-function))
+    (add-to-list 'eglot-server-programs
+		 `((c++-mode) ,haider-clangd-sh))
+    (add-hook 'c++-mode-hook 'eglot-ensure))
+  
+  (defun dd/cpp-eglot-disable ()
+  "disable hook for eglot"
+  (interactive)
+  (remove-hook 'c++-mode-hook 'eglot-ensure))
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
@@ -1515,11 +1564,20 @@ Flycheck kinda calls everything to be an error. Kind of anoyying
      (setq vterm-max-scrollback 10000)
      (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
 
-   (rune/leader-keys
-     "v" '(vterm :which-key "launch vterm"))
+    (rune/leader-keys
+      "v" '(vterm :which-key "launch vterm"))
+   
+   ;; (rune/leader-keys
+   ;;   "v"  '(:ignore t :which-key "Vterm")
+   ;;   "vv" '(vterm :which-key "launch vterm")
+   ;;   "vt" '(vterm-toggle :which-key "vterm-toggle"))
 
-  (global-set-key (kbd "s-v") 'vterm)
+   (global-set-key (kbd "s-v") 'vterm)
  #+END_SRC
+** VTerm-toggle
+#+BEGIN_SRC elisp
+  ;; (use-package vterm-toggle)
+#+END_SRC
 ** Eshell
 #+BEGIN_SRC elisp
   (rune/leader-keys
