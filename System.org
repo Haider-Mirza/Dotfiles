@@ -116,7 +116,7 @@
 
 * Channels.scm
   If you dont want to just use the default channels for whatever reason, place this file in ~/.config/guix to use the nonguix and flat channels.
-  *NOTE:* I do not recommend this in any capacity. This is only for reference and I dont even personally use it.
+  *NOTE:* I do not recommend this in any capacity. This is only for reference and I dont even personally use it as a sincere follower of the free software philosophy.
 
   #+BEGIN_SRC scheme
     (list (channel
