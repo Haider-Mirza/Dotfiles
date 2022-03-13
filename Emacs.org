@@ -468,6 +468,10 @@ Improve scrolling.
 
   (use-package all-the-icons)
 
+  (use-package all-the-icons-completion
+    :config
+    (all-the-icons-completion-mode))
+
   (use-package doom-modeline
     :init (doom-modeline-mode 1)
     :custom (doom-modeline-height 17)
@@ -490,8 +494,6 @@ Improve scrolling.
 	  display-time-default-load-average nil))
 
 #+end_src 
-
-x-re
 * General Configuration
 ** Sustom variables
 Sometimes Emacs will add some variables or something to your init.el, to prevent this, we can move then to another file.
