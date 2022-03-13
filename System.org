@@ -18,6 +18,7 @@
 	       (gnu packages certs)
 	       (gnu packages mail)
 	       (gnu packages vim)
+	       (gnu packages cups)
 	       (gnu packages gcc))
 
   (use-service-modules
@@ -44,6 +45,8 @@
 		      "netdev"
 		      "audio"
 		      "video"
+		      ;; Virt-Manager
+		      "libvirt"
 		      "kvm")))
 
 		  (user-account
@@ -77,6 +80,10 @@
    (services (cons*
 	      (service xfce-desktop-service-type)
 	      (service openssh-service-type)
+	      (service cups-service-type
+		       (cups-configuration (web-interface? #t)
+					   (extensions
+					    (list cups-filters hplip-minimal))))
 	      (service libvirt-service-type
 		       (libvirt-configuration
 			(unix-sock-group "libvirt")

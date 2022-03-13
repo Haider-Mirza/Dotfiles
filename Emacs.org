@@ -1164,8 +1164,8 @@ These keybindings will open my system's config files.
 		(string-prefix-p "/Outlook" (mu4e-message-field msg :maildir))))
 	    :vars '((user-mail-address . "ha6mi19@keaston.bham.sch.uk")
 		    (user-full-name    . "Haider Mirza")
-		    (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
-		    ;; (mu4e-compose-signature . nil) ;; Mu4e signature comes out to be another seperate file.
+		    ;;(mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+		    (mu4e-compose-signature . nil) ;; Mu4e signature comes out to be another seperate file.
 		    ;; (smtpmail-smtp-server  . "smtp-mail.outlook.com")
 		    ;; (smtpmail-smtp-service . 587)
 		    ;; (smtpmail-stream-type  . ssl)
