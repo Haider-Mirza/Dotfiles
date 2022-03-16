@@ -37,7 +37,7 @@
 
    (users (cons*  (user-account
 		   (name "haider")
-		   (comment "Haider Mirza")
+		   (comment "haider")
 		   (group "users")
 		   (home-directory "/home/haider")
 		   (supplementary-groups
@@ -51,8 +51,9 @@
 
 		  (user-account
 		   (name "hasan")
-		   (comment "Hasan Mirza")
+		   (comment "hasan")
 		   (group "users")
+		   (home-directory "/home/hasan")
 		   (password "")
 		   (supplementary-groups
 		    '("audio"               
