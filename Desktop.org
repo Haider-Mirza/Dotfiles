@@ -15,6 +15,7 @@
   - [[#launch-applications][Launch Applications]]
   - [[#audio-control][Audio Control]]
   - [[#system-functions][System functions]]
+- [[#xmodmap][Xmodmap]]
 - [[#polybar][Polybar]]
   - [[#emacs][Emacs]]
   - [[#polybar-1][Polybar]]
@@ -93,7 +94,7 @@
 
   (defun exwm/run-xmodmap ()
     (interactive)
-    (start-process-shell-command "xmodmap" nil "xmodmap ~/.xmodmap"))
+    (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/.xmodmap"))
 
   (defun exwm/set-wallpaper ()
     (interactive)
@@ -329,6 +330,15 @@
     (interactive)
     (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password: "))
 			   " | sudo -S reboot")))
+#+END_SRC
+* Xmodmap
+Rekeybind *Ctrl* to *Caps-lock* 
+#+BEGIN_SRC fundamental :tangle "/home/haider/.emacs.d/.xmodmap"
+  clear lock
+  clear control
+  keycode 66 = Control_L
+  add control = Control_L
+  add Lock = Control_R
 #+END_SRC
 * Polybar
 ** Emacs 
