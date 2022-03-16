@@ -1594,15 +1594,15 @@ Flycheck kinda calls everything to be an error. Kind of anoyying
 Uses the standard Unix password store "pass".
 
 #+begin_src elisp
-    (use-package password-store
-      :defer 0)
+  (use-package password-store)
 
   ;; Used to access passwords through emacs using Emacs's server-mode
-    (defun efs/lookup-password (&rest keys)
-      (let ((result (apply #'auth-source-search keys)))
-	(if result
-	    (funcall (plist-get (car result) :secret))
-	  nil)))
+  (defun efs/lookup-password (&rest keys)
+    (interactive)
+    (let ((result (apply #'auth-source-search keys)))
+      (if result
+	  (funcall (plist-get (car result) :secret))
+	nil)))
 
 #+end_src
 
