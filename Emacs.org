@@ -1181,8 +1181,8 @@ These keybindings will open my system's config files.
     (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
 
     ;; Sign all of my emails with opengpg keys 
-    ;; (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
-    ;; (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
+    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
     (setq mu4e-context-policy 'pick-first)
 
