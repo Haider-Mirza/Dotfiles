@@ -159,10 +159,11 @@ I am not using straight.el right now even though how many benifits it has.
 The auto-package-update package helps us keep our Emacs packages up to date!
 It will prompt you after a certain number of days either at startup or at a specific time of day to remind you to update your packages.
 You can also use M-x auto-package-update-now to update right now!
+Disabled this as I don't need it.
 #+BEGIN_SRC elisp
 
-  (use-package auto-package-update
-    :defer 10)
+  ;; (use-package auto-package-update
+  ;;   :defer 10)
 
 #+END_SRC
 * Startup Performance
@@ -321,9 +322,6 @@ I had used this before I switched back to doom-one
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
     (load-theme 'doom-one t))
-
-    (rune/leader-keys
-      "st" '(counsel-load-theme :which-key "choose theme"))
 #+end_src
 
 ** Dashboard
@@ -553,42 +551,41 @@ I dont really want to use it for now.
 *** Bufler
 There is a org-roam note about this and possible errors: [[id:c2647c82-ae0a-4d26-aa62-706a6a8051d4][Bufler]] 
 It is possibly my favourite way of buffer management.
+I don't use Bufler right now.
 #+BEGIN_SRC elisp
-  (use-package bufler)
 
-  (setf bufler-groups
-	(bufler-defgroups
-	  ;; Subgroup collecting all named workspaces.
-	  (group (auto-workspace))
-	  ;; Subgroup collecting buffers in a projectile project.
-	  (group (auto-projectile))
-	  ;; Grouping browser windows
-	  (group
-	   (group-or "Browsers"
-		     (name-match "Qutebrowser" (rx bos "Qutebrowser"))
-		     (name-match "Icecat" (rx bos "Icecat"))))
-	  (group
-	   ;; Subgroup collecting these "special special" buffers
-	   ;; separately for convenience.
-	   (name-match "**Special**"
-		       (rx bos "*" (or "Messages" "Warnings" "scratch" "Backtrace") "*")))
-	  ;; Group remaining buffers by major mode.
-	  (auto-mode)))
+  ;; (use-package bufler)
 
-  (rune/leader-keys
-    "p"  '(:ignore t :which-key "Bufler")
-    "ps" '(bufler-switch-buffer :which-key "Bufler switch buffers"))
+  ;; (setf bufler-groups
+  ;;       (bufler-defgroups
+  ;; 	;; Subgroup collecting all named workspaces.
+  ;; 	(group (auto-workspace))
+  ;; 	;; Subgroup collecting buffers in a projectile project.
+  ;; 	(group (auto-projectile))
+  ;; 	;; Grouping browser windows
+  ;; 	(group
+  ;; 	 (group-or "Browsers"
+  ;; 		   (name-match "Qutebrowser" (rx bos "Qutebrowser"))
+  ;; 		   (name-match "Icecat" (rx bos "Icecat"))))
+  ;; 	(group
+  ;; 	 ;; Subgroup collecting these "special special" buffers
+  ;; 	 ;; separately for convenience.
+  ;; 	 (name-match "**Special**"
+  ;; 		     (rx bos "*" (or "Messages" "Warnings" "scratch" "Backtrace") "*")))
+  ;; 	;; Group remaining buffers by major mode.
+  ;; 	(auto-mode)))
+
+  ;; (rune/leader-keys
+  ;;   "p"  '(:ignore t :which-key "Bufler")
+  ;;   "ps" '(bufler-switch-buffer :which-key "Bufler switch buffers"))
+
 #+END_SRC
 *** Keybinds
 #+BEGIN_SRC elisp
   (rune/leader-keys
   "b"  '(:ignore t :which-key "Buffers")
   "bb" '(consult-buffer :which-key "Switch to buffer")
-  "bB" '(consult-buffer-other-window :which-key "Switch to buffer on new window")
-  "bF" '(consult-buffer-other-frame :which-key "Switch to buffer on new frame")
-  "bk" '(kill-buffer :which-key "Kill a buffer")
-  "bK" '(kill-buffer-and-window :which-key "Kill buffer and window")
-  "bc" '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window"))
+  "bk" '(kill-buffer :which-key "Kill a buffer"))
 
 #+END_SRC
 ** Windows
@@ -671,6 +668,7 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 ** Hydra
 
  [[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
+ I don't use hydra right now.
  #+BEGIN_SRC elisp
    ;; (use-package hydra
    ;;   :defer t)
@@ -692,7 +690,7 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 
  #+END_SRC 
 * Keep Directories Clean
-  Makes Emacs keep my file directorys clean of unnecessary files.
+  Makes Emacs keep my file directories clean of unnecessary files.
 #+BEGIN_SRC elisp
   (use-package no-littering)
 
@@ -747,14 +745,12 @@ I have disabled it as it can be anoyying.
     (rune/leader-keys
       "o"  '(:ignore t :which-key "Org")
       "oa" '(org-agenda :which-key "View Org-Agenda")
-      "oT" '(org-time-stamp-inactive :which-key "Org Timestamp")
       "ol" '(org-agenda-list :which-key "View Org-Agendalist")
       "oL" '(org-insert-link :which-key "View Org-Agendalist")
       "ot" '(org-babel-tangle :which-key "Tangle Document")
       "ox" '(org-export-dispatch :which-key "Export Document")
       "od" '(org-deadline :which-key "Deadline")
-      "os" '(org-schedule :which-key "Scedule")
-      "oS" '(org-todo :which-key "OrgMode states"))
+      "os" '(org-schedule :which-key "Scedule"))
 
     (defun org/org-font-setup ()
       ;; Replace list hyphen with dot
@@ -944,7 +940,7 @@ https://revealjs.com/fragments/
    (evil-org-agenda-set-keys)
 
  #+END_SRC
-
+ 
 *** OrgRoam
 If OrgRoam is setup on this system, you can click here for more information: [[id:8317049b-5a2b-4176-9d39-111f310061c7][Org Roam]]
  #+begin_src elisp
@@ -1238,10 +1234,6 @@ These keybindings will open my system's config files.
 
    (require 'warnings)
    (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
-
-   (rune/leader-keys
-     "y"  '(:ignore t :which-key "Yasnippet")
-     "yn" '(yas-new-snippet :which-key "yas-new-snippet"))
  #+end_src
 ** Magit
  #+BEGIN_SRC elisp
@@ -1252,8 +1244,7 @@ These keybindings will open my system's config files.
 
    (rune/leader-keys
      "m"  '(:ignore t :which-key "Magit")
-     "ms" '(magit-status :which-key "Magit Status")
-     "mj" '(magit-status-jump :which-key "Magit jump"))
+     "ms" '(magit-status :which-key "Magit Status"))
  #+END_SRC
 ** Lsp-mode
 
@@ -1292,17 +1283,17 @@ These keybindings will open my system's config files.
 #+END_SRC
 ** Eglot
 #+BEGIN_SRC elisp
-  (defvar haider-clangd-sh (executable-find "clangd")
-    "clangd executable path")
+  ;; (defvar haider-clangd-sh (executable-find "clangd")
+  ;;   "clangd executable path")
 
-  (use-package eglot
-    :ensure t)
+  ;; (use-package eglot
+  ;;   :ensure t)
 
-  (add-to-list 'eglot-server-programs '((c++ mode c-mode) . (eglot-cquery "cquery")))
-  
-  (defun dd/projectile-proj-find-function (dir)
-  (let ((root (projectile-project-root dir)))
-    (and root (cons 'transient root))))
+  ;; (add-to-list 'eglot-server-programs '((c++ mode c-mode) . (eglot-cquery "cquery")))
+
+  ;; (defun dd/projectile-proj-find-function (dir)
+  ;; (let ((root (projectile-project-root dir)))
+  ;;   (and root (cons 'transient root))))
 
 #+END_SRC
 ** Languages
@@ -1311,50 +1302,47 @@ Setting up development in Javascript.
 
 #+BEGIN_SRC elisp
 
-  (defun dw/set-js-indentation ()
-    (setq js-indent-level 2)
-    (setq evil-shift-width js-indent-level)
-    (setq-default tab-width 2))
+  ;; (defun dw/set-js-indentation ()
+  ;;   (setq js-indent-level 2)
+  ;;   (setq evil-shift-width js-indent-level)
+  ;;   (setq-default tab-width 2))
 
-  (use-package js2-mode
-    :mode "\\.jsx?\\'"
-    :config
-    ;; Use js2-mode for Node scripts
-    (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+  ;; (use-package js2-mode
+  ;;   :mode "\\.jsx?\\'"
+  ;;   :config
+  ;;   ;; Use js2-mode for Node scripts
+  ;;   (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
 
-    ;; Don't use built-in syntax checking
-    (setq js2-mode-show-strict-warnings nil)
+  ;;   ;; Don't use built-in syntax checking
+  ;;   (setq js2-mode-show-strict-warnings nil)
 
-    ;; Set up proper indentation in JavaScript and JSON files
-    (add-hook 'js2-mode-hook #'dw/set-js-indentation)
-    (add-hook 'json-mode-hook #'dw/set-js-indentation))
+  ;;   ;; Set up proper indentation in JavaScript and JSON files
+  ;;   (add-hook 'js2-mode-hook #'dw/set-js-indentation)
+  ;;   (add-hook 'json-mode-hook #'dw/set-js-indentation))
 
 
-  (use-package apheleia
-    :defer 10
-    :config
-    (apheleia-global-mode +1))
+  ;; (use-package apheleia
+  ;;   :defer 10
+  ;;   :config
+  ;;   (apheleia-global-mode +1))
 
-  (use-package prettier-js
-    :defer 10
-    ;; :hook ((js2-mode . prettier-js-mode)
-    ;;        (typescript-mode . prettier-js-mode))
-    :config
-    (setq prettier-js-show-errors nil))
+  ;; (use-package prettier-js
+  ;;   :defer 10
+  ;;   ;; :hook ((js2-mode . prettier-js-mode)
+  ;;   ;;        (typescript-mode . prettier-js-mode))
+  ;;   :config
+  ;;   (setq prettier-js-show-errors nil))
 
 #+END_SRC
 *** ELisp
-     #+BEGIN_SRC elisp
+#+BEGIN_SRC elisp
 
-       (rune/leader-keys
-	 "e"  '(:ignore t :which-key "E-Lisp")
-	 "eb" '(eval-buffer :which-key "Evaluate elisp in buffer")
-	 "ed" '(eval-defun :which-key "Evaluate defun")
-	 "ee" '(eval-expression :which-key "Evaluate elisp expression")
-	 "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
-	 "er" '(eval-region :which-key "Evaluate elisp in region"))
+  (rune/leader-keys
+    "e"  '(:ignore t :which-key "E-Lisp")
+    "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
+    "er" '(eval-region :which-key "Evaluate elisp in region"))
 
-	 #+END_SRC
+#+END_SRC
 *** C/C++
 Make sure you have ccls installed
 #+BEGIN_SRC elisp
@@ -1475,46 +1463,41 @@ Make sure you have ccls installed
 
 ** Company mode
 #+BEGIN_SRC elisp
-  (use-package company
-    :after lsp-mode
-    :bind
-    (:map company-active-map
-	  ("C-n". company-select-next)
-	  ("C-p". company-select-previous)
-	  ("M-<". company-select-first)
-	  ("M->". company-select-last)
-	  ("<tab>". tab-indent-or-complete)
-	  ("TAB". tab-indent-or-complete)))
+    (use-package company
+      :after lsp-mode
+      :bind
+      (:map company-active-map
+	    ("TAB". tab-indent-or-complete)))
     
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
+    (use-package company-box
+      :hook (company-mode . company-box-mode))
 
-    (defun company-yasnippet-or-completion ()
-      (interactive)
-      (or (do-yas-expand)
-	  (company-complete-common)))
+      (defun company-yasnippet-or-completion ()
+	(interactive)
+	(or (do-yas-expand)
+	    (company-complete-common)))
 
-    (defun check-expansion ()
-      (save-excursion
-	(if (looking-at "\\_>") t
-	  (backward-char 1)
-	  (if (looking-at "\\.") t
+      (defun check-expansion ()
+	(save-excursion
+	  (if (looking-at "\\_>") t
 	    (backward-char 1)
-	    (if (looking-at "::") t nil)))))
+	    (if (looking-at "\\.") t
+	      (backward-char 1)
+	      (if (looking-at "::") t nil)))))
 
-    (defun do-yas-expand ()
-      (let ((yas/fallback-behavior 'return-nil))
-	(yas/expand)))
+      (defun do-yas-expand ()
+	(let ((yas/fallback-behavior 'return-nil))
+	  (yas/expand)))
 
-    (defun tab-indent-or-complete ()
-      (interactive)
-      (if (minibufferp)
-	  (minibuffer-complete)
-	(if (or (not yas/minor-mode)
-		(null (do-yas-expand)))
-	    (if (check-expansion)
-		(company-complete-common)
-	      (indent-for-tab-command)))))
+      (defun tab-indent-or-complete ()
+	(interactive)
+	(if (minibufferp)
+	    (minibuffer-complete)
+	  (if (or (not yas/minor-mode)
+		  (null (do-yas-expand)))
+	      (if (check-expansion)
+		  (company-complete-common)
+		(indent-for-tab-command)))))
 #+END_SRC 
 
 ** Compilation
@@ -1567,14 +1550,6 @@ Flycheck kinda calls everything to be an error. Kind of anoyying
      :config
      (setq vterm-max-scrollback 10000)
      (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
-
-    (rune/leader-keys
-      "v" '(vterm :which-key "launch vterm"))
-   
-   ;; (rune/leader-keys
-   ;;   "v"  '(:ignore t :which-key "Vterm")
-   ;;   "vv" '(vterm :which-key "launch vterm")
-   ;;   "vt" '(vterm-toggle :which-key "vterm-toggle"))
 
    (global-set-key (kbd "s-v") 'vterm)
  #+END_SRC
