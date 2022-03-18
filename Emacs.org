@@ -670,23 +670,31 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
  [[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
  I don't use hydra right now.
  #+BEGIN_SRC elisp
-   ;; (use-package hydra
-   ;;   :defer t)
+   (use-package hydra
+     :defer t)
 
-   ;;    ;; change the text's scale if required
-   ;;    (defhydra hydra-zoom (global-map "<f6>")
-   ;;      "zoom"
-   ;;      ("g" text-scale-increase "in")
-   ;;      ("l" text-scale-decrease "out"))
+   ;; This needs a more elegant ASCII banner
+   (defhydra hydra-exwm-move-resize
+     (global-map "<C-M-tab>")
+     "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
+     ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
+     ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
+     ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
+     ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
+     ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
+     ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
+     ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
+     ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
+     ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
+     ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
+     ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
+     ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
+     ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
+     ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
+     ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
+     ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
+     ("f" nil "finished" :exit t))
 
-   ;;    ;; Window Management options
-   ;;    (defhydra hydra-window (global-map "<f2>")
-   ;;      "Window Management"
-   ;;      ("q" delete-window "delete window")
-   ;;      ("d" delete-other-windows "delete other windows")
-   ;;      ("," shrink-window-horizontally "shrink window horizontally")
-   ;;      ("." enlarge-window-horizontally "enlarge windows horizontally")
-   ;;      ("b" balance-windows "balance windows"))
 
  #+END_SRC 
 * Keep Directories Clean
