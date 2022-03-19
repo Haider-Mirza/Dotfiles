@@ -494,92 +494,91 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
      
 *** OrgMode Main config
   #+begin_src elisp
-	(use-package prettier
-	  :defer 5)
+    (use-package prettier)
     
-	(rune/leader-keys
-	  "o"  '(:ignore t :which-key "Org")
-	  "oa" '(org-agenda :which-key "View Org-Agenda")
-	  "ol" '(org-agenda-list :which-key "View Org-Agendalist")
-	  "oL" '(org-insert-link :which-key "View Org-Agendalist")
-	  "ot" '(org-babel-tangle :which-key "Tangle Document")
-	  "ox" '(org-export-dispatch :which-key "Export Document")
-	  "od" '(org-deadline :which-key "Deadline")
-	  "os" '(org-schedule :which-key "Scedule"))
+    (rune/leader-keys
+      "o"  '(:ignore t :which-key "Org")
+      "oa" '(org-agenda :which-key "View Org-Agenda")
+      "ol" '(org-agenda-list :which-key "View Org-Agendalist")
+      "oL" '(org-insert-link :which-key "View Org-Agendalist")
+      "ot" '(org-babel-tangle :which-key "Tangle Document")
+      "ox" '(org-export-dispatch :which-key "Export Document")
+      "od" '(org-deadline :which-key "Deadline")
+      "os" '(org-schedule :which-key "Scedule"))
 
-	(defun org/org-font-setup ()
-	  ;; Replace list hyphen with dot
-	  (font-lock-add-keywords 'org-mode
-				  '(("^ *\\([-]\\) "
-				     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    (defun org/org-font-setup ()
+      ;; Replace list hyphen with dot
+      (font-lock-add-keywords 'org-mode
+			      '(("^ *\\([-]\\) "
+				 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-	  ;; Set faces for heading levels
-	  (dolist (face '((org-level-1 . 1.2)
-			  (org-level-2 . 1.1)
-			  (org-level-3 . 1.05)
-			  (org-level-4 . 1.0)
-			  (org-level-5 . 1.1)
-			  (org-level-6 . 1.1)
-			  (org-level-7 . 1.1)
-			  (org-level-8 . 1.1)))
-	    (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+      ;; Set faces for heading levels
+      (dolist (face '((org-level-1 . 1.2)
+		      (org-level-2 . 1.1)
+		      (org-level-3 . 1.05)
+		      (org-level-4 . 1.0)
+		      (org-level-5 . 1.1)
+		      (org-level-6 . 1.1)
+		      (org-level-7 . 1.1)
+		      (org-level-8 . 1.1)))
+	(set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
 
-	  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-	  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-	  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-	  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-	  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-	  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-	  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-	  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
-	(use-package org
-	  :config
-	  (setq org-ellipsis " ▾")
+    (use-package org
+      :config
+      ;; (setq org-ellipsis " ▾")
 
-	  (setq org-agenda-start-with-log-mode t)
-	  (setq org-log-done 'time)
-	  (setq org-log-into-drawer t)
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
 
-	  (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
-	  (setq org-startup-folded t) ;; Org files start up folded by default
-	  (setq org-image-actual-width nil)
+      (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
+      (setq org-startup-folded t) ;; Org files start up folded by default
+      (setq org-image-actual-width nil)
 
-	  (setq org-list-demote-modify-bullet
-	  '(("+" . "*") ("*" . "-") ("-" . "+")))
+      (setq org-list-demote-modify-bullet
+      '(("+" . "*") ("*" . "-") ("-" . "+")))
 
-	  (setq org-agenda-files
-		'("~/Documents/Home/Reminders.org"
-		  "~/Documents/Home/TODO.org"
-		  "~/Documents/School/Homework.org"
-		  "~/Documents/School/School-Reminders.org"))
+      (setq org-agenda-files
+	    '("~/Documents/Home/Reminders.org"
+	      "~/Documents/Home/TODO.org"
+	      "~/Documents/School/Homework.org"
+	      "~/Documents/School/School-Reminders.org"))
 
-	  (setq org-todo-keywords
-		'((sequence
-		   "TODO(t)"
-		   "WORK(w)"
-		   "DEV(d)"
-		   "RESEARCH(r)"
-		   "HOLD(h)"
-		   "PLAN(p)"
-		   "|"
-		   "COMPLETED(c)"
-		   "FAILED(f)")))
+      (setq org-todo-keywords
+	    '((sequence
+	       "TODO(t)"
+	       "WORK(w)"
+	       "DEV(d)"
+	       "RESEARCH(r)"
+	       "HOLD(h)"
+	       "PLAN(p)"
+	       "|"
+	       "COMPLETED(c)"
+	       "FAILED(f)")))
 
-	  ;; Save Org buffers after refiling!
-	  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+      ;; Save Org buffers after refiling!
+      (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-	  (org/org-font-setup))
+      (org/org-font-setup))
 
-	(use-package org-bullets
-	  :after org
-	  :hook 
-	  (org-mode . org-bullets-mode)
-	  :custom
-	  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (use-package org-bullets
+      :after org
+      :hook 
+      (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
-	(add-hook 'org-mode-hook 'org-toggle-pretty-entities)
-	(add-hook 'org-mode-hook 'toc-org-mode)
+    (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+    (add-hook 'org-mode-hook 'toc-org-mode)
 
   #+END_SRC
 *** ox-pandoc
