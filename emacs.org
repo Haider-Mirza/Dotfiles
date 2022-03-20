@@ -303,10 +303,18 @@ Center org-mode documents.
 ** frame transparency and maximize windows. 
 #+BEGIN_SRC elisp
 
-  (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 #+END_SRC
+** Rainbow Delimiters
+#+begin_src elisp
+  (use-package rainbow-delimiters
+    :defer 5
+    :config
+    (rainbow-delimiters-mode))
+
+#+end_src
 ** Line numbers
 #+begin_src elisp
 
