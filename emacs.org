@@ -981,6 +981,10 @@ These keybindings will open my system's config files.
   (add-hook 'message-send-hook 'org-mime-htmlize)
 #+END_SRC
 * Development Configuration
+** Projectile
+#+begin_src elisp
+
+#+end_src
 ** YASnippet
  #+begin_src elisp
    (use-package yasnippet
@@ -1064,22 +1068,9 @@ These keybindings will open my system's config files.
 
   (global-set-key (kbd "C-s-d") 'dap-hydra))
 #+END_SRC
-** Eglot
-#+BEGIN_SRC elisp
-
-  ;; (use-package eglot
-  ;;   :defer 10
-  ;;   :config
-  ;;   (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
-  ;;   (add-hook 'c-mode-hook 'eglot-ensure)
-  ;;   (add-hook 'c++-mode-hook 'eglot-ensure))
-
-
-#+END_SRC
 ** Languages
 *** Javascript
-Setting up development in Javascript.
-
+I generally don't use Javascript.
 #+BEGIN_SRC elisp
 
   ;; (defun dw/set-js-indentation ()
@@ -1137,11 +1128,6 @@ But for now, this is the most I can get working
   (use-package rustic
     :ensure
     :config
-    ;; uncomment for less flashiness
-    ;; (setq lsp-eldoc-hook nil)
-    ;; (setq lsp-enable-symbol-highlighting nil)
-    ;; (setq lsp-signature-auto-activate nil)
-
     ;; comment to disable rustfmt on save
     (setq rustic-format-on-save t)
     (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
@@ -1154,10 +1140,10 @@ But for now, this is the most I can get working
     (when buffer-file-name
       (setq-local buffer-save-without-query t)))
 
-    (use-package rust-playground :ensure)
+  (use-package rust-playground :ensure)
 
-    (use-package toml-mode :ensure)
-  
+  (use-package toml-mode :ensure)
+
   (rune/leader-keys
     "r"  '(:ignore t :which-key "Rust")
     "rr" 'cargo-process-run)
