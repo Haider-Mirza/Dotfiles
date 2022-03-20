@@ -42,7 +42,8 @@
 		   '("wheel"
 		     "netdev"
 		     "audio"
-		     "video")))
+		     "video"
+		     "kvm")))
 
 		 (user-account
 		  (name "hasan")
@@ -64,8 +65,6 @@
 		      emacs-org-roam
 		      emacs-org-reveal
 		      mu
-		      gcc
-		      gcc-toolchain
 
 		      ;; for HTTPS access
 		      nss-certs)

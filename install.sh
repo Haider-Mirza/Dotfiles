@@ -44,7 +44,7 @@ cd code
 git clone git@github.com:Haider-Mirza/Spinter.git
 cd
 echo -e "\nInstalling all system packages\n"
-guix package -i mpv qutebrowser moc font-fira-code pandoc slock ksnip blender alacritty emacs picom xmodmap feh clang ccls gnupg pinentry password-store isync
+guix package -i mpv qutebrowser moc font-fira-code font-jetbrains-mono pandoc slock ksnip blender alacritty emacs picom xmodmap feh ccls gnupg pinentry password-store isync qemu virt-manager dmenu libvirt libvterm
 
 echo -e "\nType '1' if you want to update your system:"
 

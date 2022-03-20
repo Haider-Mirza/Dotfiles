@@ -214,14 +214,19 @@ Here is a post on the matter
 
 * UI Configuration
 ** Font
-   Make sure "font-fira-code" is installed on your system.
+   Make sure "font-fira-code" or "font-jetbrains-mono" is installed on your system.
    The name may be different depending on your Operating System.
 #+begin_src elisp
 
   ;; You will most likely need to adjust this font size for your system!
-   (defvar runemacs/default-font-size 80)
+   (defvar efs/default-font-size 80)
 
-   (set-face-attribute 'default nil :height runemacs/default-font-size)
+  ;; (set-face-attribute 'default nil :font "Fira Code Retina" :height efs/default-font-size)
+  (set-face-attribute 'default nil
+		       :font "JetBrains Mono"
+		       :weight 'light
+		       :height efs/default-font-size)
+
 
 #+end_src
 ** Load Theme
@@ -1019,6 +1024,21 @@ These keybindings will open my system's config files.
   (use-package lsp-ui :commands lsp-ui-mode)
   (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
+  ;; Suggestions from official docs
+  (setq gc-cons-threshold 100000000)
+  (setq lsp-completion-provider :capf)
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-log-io nil)
+
+  ;; Annoying stuff
+  (setq lsp-enable-links nil)
+  (setq lsp-signature-render-documentation nil)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-completion-enable-additional-text-edit nil)
+
+  (setq lsp-ui-sideline-show-diagnostics nil)
+
   ;; optional if you want which-key integration
   (use-package which-key
     :config
@@ -1027,10 +1047,22 @@ These keybindings will open my system's config files.
 #+END_SRC
 ** Dap-mode
 #+BEGIN_SRC elisp
-  ;; (use-package dap-mode
-  ;;   :config
-  ;;   (require 'dap-node))
 
+  (use-package dap-mode
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  ;; :config
+  ;; (dap-ui-mode 1)
+
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (require 'dap-cpptools)
+
+  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+
+  (global-set-key (kbd "C-s-d") 'dap-hydra))
 #+END_SRC
 ** Eglot
 #+BEGIN_SRC elisp
@@ -1092,30 +1124,13 @@ Setting up development in Javascript.
 
 #+END_SRC
 *** C/C++
-Make sure you have ccls installed
+I know that ccls is not the best, especially where options like clangd is avalable.
+But for now, this is the most I can get working
 #+BEGIN_SRC elisp
   (use-package ccls
     :defer 5
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
 	   (lambda () (require 'ccls) (lsp))))
-
-  ;; (defun dd/cpp-eglot-enable ()
-  ;;   "enable variables and hooks for eglot cpp IDE"
-  ;;   (interactive)
-  ;;   (setq company-backends
-  ;; 	(cons 'company-capf
-  ;; 	      (remove 'company-capf company-backends)))
-  ;;   (with-eval-after-load 'project
-  ;;     (add-to-list 'project-find-functions
-  ;; 		 'dd/projectile-proj-find-function))
-  ;;   (add-to-list 'eglot-server-programs
-  ;; 	       `((c++-mode) ,haider-clangd-sh))
-  ;;   (add-hook 'c++-mode-hook 'eglot-ensure))
-
-  ;; (defun dd/cpp-eglot-disable ()
-  ;; "disable hook for eglot"
-  ;; (interactive)
-  ;; (remove-hook 'c++-mode-hook 'eglot-ensure))
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
