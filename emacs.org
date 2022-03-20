@@ -859,10 +859,10 @@ These keybindings will open my system's config files.
 
   (rune/leader-keys
     "c"  '(:ignore t :which-key "Files")
-    "ce" '((lambda() (interactive) (find-file "~/dotfiles/Emacs.org")) :which-key "Emacs config")
-    "cd" '((lambda() (interactive) (find-file "~/dotfiles/Desktop.org")) :which-key "Desktop config")
-    "cs" '((lambda() (interactive) (find-file "~/dotfiles/System.org")) :which-key "System config")
-    "cp" '((lambda() (interactive) (find-file "~/dotfiles/Programs.org")) :which-key "Programs config"))
+    "ce" '((lambda() (interactive) (find-file "~/dotfiles/emacs.org")) :which-key "Emacs config")
+    "cd" '((lambda() (interactive) (find-file "~/dotfiles/desktop.org")) :which-key "Desktop config")
+    "cs" '((lambda() (interactive) (find-file "~/dotfiles/system.org")) :which-key "System config")
+    "cp" '((lambda() (interactive) (find-file "~/dotfiles/programs.org")) :which-key "Programs config"))
 
 #+end_src
 * MU4E EMail Configuration
