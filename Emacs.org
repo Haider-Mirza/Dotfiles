@@ -93,8 +93,17 @@
    If that doesn’t seem to work, you can add this line to one of your startup files (.xinitrc, .profile, window manager configuration, etc):
    (I have already enabled this in my EXWM config (desktop.org))
    #+BEGIN_SRC
-   xmodmap ~/.Xmodmap
+   xmodmap ~/path/to/.Xmodmap
    #+end_src
+* Package Cl
+When starting up Emacs, there is a error saying "Package cl is depricated" 
+You can disable this by tangling this to *early-init.el*.
+Here is a post on the matter
+
+#+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/early-init.el"
+(setq byte-compile-warnings '(cl-functions))
+#+END_SRC
+  
 * Tweak Garbage Collector
   This variable will set to normal at the end of my config.
   #+BEGIN_SRC elisp
@@ -209,10 +218,10 @@
    The name may be different depending on your Operating System.
 #+begin_src elisp
 
-    ;; You will most likely need to adjust this font size for your system!
-    (defvar runemacs/default-font-size 80)
+  ;; You will most likely need to adjust this font size for your system!
+   (defvar runemacs/default-font-size 80)
 
-    (set-face-attribute 'default nil :font "Fira Code Retina" :height runemacs/default-font-size)
+   (set-face-attribute 'default nil :height runemacs/default-font-size)
 
 #+end_src
 ** Load Theme
@@ -276,6 +285,14 @@ Center org-mode documents.
      :after vertico
      :config
      (savehist-mode))
+
+ #+END_SRC 
+** Marginalia
+ #+BEGIN_SRC elisp
+
+   (use-package marginalia
+     :config
+     (marginalia-mode))
 
  #+END_SRC 
 ** frame transparency and maximize windows. 
@@ -579,7 +596,6 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 	  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 	(add-hook 'org-mode-hook 'org-toggle-pretty-entities)
-	(add-hook 'org-mode-hook 'toc-org-mode)
 
   #+END_SRC
 *** ox-pandoc
@@ -838,10 +854,10 @@ These keybindings will open my system's config files.
 
   (rune/leader-keys
     "c"  '(:ignore t :which-key "Files")
-    "ce" '((lambda() (interactive) (find-file "~/repos/dotfiles/Emacs.org")) :which-key "Emacs config")
-    "cd" '((lambda() (interactive) (find-file "~/repos/dotfiles/Desktop.org")) :which-key "Desktop config")
-    "cs" '((lambda() (interactive) (find-file "~/repos/dotfiles/System.org")) :which-key "System config")
-    "cp" '((lambda() (interactive) (find-file "~/repos/dotfiles/Programs.org")) :which-key "Programs config"))
+    "ce" '((lambda() (interactive) (find-file "~/dotfiles/Emacs.org")) :which-key "Emacs config")
+    "cd" '((lambda() (interactive) (find-file "~/dotfiles/Desktop.org")) :which-key "Desktop config")
+    "cs" '((lambda() (interactive) (find-file "~/dotfiles/System.org")) :which-key "System config")
+    "cp" '((lambda() (interactive) (find-file "~/dotfiles/Programs.org")) :which-key "Programs config"))
 
 #+end_src
 * MU4E EMail Configuration
@@ -976,6 +992,7 @@ These keybindings will open my system's config files.
  #+end_src
 ** Magit
  #+BEGIN_SRC elisp
+   (use-package git-commit)
    (use-package magit
      :defer 5
      :custom
@@ -1010,21 +1027,20 @@ These keybindings will open my system's config files.
 #+END_SRC
 ** Dap-mode
 #+BEGIN_SRC elisp
-  (use-package dap-mode
-    :config
-    (require 'dap-node)
-    (dap-node-setup)) ;; Automatically installs Node debug adapter if needed
+  ;; (use-package dap-mode
+  ;;   :config
+  ;;   (require 'dap-node))
 
 #+END_SRC
 ** Eglot
 #+BEGIN_SRC elisp
 
-  (use-package eglot
-    :defer 10
-    :config
-    (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
-    (add-hook 'c-mode-hook 'eglot-ensure)
-    (add-hook 'c++-mode-hook 'eglot-ensure))
+  ;; (use-package eglot
+  ;;   :defer 10
+  ;;   :config
+  ;;   (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+  ;;   (add-hook 'c-mode-hook 'eglot-ensure)
+  ;;   (add-hook 'c++-mode-hook 'eglot-ensure))
 
 
 #+END_SRC
@@ -1082,24 +1098,24 @@ Make sure you have ccls installed
     :defer 5
     :hook ((c-mode c++-mode objc-mode cuda-mode) .
 	   (lambda () (require 'ccls) (lsp))))
-  
-  (defun dd/cpp-eglot-enable ()
-    "enable variables and hooks for eglot cpp IDE"
-    (interactive)
-    (setq company-backends
-	  (cons 'company-capf
-		(remove 'company-capf company-backends)))
-    (with-eval-after-load 'project
-      (add-to-list 'project-find-functions
-		   'dd/projectile-proj-find-function))
-    (add-to-list 'eglot-server-programs
-		 `((c++-mode) ,haider-clangd-sh))
-    (add-hook 'c++-mode-hook 'eglot-ensure))
-  
-  (defun dd/cpp-eglot-disable ()
-  "disable hook for eglot"
-  (interactive)
-  (remove-hook 'c++-mode-hook 'eglot-ensure))
+
+  ;; (defun dd/cpp-eglot-enable ()
+  ;;   "enable variables and hooks for eglot cpp IDE"
+  ;;   (interactive)
+  ;;   (setq company-backends
+  ;; 	(cons 'company-capf
+  ;; 	      (remove 'company-capf company-backends)))
+  ;;   (with-eval-after-load 'project
+  ;;     (add-to-list 'project-find-functions
+  ;; 		 'dd/projectile-proj-find-function))
+  ;;   (add-to-list 'eglot-server-programs
+  ;; 	       `((c++-mode) ,haider-clangd-sh))
+  ;;   (add-hook 'c++-mode-hook 'eglot-ensure))
+
+  ;; (defun dd/cpp-eglot-disable ()
+  ;; "disable hook for eglot"
+  ;; (interactive)
+  ;; (remove-hook 'c++-mode-hook 'eglot-ensure))
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
@@ -1292,16 +1308,16 @@ Flycheck kinda calls everything to be an error. Kind of anoyying
 Uses the standard Unix password store "pass".
 
 #+begin_src elisp
-    (use-package password-store
-      :defer 5)
+  (use-package password-store
+    :defer 5)
 
-    ;; Used to access passwords through emacs using Emacs's server-mode
-    (defun efs/lookup-password (&rest keys)
-      (interactive)
-      (let ((result (apply #'auth-source-search keys)))
-	(if result
-	    (funcall (plist-get (car result) :secret))
-	  nil)))
+  ;; Used to access passwords through emacs using Emacs's server-mode
+  (defun efs/lookup-password (&rest keys)
+    (interactive)
+    (let ((result (apply #'auth-source-search keys)))
+      (if result
+	  (funcall (plist-get (car result) :secret))
+	nil)))
 
 #+end_src
 
@@ -1313,9 +1329,9 @@ Uses the standard Unix password store "pass".
 
 * Load Desktop.org
   This loads EXWM and the rest of my system.
-  #+BEGIN_SRC elisp
- (load-file "~/.emacs.d/desktop.el")
-  #+END_SRC
+#+BEGIN_SRC elisp
+  (load-file "~/.emacs.d/desktop.el")
+#+END_SRC
 
 * Garbage Collecter Hack
   #+BEGIN_SRC elisp

@@ -3,7 +3,7 @@
 # If script has to be re-ran on option 1, delete ~/.ssh/
 # If script has to be re-ran on option 2, delete ~/.ssh/config and any copied repos
 
-echo -e "1) Setup SSH Key\n2) Configuration (after SSH Key)"
+echo -e "1) Setup SSH Key\n2) Configuration (after SSH Key)\n3) Email Configuration"
 echo -n "Enter Number: "
 read x
 
@@ -27,13 +27,15 @@ sleep 2
 echo "Script starting in two seconds..."
 sleep 2
 echo -e "\nConfiguring git\n"
-guix package -i git
 touch ~/.ssh/config
 printf "Host github.com\nHostname ssh.github.com\nPort 443">> ~/.ssh/config
 echo "Cloning git servers"
 sleep 1
-git clone git@github.com:Haider-Mirza/Dotfiles.git
+cd
+git config --global user.name "Haider Mirza"
+git config --global user.email "x7and7@gmail.com"
 git clone git@github.com:Haider-Mirza/3D-Projects.git
+git clone git@github.com:Haider-Mirza/Passwords.git
 git clone git@github.com:Haider-Mirza/Notes.git
 git clone git@github.com:Haider-Mirza/haider-mirza.github.io.git
 git clone git@github.com:Haider-Mirza/Documents.git
@@ -41,8 +43,8 @@ mkdir ~/code
 cd code
 git clone git@github.com:Haider-Mirza/Spinter.git
 cd
-echo -e "\nInstalling final packages\n"
-guix package -i mpv qutebrowser moc font-fira-code pandoc 
+echo -e "\nInstalling all system packages\n"
+guix package -i mpv qutebrowser moc font-fira-code pandoc slock ksnip blender alacritty emacs picom xmodmap feh clang ccls gnupg pinentry password-store isync
 
 echo -e "\nType '1' if you want to update your system:"
 
@@ -57,4 +59,22 @@ sleep 1
 echo "Also make sure you remove all dependancies from config.scm after org-roam has been compiled"
 sleep 2
 emacs
+
+elif [ $((x)) == 3 ]; then
+    echo "MAKE SURE YOU HAVE TANGLED MY EMACS CONFIGURATION AND MBSYNC CONFIGURATION AND RAN ALL PREVIOUS OPTIONS IN THIS SCRIPT"
+    echo -e "Script starting in two seconds...\n"
+
+    cd ~/dotfiles/
+    cd ~/Dotfiles/
+    gpg --import myprivatekeys.asc
+    gpg --import mypubkeys.asc
+
+    sleep 2
+    guix package -i isync
+    mkdir ~/Mail/
+    mkdir ~/Mail/Gmail/
+    mkdir ~/Mail/Outlook/
+
+    echo -e "Syncing Mail\n"
+    mbsync -a
 fi

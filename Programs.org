@@ -1276,17 +1276,18 @@ Switch workspace to 3 (this workspace is dedicated for videos that are launched 
   # vim: ft=cfg
 #+END_SRC
 * Rofi
-#+BEGIN_SRC conf :tangle "/home/haider/.config/rofi/config.rasi"
-  configuration {
-    timeout {
-	action: "kb-cancel";
-	delay:  0;
-    }
-    filebrowser {
-	directories-first: true;
-	sorting-method:    "name";
-    }
-  }
-  @theme "/home/haider/.guix-profile/share/rofi/themes/arthur.rasi"
-       
+#+BEGIN_SRC conf
+  # :tangle "/home/haider/.config/rofi/config.rasi"
+   configuration {
+     timeout {
+	 action: "kb-cancel";
+	 delay:  0;
+     }
+     filebrowser {
+	 directories-first: true;
+	 sorting-method:    "name";
+     }
+   }
+   @theme "/home/haider/.guix-profile/share/rofi/themes/arthur.rasi"
+
 #+END_SRC

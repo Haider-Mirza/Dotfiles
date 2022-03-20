@@ -26,73 +26,59 @@
    desktop
    networking
    ssh
-   xorg
-   virtualization)
+   xorg)
 
   (operating-system
    (locale "en_GB.utf8")
    (timezone "Europe/London")
    (keyboard-layout (keyboard-layout "gb" "extd"))
    (host-name "xps")
+   (users (cons* (user-account
+		  (name "haider")
+		  (comment "Haider")
+		  (group "users")
+		  (home-directory "/home/haider")
+		  (supplementary-groups
+		   '("wheel"
+		     "netdev"
+		     "audio"
+		     "video")))
 
-   (users (cons*  (user-account
-		   (name "haider")
-		   (comment "haider")
-		   (group "users")
-		   (home-directory "/home/haider")
-		   (supplementary-groups
-		    '("wheel"
-		      "netdev"
-		      "audio"
-		      "video"
-		      ;; Virt-Manager
-		      "libvirt"
-		      "kvm")))
-
-		  (user-account
-		   (name "hasan")
-		   (comment "hasan")
-		   (group "users")
-		   (home-directory "/home/hasan")
-		   (password "")
-		   (supplementary-groups
-		    '("audio"               
-		      "video"               
-		      "netdev")))            
-		  %base-user-accounts))
+		 (user-account
+		  (name "hasan")
+		  (comment "Hasan")
+		  (group "users")
+		  (home-directory "/home/hasan")
+		  (supplementary-groups
+		   '("netdev"
+		     "audio"
+		     "video")))
+		 %base-user-accounts))
 
    (packages (append (list
+		      ;; EXWM
 		      emacs
 		      emacs-exwm
 		      emacs-desktop-environment
-
+		      ;; Emacs packages
 		      emacs-org-roam
 		      emacs-org-reveal
 		      mu
-		      ;; terminal emulator
-		      xterm
-		      emacs-vterm
-		      ;; Text Editor
-		      vim
+		      gcc
+		      gcc-toolchain
+
 		      ;; for HTTPS access
 		      nss-certs)
 		     %base-packages))
-
-   (services (cons*
-	      (service xfce-desktop-service-type)
-	      (service openssh-service-type)
-	      (service cups-service-type
-		       (cups-configuration (web-interface? #t)
-					   (extensions
-					    (list cups-filters hplip-minimal))))
-	      (service libvirt-service-type
-		       (libvirt-configuration
-			(unix-sock-group "libvirt")
-			(tls-port "16555")))
-	      (set-xorg-configuration
-	       (xorg-configuration
-		(keyboard-layout keyboard-layout)))
-	      %desktop-services))
+   (services
+    (append
+     (list (service xfce-desktop-service-type)
+	   (service openssh-service-type)
+	   (service cups-service-type)
+	   (set-xorg-configuration
+	    (xorg-configuration
+	     (keyboard-layout keyboard-layout))))
+     %desktop-services))
 
    (bootloader
     (bootloader-configuration
@@ -103,15 +89,21 @@
    (swap-devices
     (list (swap-space
 	   (target
-	    (uuid "fdc34943-1094-4a38-90c4-c07960e388ab")))))
+	    (uuid "5a3b335d-4d35-48e5-84b9-2df556187504")))))
+
+   (mapped-devices
+    (list (mapped-device
+	   (source
+	    (uuid "97b8d753-0d52-488d-bfcc-229d00b0248c"))
+	   (target "guix")
+	   (type luks-device-mapping))))
 
    (file-systems
     (cons* (file-system
 	    (mount-point "/")
-	    (device
-	     (uuid "8abae596-c59e-418f-a7f0-e6a65ea54039"
-		   'ext4))
-	    (type "ext4"))
+	    (device "/dev/mapper/guix")
+	    (type "ext4")
+	    (dependencies mapped-devices))
 	   %base-file-systems)))
 #+END_SRC
 
