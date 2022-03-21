@@ -19,6 +19,9 @@
 	       (gnu packages mail)
 	       (gnu packages vim)
 	       (gnu packages cups)
+	       (gnu packages llvm)
+	       (gnu packages compression)
+	       (gnu packages gdb)
 	       (gnu packages gcc))
 
   (use-service-modules
@@ -65,6 +68,14 @@
 		      emacs-org-roam
 		      emacs-org-reveal
 		      mu
+
+		      ;; Development in Emacs
+		      clang
+		      clang-toolchain
+		      lldb
+		      llvm
+		      unzip
+		      gdb
 
 		      ;; for HTTPS access
 		      nss-certs)

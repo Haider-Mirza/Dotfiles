@@ -1023,58 +1023,50 @@ These keybindings will open my system's config files.
 
 #+BEGIN_SRC elisp
   (use-package lsp-mode
-    :init
-    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	   (XXX-mode . lsp)
-	   ;; if you want which-key integration
-	   (lsp-mode . lsp-enable-which-key-integration))
+    :bind (:map lsp-mode-map
+		("TAB" . completion-at-point))
+    :custom
+    (lsp-auto-guess-root nil)
+    (lsp-file-watch-threshold 2000)
+    (read-process-output-max (* 1024 1024))
+    (lsp-eldoc-hook nil)
+    :hook ((c++-mode . lsp)
+	   (c-mode . lsp))
     :commands lsp)
 
   ;; optionally
-  (use-package lsp-ui :commands lsp-ui-mode)
-  (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+  (use-package lsp-ui
+    :config (lsp-ui-mode))
 
-  ;; Suggestions from official docs
-  (setq gc-cons-threshold 100000000)
-  (setq lsp-completion-provider :capf)
-  (setq lsp-idle-delay 0.500)
-  (setq lsp-log-io nil)
+  (use-package lsp-treemacs)
 
-  ;; Annoying stuff
-  (setq lsp-enable-links nil)
-  (setq lsp-signature-render-documentation nil)
-  (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-ui-doc-enable nil)
-  (setq lsp-completion-enable-additional-text-edit nil)
-
-  (setq lsp-ui-sideline-show-diagnostics nil)
-
-  ;; optional if you want which-key integration
-  (use-package which-key
-    :config
-    (which-key-mode))
+  (rune/leader-keys
+    "l"  '(:ignore t :which-key "Lsp Mode")
+    "ld" '(lsp-find-definition :which-key "Find definition"))
 
 #+END_SRC
 ** Dap-mode
 #+BEGIN_SRC elisp
 
-  (use-package dap-mode
-  ;; Uncomment the config below if you want all UI panes to be hidden by default!
-  ;; :custom
-  ;; (lsp-enable-dap-auto-configure nil)
+  ;; (use-package dap-mode)
+
+  ;; ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; ;; :custom
+  ;; ;; (lsp-enable-dap-auto-configure nil)
+  ;; ;; :config
+  ;; ;; (dap-ui-mode 1)
+
   ;; :config
-  ;; (dap-ui-mode 1)
+  ;; ;; Set up Node debugging
+  ;; (require 'dap-lldb)
+  ;; (require 'dap-node)
+  ;; (require 'dap-cpptools)
+  ;; (require 'dap-gdb-lldb)
 
-  :config
-  ;; Set up Node debugging
-  (require 'dap-node)
-  (require 'dap-cpptools)
 
-  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+  ;; (dap-node-setup) ;; Automatically installs Node debug adapter if needed
 
-  (global-set-key (kbd "C-s-d") 'dap-hydra))
+  ;; (global-set-key (kbd "C-s-d") 'dap-hydra))
 #+END_SRC
 ** Languages
 *** Javascript
