@@ -64,6 +64,7 @@
 		      emacs
 		      emacs-exwm
 		      emacs-desktop-environment
+
 		      ;; Emacs packages
 		      emacs-org-roam
 		      emacs-org-reveal

@@ -24,15 +24,26 @@ Here are some snippets I made for OrgMode
 
   $0
 #+end_src
-
-** Org Source Block
-You Might want to manually transfer this over (you can see why)
+** Source Blocks
+You Might want to manually transfer these over (you can see why)
+*** Org Source Block
 #+begin_src snippet
 # -*- mode: snippet -*-
 # name: Org Src Block 
 # key: <src
 # --
 # #+BEGIN_SRC $1
+$0
+# #+END_SRC
+#+end_src
+
+*** Org Elisp Source Block
+#+begin_src snippet
+# -*- mode: snippet -*-
+# name: Org Elisp Src Block 
+# key: <el
+# --
+# #+BEGIN_SRC elisp
 $0
 # #+END_SRC
 #+end_src

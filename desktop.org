@@ -115,9 +115,8 @@
 #+BEGIN_SRC elisp
 
   (defun exwm/exwm-init-hook ()
-    (exwm-workspace-switch-create 1)
-    (exwm/run-xmodmap)
-    (exwm/run-in-background "dunst"))                      ;; Launch Dunst
+    (exwm-workspace-switch-create 1))
+    ;; (exwm/run-in-background "dunst"))                      ;; Launch Dunst
 
   (defun exwm/configure-window-by-class ()
     (interactive)
@@ -222,7 +221,6 @@
 	  ([\f6] . desktop-environment-toggle-mute)
 	  ([\f7] . desktop-environment-volume-decrement)
 	  ([\f8] . desktop-environment-volume-increment)
-	  ([?\s-n] . bufler-switch-buffer)
 	  ([?\s-x] . exwm-floating-toggle-floating)
 	  ([?\s-j] . win/position-window-left-corner)
 	  ([?\s-k] . win/position-window-right-corner)
@@ -313,6 +311,18 @@
    ;;   :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
 
    ;;   (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
+
+#+END_SRC
+** Startup script
+#+BEGIN_SRC elisp
+  (defun exwm/startup ()
+    (interactive)
+    (exwm/run-xmodmap)
+    (exwm-workspace-switch-create 1)
+    (exwm/run-alacritty)
+    (sleep-for 1)
+    (exwm-workspace-switch-create 2)
+    (exwm/run-qute))
 
 #+END_SRC
 ** System functions

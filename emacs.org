@@ -213,6 +213,10 @@ Here is a post on the matter
 #+end_src
 
 * UI Configuration
+** Scratch Buffer
+#+BEGIN_SRC elisp
+    (setq initial-scratch-message "Make sure to check OrgAgenda and OrgRoam Dailies!\nRun: (exwm/startup)")
+#+END_SRC
 ** Font
    Make sure "font-fira-code" or "font-jetbrains-mono" is installed on your system.
    The name may be different depending on your Operating System.
@@ -334,9 +338,6 @@ Center org-mode documents.
 ** Modeline
 
 #+begin_src elisp
-
-  ;; (use-package simple-modeline
-  ;;   :hook (after-init . simple-modeline-mode))
 
   (use-package all-the-icons)
 
@@ -524,91 +525,90 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
      
 *** OrgMode Main config
   #+begin_src elisp
-	(use-package prettier
-	  :defer 5)
-    
-	(rune/leader-keys
-	  "o"  '(:ignore t :which-key "Org")
-	  "oa" '(org-agenda :which-key "View Org-Agenda")
-	  "ol" '(org-agenda-list :which-key "View Org-Agendalist")
-	  "oL" '(org-insert-link :which-key "View Org-Agendalist")
-	  "ot" '(org-babel-tangle :which-key "Tangle Document")
-	  "ox" '(org-export-dispatch :which-key "Export Document")
-	  "od" '(org-deadline :which-key "Deadline")
-	  "os" '(org-schedule :which-key "Scedule"))
+    (use-package prettier)
 
-	(defun org/org-font-setup ()
-	  ;; Replace list hyphen with dot
-	  (font-lock-add-keywords 'org-mode
-				  '(("^ *\\([-]\\) "
-				     (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    (rune/leader-keys
+      "o"  '(:ignore t :which-key "Org")
+      "oa" '(org-agenda :which-key "View Org-Agenda")
+      "ol" '(org-agenda-list :which-key "View Org-Agendalist")
+      "oL" '(org-insert-link :which-key "View Org-Agendalist")
+      "ot" '(org-babel-tangle :which-key "Tangle Document")
+      "ox" '(org-export-dispatch :which-key "Export Document")
+      "od" '(org-deadline :which-key "Deadline")
+      "os" '(org-schedule :which-key "Scedule"))
 
-	  ;; Set faces for heading levels
-	  (dolist (face '((org-level-1 . 1.2)
-			  (org-level-2 . 1.1)
-			  (org-level-3 . 1.05)
-			  (org-level-4 . 1.0)
-			  (org-level-5 . 1.1)
-			  (org-level-6 . 1.1)
-			  (org-level-7 . 1.1)
-			  (org-level-8 . 1.1)))
-	    (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+    (defun org/org-font-setup ()
+      ;; Replace list hyphen with dot
+      (font-lock-add-keywords 'org-mode
+			      '(("^ *\\([-]\\) "
+				 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-	  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-	  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-	  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-	  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-	  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-	  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-	  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-	  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+      ;; Set faces for heading levels
+      (dolist (face '((org-level-1 . 1.2)
+		      (org-level-2 . 1.1)
+		      (org-level-3 . 1.05)
+		      (org-level-4 . 1.0)
+		      (org-level-5 . 1.1)
+		      (org-level-6 . 1.1)
+		      (org-level-7 . 1.1)
+		      (org-level-8 . 1.1)))
+	(set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
 
-	(use-package org
-	  :config
-	  (setq org-ellipsis " ▾")
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
-	  (setq org-agenda-start-with-log-mode t)
-	  (setq org-log-done 'time)
-	  (setq org-log-into-drawer t)
+    (use-package org
+      :config
+      (setq org-ellipsis " ▾")
 
-	  (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
-	  (setq org-startup-folded t) ;; Org files start up folded by default
-	  (setq org-image-actual-width nil)
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
 
-	  (setq org-list-demote-modify-bullet
-	  '(("+" . "*") ("*" . "-") ("-" . "+")))
+      (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
+      (setq org-startup-folded t) ;; Org files start up folded by default
+      (setq org-image-actual-width nil)
 
-	  (setq org-agenda-files
-		'("~/Documents/Home/Reminders.org"
-		  "~/Documents/Home/TODO.org"
-		  "~/Documents/School/Homework.org"
-		  "~/Documents/School/School-Reminders.org"))
+      (setq org-list-demote-modify-bullet
+	    '(("+" . "*") ("*" . "-") ("-" . "+")))
 
-	  (setq org-todo-keywords
-		'((sequence
-		   "TODO(t)"
-		   "WORK(w)"
-		   "DEV(d)"
-		   "RESEARCH(r)"
-		   "HOLD(h)"
-		   "PLAN(p)"
-		   "|"
-		   "COMPLETED(c)"
-		   "FAILED(f)")))
+      (setq org-agenda-files
+	    '("~/Documents/Home/Reminders.org"
+	      "~/Documents/Home/TODO.org"
+	      "~/Documents/School/Homework.org"
+	      "~/Documents/School/School-Reminders.org"))
 
-	  ;; Save Org buffers after refiling!
-	  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+      (setq org-todo-keywords
+	    '((sequence
+	       "TODO(t)"
+	       "WORK(w)"
+	       "DEV(d)"
+	       "RESEARCH(r)"
+	       "HOLD(h)"
+	       "PLAN(p)"
+	       "|"
+	       "COMPLETED(c)"
+	       "FAILED(f)")))
 
-	  (org/org-font-setup))
+      ;; Save Org buffers after refiling!
+      (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-	(use-package org-bullets
-	  :after org
-	  :hook 
-	  (org-mode . org-bullets-mode)
-	  :custom
-	  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+      (org/org-font-setup))
 
-	(add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+    (use-package org-bullets
+      :after org
+      :hook 
+      (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+    (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
 
   #+END_SRC
 *** ox-pandoc
@@ -798,7 +798,7 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 	;; erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
 	erc-track-exclude-server-buffer t
 	erc-track-enable-keybindings t
-	erc-quit-reason (lambda (s) (or s "./Shutdown-Brain"))
+	erc-quit-reason (lambda (s) (or s "Off to sleep!"))
 	erc-track-visibility nil) ;; Essential if using EXWM
 
   (defun chat/connect-irc ()
@@ -991,7 +991,21 @@ These keybindings will open my system's config files.
 * Development Configuration
 ** Projectile
 #+begin_src elisp
+  (use-package projectile
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :bind-keymap
+    ("s-p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "~/code")
+      (setq projectile-project-search-path '("~/code")))
+    (setq projectile-switch-project-action #'projectile-find-file))
 
+  (use-package counsel-projectile
+    :after projectile
+    :config (counsel-projectile-mode))
+  
 #+end_src
 ** YASnippet
  #+begin_src elisp
@@ -1282,6 +1296,17 @@ Flycheck kinda calls everything to be an error. Kind of anoyying
 
  #+END_SRC
 * Terminal Configurations
+** Term
+#+BEGIN_SRC elisp
+  (use-package term
+    :config
+    (setq explicit-shell-file-name "bash") ;; Change this to zsh, etc
+    ;;(setq explicit-zsh-args '())         ;; Use 'explicit-<shell>-args for shell-specific args
+
+    ;; Match the default Bash shell prompt.  Update this if you have a custom prompt
+    (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
+
+#+END_SRC
 ** VTerm
  #+BEGIN_SRC elisp
    (use-package vterm
@@ -1293,7 +1318,7 @@ Flycheck kinda calls everything to be an error. Kind of anoyying
 
    (global-set-key (kbd "s-v") 'vterm)
  #+END_SRC
-** VTerm-toggle
+*** VTerm-toggle
 #+BEGIN_SRC elisp
   ;; (use-package vterm-toggle)
 #+END_SRC
@@ -1312,6 +1337,8 @@ Uses the standard Unix password store "pass".
   (use-package password-store
     :defer 5)
 
+  (setq epa-pinentry-mode 'loopback)
+  
   ;; Used to access passwords through emacs using Emacs's server-mode
   (defun efs/lookup-password (&rest keys)
     (interactive)

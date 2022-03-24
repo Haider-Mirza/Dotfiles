@@ -44,7 +44,7 @@ cd code
 git clone git@github.com:Haider-Mirza/Spinter.git
 cd
 echo -e "\nInstalling all system packages\n"
-guix package -i mpv qutebrowser moc font-fira-code font-jetbrains-mono pandoc slock ksnip blender alacritty emacs picom xmodmap feh ccls gnupg pinentry password-store isync qemu virt-manager dmenu libvirt libvterm alsa-utils
+guix package -i mpv qutebrowser moc font-fira-code font-jetbrains-mono pandoc slock ksnip blender alacritty emacs picom xmodmap feh ccls gnupg pinentry-tty password-store isync qemu virt-manager dmenu libvirt libvterm alsa-utils
 
 echo -e "\nType '1' if you want to update your system:"
 
@@ -65,17 +65,18 @@ elif [ $((x)) == 3 ]; then
     echo "MAKE SURE YOU HAVE TANGLED MY EMACS CONFIGURATION AND MBSYNC CONFIGURATION AND RAN ALL PREVIOUS OPTIONS IN THIS SCRIPT"
     echo -e "Script starting in two seconds...\n"
 
-    cd ~/dotfiles/
-    cd ~/Dotfiles/
-    gpg --import myprivatekeys.asc
-    gpg --import mypubkeys.asc
+    # cd ~/dotfiles/
+    # cd ~/Dotfiles/
+    # gpg --import myprivatekeys.asc
+    # gpg --import mypubkeys.asc
 
     sleep 2
     guix package -i isync
     mkdir ~/Mail/
     mkdir ~/Mail/Gmail/
     mkdir ~/Mail/Outlook/
-
+    mu init --maildir=~/Mail --my-address=x7and7@gmail.com --my-address=ha6mi19@keaston.bham.sch.uk
+    mu index
     echo -e "Syncing Mail\n"
     mbsync -a
 fi
