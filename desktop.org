@@ -91,10 +91,6 @@
     (interactive)
     (start-process-shell-command "picom" nil "picom"))
   
-  (defun exwm/passmenu ()
-    (interactive)
-    (start-process-shell-command "passmenu" nil "passmenu"))
-
   (defun exwm/run-xmodmap ()
     (interactive)
     (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/.xmodmap"))
@@ -217,7 +213,6 @@
 	  ([?\s-f] . exwm-layout-toggle-fullscreen)
 	  ([?\s-z] . exwm-layout-toggle-mode-line)
 	  ([?\s-b] . consult-buffer)
-	  ([\f5] . exwm/passmenu)
 	  ([\f6] . desktop-environment-toggle-mute)
 	  ([\f7] . desktop-environment-volume-decrement)
 	  ([\f8] . desktop-environment-volume-increment)
