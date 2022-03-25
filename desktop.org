@@ -28,7 +28,6 @@
   This is my desktop configuration for my system.
 * EXWM
   EXWM is my Window Manager That I use becuase It fits very well to my workflow and is highly keyboard-based. 
-  Make sure alsa-utils is installed.
 ** Window Mangement
 #+BEGIN_SRC elisp
   (defun win/position-window-left-corner ()
@@ -90,6 +89,10 @@
   (defun exwm/picom ()
     (interactive)
     (start-process-shell-command "picom" nil "picom"))
+
+  (defun exwm/unclutter ()
+    (interactive)
+    (start-process-shell-command "unclutter" nil "unclutter -idle 0.01 -root"))
   
   (defun exwm/run-xmodmap ()
     (interactive)
@@ -111,8 +114,9 @@
 #+BEGIN_SRC elisp
 
   (defun exwm/exwm-init-hook ()
-    (exwm-workspace-switch-create 1))
-    ;; (exwm/run-in-background "dunst"))                      ;; Launch Dunst
+    (exwm-workspace-switch-create 1)
+    (exwm/unclutter))
+  ;; (exwm/run-in-background "dunst"))                      ;; Launch Dunst
 
   (defun exwm/configure-window-by-class ()
     (interactive)

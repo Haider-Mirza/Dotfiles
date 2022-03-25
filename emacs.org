@@ -314,7 +314,6 @@ Center org-mode documents.
 ** Rainbow Delimiters
 #+begin_src elisp
   (use-package rainbow-delimiters
-    :defer 5
     :config
     (rainbow-delimiters-mode))
 
