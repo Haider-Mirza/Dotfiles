@@ -22,7 +22,9 @@
 	       (gnu packages llvm)
 	       (gnu packages compression)
 	       (gnu packages gdb)
-	       (gnu packages gcc))
+	       (gnu packages gcc)
+	       ;; (gnu packages linux)
+	       (gnu packages version-control))
 
   (use-service-modules
    cups
@@ -65,10 +67,8 @@
 		      emacs-exwm
 		      emacs-desktop-environment
 
-		      ;; Emacs packages
-		      emacs-org-roam
-		      emacs-org-reveal
-		      mu
+		      ;; Everyone deserves git
+		      git 
 
 		      ;; for HTTPS access
 		      nss-certs)
@@ -76,6 +76,9 @@
    (services
     (append
      (list (service xfce-desktop-service-type)
+	   ;; (service pipewire-service-type
+	   ;; 	  (pipewire-configuration
+	   ;; 	   (media-session `("env" "WIREPLUMBER_DEBUG=T" (string-append ,wireplumber "/bin/wireplumber")))))
 	   (service openssh-service-type)
 	   (service cups-service-type)
 	   (set-xorg-configuration
@@ -103,14 +106,14 @@
 
    (file-systems
     (cons*
-     
-     (file-system
-	    (mount-point "/")
-	    (device "/dev/mapper/guix")
-	    (type "ext4")
-	    (dependencies mapped-devices))
 
-	   %base-file-systems)))
+     (file-system
+      (mount-point "/")
+      (device "/dev/mapper/guix")
+      (type "ext4")
+      (dependencies mapped-devices))
+
+     %base-file-systems)))
 #+END_SRC
 
 * Channels.scm

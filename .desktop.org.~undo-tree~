@@ -1,0 +1,9 @@
+(undo-tree-save-format-version . 1)
+"22e8ade3b2b351d9da10dd10efc072f3b278cda8"
+[nil nil nil nil (25169 45927 452272 900000) 0 nil]
+([nil nil ((#("]" 0 1 (fontified t face org-link invisible org-link mouse-face highlight keymap (keymap (follow-link . mouse-face) (mouse-3 . org-find-file-at-mouse) (mouse-2 . org-open-at-mouse)) help-echo "LINK: #launch-applications" htmlize-link (:uri "#launch-applications") font-lock-multiline t)) . 616) (t 25169 21375 353732 595000)) nil (25169 45927 452270 241000) 0 nil])
+([nil nil ((5887 . 5890)) nil (25169 45927 452267 682000) 0 nil])
+([nil nil ((#("b" 0 1 (fontified t font-lock-fontified t help-echo nil src-block t font-lock-multiline t face (org-block))) . 5887)) nil (25169 45927 452264 918000) 0 nil])
+([nil nil ((5887 . 5888)) nil (25169 45927 452262 279000) 0 nil])
+([nil current ((5888 . 5891)) nil (25169 45927 452255 429000) 0 nil])
+nil

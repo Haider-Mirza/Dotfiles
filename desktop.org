@@ -12,7 +12,7 @@
   - [[#polybar-panel][Polybar Panel]]
   - [[#use-package][use-package]]
   - [[#keybinds][Keybinds]]
-  - [[#launch-applications][Launch Applications]]
+  - [[#launch-applications][Launch Applications]
   - [[#audio-control][Audio Control]]
   - [[#system-functions][System functions]]
 - [[#xmodmap][Xmodmap]]
@@ -165,10 +165,9 @@
     (message (poly/polybar-exwm-workspace)))
 
 #+END_SRC
-** use-package
+** Initial EXWM Setup
 #+BEGIN_SRC elisp
-  (use-package exwm
-    :config
+   (setup (:pkg exwm)
     ;; Set the default number of workspaces
     (setq exwm-workspace-number 9)
 
@@ -192,9 +191,6 @@
 #+END_SRC
 ** Keybinds
 #+BEGIN_SRC elisp
-  (use-package consult
-    :defer 10)
-
   (setq exwm-input-prefix-keys
 	'(?\C-x
 	  ?\C-u
@@ -207,6 +203,7 @@
 	  ?\M-:
 	  ?\C-\M-j  ;; Buffer list
 	  ?\C-\ ))  ;; Ctrl+Space
+
 
   (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 

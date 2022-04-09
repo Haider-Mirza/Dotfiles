@@ -42,9 +42,10 @@ elif [ $((x)) == 2 ]; then
     mkdir ~/code
     cd code
     git clone git@github.com:Haider-Mirza/Spinter.git
-    cd
+    cd ~/dotfiles/guix-home/
     echo -e "\nInstalling all system packages\n"
-    guix package -i mpv qutebrowser moc font-fira-code font-jetbrains-mono pandoc slock ksnip blender alacritty emacs picom xmodmap feh ccls gnupg pinentry-tty password-store isync qemu virt-manager dmenu libvirt libvterm alsa-utils node unclutter
+    guix home reconfigure config.scm
+    # guix package -i mpv qutebrowser moc font-fira-code font-jetbrains-mono pandoc slock ksnip blender alacritty emacs picom xmodmap feh ccls gnupg pinentry-tty password-store isync qemu virt-manager dmenu libvirt libvterm alsa-utils node unclutter
 
     echo -e "\nType '1' if you want to update your system:"
 

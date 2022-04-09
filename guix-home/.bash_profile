@@ -9,3 +9,5 @@ for i in $GUIX_EXTRA_PROFILES/*; do
   fi
   unset profile
 done
+
+source ~/profile
