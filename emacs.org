@@ -68,8 +68,7 @@
 - [[#load-desktoporg][Load Desktop.org]]
 - [[#garbage-collecter-hack][Garbage Collecter Hack]]
 
-* Note
-** Replace Capslock with CTRL
+* Note - Replace Capslock with CTRL
    You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
    Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
    So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
@@ -241,6 +240,11 @@ Here is a post on the matter
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
     (load-theme 'doom-one t))
+
+  ;; (use-package badger-theme
+  ;;   :config
+  ;;   (load-theme 'badger t))
+
 #+end_src
 
 ** Minimal Visuals
@@ -313,9 +317,8 @@ Center org-mode documents.
 #+END_SRC
 ** Rainbow Delimiters
 #+begin_src elisp
-  (use-package rainbow-delimiters
-    :config
-    (rainbow-delimiters-mode))
+  (use-package rainbow-delimiters)
+  (rainbow-delimiters-mode)
 
 #+end_src
 ** Line numbers
@@ -479,6 +482,42 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 
 
  #+END_SRC 
+* MPV Playlist Functions
+Playlist functions
+#+BEGIN_SRC elisp
+
+  (setq mpv-playlist.txt "~/.config/qutebrowser/playlist.txt")
+
+  (defun mpv-playlist-add ()
+    "Insert web videos to a playlist.txt"
+    (interactive)
+    (setq mpv-query (concat (read-string "Information: ") "-" (read-string "Paste URL: ")))
+    (start-process-shell-command "to-file" nil (concat "printf \"" mpv-query "\n\">> " mpv-playlist.txt)))
+
+
+  (defun mpv-playlist-load ()
+    "Load web videos from playlist.txt"
+    (interactive)
+    (setq mpv-playlist-line
+	  (completing-read "Select Video: "
+			   (with-current-buffer (find-file-noselect mpv-playlist.txt)
+			     (mapcar (lambda (x) (split-string x " " t))
+				     (split-string
+				      (buffer-substring-no-properties (point-min) (point-max))
+				      "\n")))))
+
+
+    (setq mpv-selected-video (delete (car (split-string mpv-playlist-line "-")) (split-string mpv-playlist-line "-")))
+
+    (start-process-shell-command "launch mpv" nil (mapconcat 'identity (append '("mpv") mpv-selected-video) " "))
+    (exwm-workspace-switch-create 3))
+
+  (rune/leader-keys
+    "v"  '(:ignore t :which-key "Video")
+    "va" '(mpv-playlist-add :which-key "Add a video to my mpv playlist")
+    "vl" '(mpv-playlist-load :which-key "Load a video from my mpv playlist"))
+
+#+END_SRC
 * Keep Directories Clean
   Makes Emacs keep my file directories clean of unnecessary files.
 #+BEGIN_SRC elisp
@@ -534,7 +573,7 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       "ot" '(org-babel-tangle :which-key "Tangle Document")
       "ox" '(org-export-dispatch :which-key "Export Document")
       "od" '(org-deadline :which-key "Deadline")
-      "os" '(org-schedule :which-key "Scedule"))
+      "os" '(org-todo :which-key "Switch"))
 
     (defun org/org-font-setup ()
       ;; Replace list hyphen with dot
@@ -566,6 +605,9 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       :config
       (setq org-ellipsis " ▾")
 
+      ;; https://www.reddit.com/r/emacs/comments/tk8qou/org_speed_keys_boom_great_orgmodes_feature_and_a/
+      (setq org-use-speed-commands t)
+      
       (setq org-agenda-start-with-log-mode t)
       (setq org-log-done 'time)
       (setq org-log-into-drawer t)
@@ -578,21 +620,20 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
 	    '(("+" . "*") ("*" . "-") ("-" . "+")))
 
       (setq org-agenda-files
-	    '("~/Documents/Home/Reminders.org"
-	      "~/Documents/Home/TODO.org"
-	      "~/Documents/School/Homework.org"
-	      "~/Documents/School/School-Reminders.org"))
+	    '("~/documents/Home/Reminders.org"
+	      "~/documents/Home/TODO.org"
+	      "~/documents/School/Homework.org"
+	      "~/documents/School/School-Reminders.org"))
 
       (setq org-todo-keywords
 	    '((sequence
 	       "TODO(t)"
 	       "WORK(w)"
-	       "DEV(d)"
 	       "RESEARCH(r)"
 	       "HOLD(h)"
 	       "PLAN(p)"
 	       "|"
-	       "COMPLETED(c)"
+	       "DONE(d)"
 	       "FAILED(f)")))
 
       ;; Save Org buffers after refiling!
@@ -608,6 +649,7 @@ Counsel is a customized set of commands to replace `find-file` with `counsel-fin
       (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
     (add-hook 'org-mode-hook 'org-toggle-pretty-entities)
+    (add-hook 'org-mode-hook 'org-display-inline-images)
 
   #+END_SRC
 *** ox-pandoc
@@ -713,7 +755,7 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
      :init
      (setq org-roam-v2-ack t)
      :custom
-     (org-roam-directory "~/Notes/OrgRoam")
+     (org-roam-directory "~/Notes/")
      (org-roam-completion-everywhere t)
      (org-roam-dailies-capture-templates
       '(
@@ -854,7 +896,6 @@ These keybindings will open some of my documents.
   (rune/leader-keys
     "d"  '(:ignore t :which-key "Files")
     "dt" '((lambda() (interactive) (find-file "~/documents/Home/TODO.org")) :which-key "TODO")
-    "dn" '((lambda() (interactive) (find-file "~/documents/Home/Notes.org")) :which-key "Notes") ;; Need to use Org Roam Later
     "ds" '((lambda() (interactive) (find-file "~/documents/Home/Reminders.org")) :which-key "Schedule")
     "dh" '((lambda() (interactive) (find-file "~/documents/School/Homework.org")) :which-key "Homework")
     "dr" '((lambda() (interactive) (find-file "~/documents/School/School-Reminders.org")) :which-key "Reminders"))
@@ -898,6 +939,20 @@ These keybindings will open my system's config files.
     (setq mu4e-get-mail-command "mbsync -a")
     (setq mu4e-maildir "~/Mail")
 
+    (setq message-kill-buffer-on-exit t)
+    (setq mu4e-attachment-dir "~/Downloads")
+    (setq mu4e-compose-dont-reply-to-self t)
+    (setq mu4e-headers-fields '((:human-date . 20)
+				(:flags . 6)
+				(:mailing-list . 10)
+				(:from . 22)
+				(:subject)))
+    (setq mu4e-headers-include-related t)
+    (setq mu4e-sent-messages-behavior 'delete)
+    (setq mu4e-view-show-addresses t)
+    (setq mu4e-view-show-images t)
+    (setq mm-sign-option 'guided)
+
     ;; Configure the function to use for sending mail
     (setq message-send-mail-function 'smtpmail-send-it)
 
@@ -906,6 +961,14 @@ These keybindings will open my system's config files.
 	   ;; Personal account
 	   (make-mu4e-context
 	    :name "Personal"
+	    :enter-func (lambda ()
+			  (mu4e-message "Entering personal context")
+			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+			    (revert-buffer)))
+	    :leave-func (lambda ()
+			  (mu4e-message "Leaving personal context")
+			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+			    (revert-buffer)))
 	    :match-func
 	    (lambda (msg)
 	      (when msg
@@ -923,7 +986,15 @@ These keybindings will open my system's config files.
 
 	   ;; Work account
 	   (make-mu4e-context
-	    :name "Work"
+	    :name "School"
+	    :enter-func (lambda ()
+			  (mu4e-message "Entering school context")
+			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+			    (revert-buffer)))
+	    :leave-func (lambda ()
+			  (mu4e-message "Leaving school context")
+			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+			    (revert-buffer)))
 	    :match-func
 	    (lambda (msg)
 	      (when msg
@@ -942,18 +1013,32 @@ These keybindings will open my system's config files.
 
     (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
 
-    ;; Sign all of my emails with opengpg keys 
-    (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
-    (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+    ;; ;; Sign all of my emails with opengpg keys 
+    ;; (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
+    ;; (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
 
-    (setq mu4e-context-policy 'pick-first)
+    ;; (setq mu4e-context-policy 'pick-first)
+
+    (defun sign-or-encrypt-message ()
+      (let ((answer (read-from-minibuffer "Sign or encrypt?\nEmpty to do nothing.\n[s/e]: ")))
+	(cond
+	 ((string-equal answer "s") (progn
+				      (message "Signing message.")
+				      (mml-secure-message-sign-pgpmime)))
+	 ((string-equal answer "e") (progn
+				      (message "Encrypt and signing message.")
+				      (mml-secure-message-encrypt-pgpmime)))
+	 (t (progn
+	      (message "Dont signing or encrypting message.")
+	      nil)))))
+
+    (add-hook 'message-send-hook 'sign-or-encrypt-message)
 
     (setq mu4e-maildir-shortcuts
 	  '((:maildir "/Gmail/Inbox"    :key ?g)
 	    (:maildir "/Outlook/INBOX"     :key ?i)
 	    (:maildir "/Gmail/[Gmail]/Sent Mail" :key ?s)
-	    (:maildir "/Outlook/Sent" :key ?S)
-	    )))
+	    (:maildir "/Outlook/Sent" :key ?S))))
 
   ;; Make sure plain text mails flow correctly for recipients
   (setq mu4e-compose-format-flowed t)
@@ -1043,8 +1128,8 @@ These keybindings will open my system's config files.
     (lsp-file-watch-threshold 2000)
     (read-process-output-max (* 1024 1024))
     (lsp-eldoc-hook nil)
-    :hook ((c++-mode . lsp)
-	   (c-mode . lsp))
+    ;; :hook ((c++-mode . lsp)
+    ;; 	 (c-mode . lsp))
     :commands lsp)
 
   ;; optionally
@@ -1079,7 +1164,7 @@ These keybindings will open my system's config files.
 
   ;; (dap-node-setup) ;; Automatically installs Node debug adapter if needed
 
-  ;; (global-set-key (kbd "C-s-d") 'dap-hydra))
+  ;; (global-set-key (kbd "C-s-d") 'dap-hydra)
 #+END_SRC
 ** Languages
 *** Javascript
@@ -1131,38 +1216,38 @@ I generally don't use Javascript.
 I know that ccls is not the best, especially where options like clangd is avalable.
 But for now, this is the most I can get working
 #+BEGIN_SRC elisp
-  (use-package ccls
-    :defer 5
-    :hook ((c-mode c++-mode objc-mode cuda-mode) .
-	   (lambda () (require 'ccls) (lsp))))
+  ;; (use-package ccls
+  ;;   :defer 5)
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
-  (use-package rustic
-    :ensure
-    :config
-    ;; comment to disable rustfmt on save
-    (setq rustic-format-on-save t)
-    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+  ;; (use-package rustic
+  ;;   :ensure
+  ;;   :config
+  ;;   ;; comment to disable rustfmt on save
+  ;;   (setq rustic-format-on-save t)
+  ;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
-  (defun rk/rustic-mode-hook ()
-    ;; so that run C-c C-c C-r works without having to confirm, but don't try to
-    ;; save rust buffers that are not file visiting. Once
-    ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
-    ;; no longer be necessary.
-    (when buffer-file-name
-      (setq-local buffer-save-without-query t)))
+  ;; (defun rk/rustic-mode-hook ()
+  ;;   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+  ;;   ;; save rust buffers that are not file visiting. Once
+  ;;   ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+  ;;   ;; no longer be necessary.
+  ;;   (when buffer-file-name
+  ;;     (setq-local buffer-save-without-query t)))
 
-  (use-package rust-playground :ensure)
+  ;; (use-package rust-playground :ensure)
 
-  (use-package toml-mode :ensure)
+  ;; (use-package toml-mode :ensure)
 
-  (rune/leader-keys
-    "r"  '(:ignore t :which-key "Rust")
-    "rr" 'cargo-process-run)
+  ;; (rune/leader-keys
+  ;;   "r"  '(:ignore t :which-key "Rust")
+  ;;   "rr" 'cargo-process-run)
 #+END_SRC
 *** Scheme
 #+BEGIN_SRC elisp
+  (use-package geiser-guile)
+  
   (use-package geiser
     :config
     (setq geiser-default-implementation 'guile)
@@ -1176,32 +1261,32 @@ But for now, this is the most I can get working
 #+END_SRC
 *** HTML
 #+BEGIN_SRC elisp
-  (use-package web-mode
-    :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
-    :config
-    (setq-default web-mode-code-indent-offset 2)
-    (setq-default web-mode-markup-indent-offset 2)
-    (setq-default web-mode-attribute-indent-offset 2))
+  ;; (use-package web-mode
+  ;;   :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
+  ;;   :config
+  ;;   (setq-default web-mode-code-indent-offset 2)
+  ;;   (setq-default web-mode-markup-indent-offset 2)
+  ;;   (setq-default web-mode-attribute-indent-offset 2))
 
-  ;; 1. Start the server with `httpd-start'
-  ;; 2. Use `impatient-mode' on any buffer
-  (use-package impatient-mode
-    :defer 5)
+  ;; ;; 1. Start the server with `httpd-start'
+  ;; ;; 2. Use `impatient-mode' on any buffer
+  ;; (use-package impatient-mode
+  ;;   :defer 5)
 
-  (use-package skewer-mode
-    :defer 5)
+  ;; (use-package skewer-mode
+  ;;   :defer 5)
 
-  ;; Run the webserver with command:
-  ;; M-x httpd-serve-directory 
+  ;; ;; Run the webserver with command:
+  ;; ;; M-x httpd-serve-directory 
 
-  (use-package simple-httpd
-    :defer 5)
+  ;; (use-package simple-httpd
+  ;;   :defer 5)
 
 #+END_SRC
 *** YAML
 #+BEGIN_SRC elisp
-  (use-package yaml-mode
-    :mode "\\.ya?ml\\'")
+  ;; (use-package yaml-mode
+  ;;   :mode "\\.ya?ml\\'")
 
 #+END_SRC
 ** Smart Parens

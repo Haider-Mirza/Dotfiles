@@ -834,118 +834,121 @@ Mpv is my personal favourite when it comes to media players
 This is (by far) my favourite browser where vimb is a worthy alternative.
 ** config.py
 #+BEGIN_SRC fundamental :tangle "/home/haider/.config/qutebrowser/config.py"
-    # Open every tab as a new window, Vimb style
-    c.tabs.tabs_are_windows = True
-    c.tabs.last_close = "close"
+  # Open every tab as a new window, Vimb style
+  c.tabs.tabs_are_windows = True
+  c.tabs.last_close = "close"
 
-    c.auto_save.session = True
-    c.scrolling.smooth = True
-    c.session.lazy_restore = True
-    c.content.autoplay = False
+  c.auto_save.session = True
+  c.scrolling.smooth = True
+  c.session.lazy_restore = True
+  c.content.autoplay = False
 
-    # Better default fonts
-    c.fonts.default_family = '"Source Code Pro"'
-    c.fonts.completion.entry = '11pt "Source Code Pro"'
-    c.fonts.debug_console = '11pt "Source Code Pro"'
-    c.fonts.default_size = '11pt'
-    c.fonts.prompts = 'default_size sans-serif'
-    c.fonts.statusbar = '10pt "Source Code Pro"'
+  # Better default fonts
+  c.fonts.default_family = '"Source Code Pro"'
+  c.fonts.completion.entry = '11pt "Source Code Pro"'
+  c.fonts.debug_console = '11pt "Source Code Pro"'
+  c.fonts.default_size = '11pt'
+  c.fonts.prompts = 'default_size sans-serif'
+  c.fonts.statusbar = '10pt "Source Code Pro"'
 
-    # Use dark mode where possible
-    c.colors.webpage.preferred_color_scheme = "dark"
-    # c.colors.webpage.darkmode.enabled = True
-    # c.colors.webpage.darkmode.policy.images = "never"
-    # c.colors.webpage.bg = "black"
+  # Use dark mode where possible
+  c.colors.webpage.preferred_color_scheme = "dark"
+  # c.colors.webpage.darkmode.enabled = True
+  # c.colors.webpage.darkmode.policy.images = "never"
+  # c.colors.webpage.bg = "black"
 
-    # Set Downloads Directory
-    c.downloads.location.directory = '~/Downloads'
+  # Set Downloads Directory
+  c.downloads.location.directory = '~/Downloads'
 
-    # When to show tabs
-    c.tabs.show = "never"
-    c.statusbar.show = "always"
+  # When to show tabs
+  c.tabs.show = "never"
+  c.statusbar.show = "never"
 
-    # Setting default page for when opening new tabs or new windows with
-    # commands like :open -t and :open -w .
-    c.url.default_page = 'https://start.duckduckgo.com/'
-    c.url.start_pages = 'https://start.duckduckgo.com/'
+  # Setting default page for when opening new tabs or new windows with
+  # commands like :open -t and :open -w .
+  c.url.default_page = 'https://start.duckduckgo.com/'
+  c.url.start_pages = 'https://start.duckduckgo.com/'
 
-    c.url.searchengines = {'DEFAULT': 'https://duckduckgo.com/?q={}', 'am': 'https://www.amazon.com/s?k={}', 'aw': 'https://wiki.archlinux.org/?search={}', 'goog': 'https://www.google.com/search?q={}', 'hoog': 'https://hoogle.haskell.org/?hoogle={}', 're': 'https://www.reddit.com/r/{}', 'ub': 'https://www.urbandictionary.com/define.php?term={}', 'wiki': 'https://en.wikipedia.org/wiki/{}', 'yt': 'https://www.youtube.com/results?search_query={}', 'aur': 'https://aur.archlinux.org/packages/?O=0&K={}'}
+  c.url.searchengines = {'DEFAULT': 'https://duckduckgo.com/?q={}', 'am': 'https://www.amazon.com/s?k={}', 'aw': 'https://wiki.archlinux.org/?search={}', 'goog': 'https://www.google.com/search?q={}', 'hoog': 'https://hoogle.haskell.org/?hoogle={}', 're': 'https://www.reddit.com/r/{}', 'ub': 'https://www.urbandictionary.com/define.php?term={}', 'wiki': 'https://en.wikipedia.org/wiki/{}', 'yt': 'https://www.youtube.com/results?search_query={}', 'aur': 'https://aur.archlinux.org/packages/?O=0&K={}'}
 
-    c.colors.completion.fg = ['#9cc4ff', 'white', 'white']
-    c.colors.completion.odd.bg = '#1c1f24'
-    c.colors.completion.even.bg = '#232429'
-    c.colors.completion.category.fg = '#e1acff'
-    c.colors.completion.category.bg = 'qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #000000, stop:1 #232429)'
-    c.colors.completion.category.border.top = '#3f4147'
-    c.colors.completion.category.border.bottom = '#3f4147'
-    c.colors.completion.item.selected.fg = '#282c34'
-    c.colors.completion.item.selected.bg = '#ecbe7b'
-    c.colors.completion.item.selected.match.fg = '#c678dd'
-    c.colors.completion.match.fg = '#c678dd'
-    c.colors.completion.scrollbar.fg = 'white'
-    c.colors.downloads.bar.bg = '#282c34'
-    c.colors.downloads.error.bg = '#ff6c6b'
-    c.colors.hints.fg = '#282c34'
-    c.colors.hints.match.fg = '#98be65'
-    c.colors.messages.info.bg = '#282c34'
-    c.colors.statusbar.normal.bg = '#282c34'
-    c.colors.statusbar.insert.fg = 'white'
-    c.colors.statusbar.insert.bg = '#497920'
-    c.colors.statusbar.passthrough.bg = '#34426f'
-    c.colors.statusbar.command.bg = '#282c34'
-    c.colors.statusbar.url.warn.fg = 'yellow'
-    c.colors.tabs.bar.bg = '#1c1f34'
-    c.colors.tabs.odd.bg = '#282c34'
-    c.colors.tabs.even.bg = '#282c34'
-    c.colors.tabs.selected.odd.bg = '#282c34'
-    c.colors.tabs.selected.even.bg = '#282c34'
-    c.colors.tabs.pinned.odd.bg = 'seagreen'
-    c.colors.tabs.pinned.even.bg = 'darkseagreen'
-    c.colors.tabs.pinned.selected.odd.bg = '#282c34'
-    c.colors.tabs.pinned.selected.even.bg = '#282c34'
+  c.colors.completion.fg = ['#9cc4ff', 'white', 'white']
+  c.colors.completion.odd.bg = '#1c1f24'
+  c.colors.completion.even.bg = '#232429'
+  c.colors.completion.category.fg = '#e1acff'
+  c.colors.completion.category.bg = 'qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #000000, stop:1 #232429)'
+  c.colors.completion.category.border.top = '#3f4147'
+  c.colors.completion.category.border.bottom = '#3f4147'
+  c.colors.completion.item.selected.fg = '#282c34'
+  c.colors.completion.item.selected.bg = '#ecbe7b'
+  c.colors.completion.item.selected.match.fg = '#c678dd'
+  c.colors.completion.match.fg = '#c678dd'
+  c.colors.completion.scrollbar.fg = 'white'
+  c.colors.downloads.bar.bg = '#282c34'
+  c.colors.downloads.error.bg = '#ff6c6b'
+  c.colors.hints.fg = '#282c34'
+  c.colors.hints.match.fg = '#98be65'
+  c.colors.messages.info.bg = '#282c34'
+  c.colors.statusbar.normal.bg = '#282c34'
+  c.colors.statusbar.insert.fg = 'white'
+  c.colors.statusbar.insert.bg = '#497920'
+  c.colors.statusbar.passthrough.bg = '#34426f'
+  c.colors.statusbar.command.bg = '#282c34'
+  c.colors.statusbar.url.warn.fg = 'yellow'
+  c.colors.tabs.bar.bg = '#1c1f34'
+  c.colors.tabs.odd.bg = '#282c34'
+  c.colors.tabs.even.bg = '#282c34'
+  c.colors.tabs.selected.odd.bg = '#282c34'
+  c.colors.tabs.selected.even.bg = '#282c34'
+  c.colors.tabs.pinned.odd.bg = 'seagreen'
+  c.colors.tabs.pinned.even.bg = 'darkseagreen'
+  c.colors.tabs.pinned.selected.odd.bg = '#282c34'
+  c.colors.tabs.pinned.selected.even.bg = '#282c34'
 
-    # Automatically turn on insert mode when a loaded page focuses a text field
-    c.input.insert_mode.auto_load = True
+  # Automatically turn on insert mode when a loaded page focuses a text field
+  c.input.insert_mode.auto_load = True
 
 
-    # Edit fields in Emacs with Ctrl+E
-    c.editor.command = ["emacsclient", "+{line}:{column}", "{file}"]
+  # Edit fields in Emacs with Ctrl+E
+  c.editor.command = ["emacsclient", "+{line}:{column}", "{file}"]
 
-    # Make Ctrl+g quit everything like in Emacs
-    config.bind('<Ctrl-g>', 'leave-mode', mode='insert')
-    config.bind('<Ctrl-g>', 'leave-mode', mode='command')
-    config.bind('<Ctrl-g>', 'leave-mode', mode='prompt')
-    config.bind('<Ctrl-g>', 'leave-mode', mode='hint')
-    # config.unbind('b') # Re-keybind 'b'
-    # config.bind('b', 'spawn ~/.config/qutebrowser/Qute.sh')
+  # Make Ctrl+g quit everything like in Emacs
+  config.bind('<Ctrl-g>', 'leave-mode', mode='insert')
+  config.bind('<Ctrl-g>', 'leave-mode', mode='command')
+  config.bind('<Ctrl-g>', 'leave-mode', mode='prompt')
+  config.bind('<Ctrl-g>', 'leave-mode', mode='hint')
+  # config.unbind('b') # Re-keybind 'b'
+  # config.bind('b', 'spawn ~/.config/qutebrowser/Qute.sh')
 
-    # Tweak some keybindings
-    config.unbind('d') # Don't close window on lower-case 'd'
-    config.bind('yy', 'yank')
+  # Tweak some keybindings
+  config.unbind('d') # Don't close window on lower-case 'd'
+  config.bind('yy', 'yank')
 
-    # Vim-style movement keys in command mode
-    config.bind('<Ctrl-j>', 'completion-item-focus --history next', mode='command')
-    config.bind('<Ctrl-k>', 'completion-item-focus --history prev', mode='command')
+  # Vim-style movement keys in command mode
+  config.bind('<Ctrl-j>', 'completion-item-focus --history next', mode='command')
+  config.bind('<Ctrl-k>', 'completion-item-focus --history prev', mode='command')
 
-    # More binding hints here: https://gitlab.com/Kaligule/qutebrowser-emacs-config/blob/master/config.py
+  # More binding hints here: https://gitlab.com/Kaligule/qutebrowser-emacs-config/blob/master/config.py
 
-    config.bind('X', 'wq')
-    config.unbind('d') # Dont want to accidentally delete my tab
-    config.unbind('u') # rekeybind the u key
-    config.bind('u', 'undo --window')
-    config.bind('b', 'set-cmd-text -s :tab-select ', mode='normal')
-    config.bind('z', 'spawn ~/.config/qutebrowser/scripts/mpv.sh;; spawn mpv {url}')
-    config.bind('Z', 'hint links spawn mpv {hint-url}')
-    config.bind('t', 'set-cmd-text -s :open -t')
-    config.bind('xb', 'config-cycle statusbar.show always never')
-    config.bind('xt', 'config-cycle tabs.show always never')
-    config.bind('xx', 'config-cycle statusbar.show always never;; config-cycle tabs.show always never')
+  config.bind('X', 'wq')
+  config.unbind('d') # Dont want to accidentally delete my tab
+  config.unbind('u') # rekeybind the u key
+  config.bind('Q', 'bookmark-add')
+  config.bind('W', 'bookmark-del')
+  config.bind('E', 'bookmark-list')
+  config.bind('u', 'undo --window')
+  config.bind('b', 'set-cmd-text -s :tab-select ', mode='normal')
+  config.bind('z', 'spawn ~/.config/qutebrowser/scripts/mpv.sh;; spawn mpv {url}')
+  config.bind('Z', 'hint links spawn mpv {hint-url}')
+  config.bind('t', 'set-cmd-text -s :open -t')
+  config.bind('xb', 'config-cycle statusbar.show always never')
+  config.bind('xt', 'config-cycle tabs.show always never')
+  config.bind('xx', 'config-cycle statusbar.show always never;; config-cycle tabs.show always never')
 
-    c.content.javascript.enabled = True
-    c.content.webgl = True
+  c.content.javascript.enabled = True
+  c.content.webgl = True
 
-    # Load the autoconfig file (quteconfig.py)
-    config.load_autoconfig()
+  # Load the autoconfig file (quteconfig.py)
+  config.load_autoconfig()
 #+END_SRC
 ** quickmarks
    
@@ -992,7 +995,7 @@ mine https://www.minecraft.net/en-us
 elpa https://elpa.gnu.org/
 gnu https://www.gnu.org/
 gu https://guix.gnu.org/
-guma https://guix.gnu.org/manual/en/guix.html
+guma https://guix.gnu.org/en/manual/devel/en/guix.html
 mon https://monkeytype.com/login
 ed https://www.edclub.com/sportal/program-3.game
 sys https://systemcrafters.net/
@@ -1000,6 +1003,14 @@ gl https://learnopengl.com/
 ch https://lichess.org/
 pdb https://www.protondb.com/
 ip https://www.bbc.co.uk/iplayer
+cl https://clangd.llvm.org/
+ti file:///home/haider/Downloads/Timetable.html
+ou https://outlook.office.com/mail/
+su https://www.youtube.com/feed/subscriptions
+guco https://guix.gnu.org/en/cookbook/en/guix-cookbook.html
+glfw https://www.glfw.org/
+od https://odysee.com/
+orgma https://orgmode.org/org.html
 #+END_SRC
 ** Scripts
 Here are some small scripts used in qutebrowser
@@ -1011,7 +1022,7 @@ Switch workspace to 3 (this workspace is dedicated for videos that are launched 
   # _   _ __  __
   #| | | |  \/  |
   #| |_| | |\/| | Made by Haider Mirza
-  #|  _  | |  | | My Github: https://github.com/Ha1derMirza
+  #|  _  | |  | | My Github: https://github.com/Haider-Mirza
   #|_| |_|_|  |_|
 
   emacsclient -e "(exwm-workspace-switch-create 3)"

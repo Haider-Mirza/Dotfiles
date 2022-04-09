@@ -70,14 +70,6 @@
 		      emacs-org-reveal
 		      mu
 
-		      ;; Development in Emacs
-		      clang
-		      clang-toolchain
-		      lldb
-		      llvm
-		      unzip
-		      gdb
-
 		      ;; for HTTPS access
 		      nss-certs)
 		     %base-packages))
@@ -110,11 +102,14 @@
 	   (type luks-device-mapping))))
 
    (file-systems
-    (cons* (file-system
+    (cons*
+     
+     (file-system
 	    (mount-point "/")
 	    (device "/dev/mapper/guix")
 	    (type "ext4")
 	    (dependencies mapped-devices))
+
 	   %base-file-systems)))
 #+END_SRC
 
