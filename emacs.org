@@ -67,7 +67,7 @@
 - [[#emacs-server-mode][Emacs server-mode]]
 - [[#load-desktoporg][Load Desktop.org]]
 - [[#garbage-collecter-hack][Garbage Collecter Hack]]
-
+  
 * Note
 ** Package Management
 My Emacs packages are installed by the GNU Guix package manager and by using it's Guix Home feature.
@@ -315,10 +315,10 @@ This keyword causes a body to be executed after other packages/features are load
 * UI Configuration
 ** Scratch Buffer
 #+BEGIN_SRC elisp
-(setq initial-scratch-message "Make sure to check OrgAgenda and OrgRoam Dailies!\nRun: (exwm/startup)")
+  ;; (setq initial-scratch-message "Make sure to check OrgAgenda and OrgRoam Dailies!\nRun: (exwm/startup)")
 #+END_SRC
 ** Font
-   Make sure "font-fira-code" or "font-jetbrains-mono" is installed on your system.
+   Make sure "font-jetbrains-mono" is installed on your system.
    The name may be different depending on your Operating System.
 #+begin_src elisp
   (defvar efs/default-font-size 80)
@@ -333,7 +333,7 @@ This keyword causes a body to be executed after other packages/features are load
   (setup (:pkg doom-themes))
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  (load-theme 'doom-molokai t)
 #+end_src
 ** Minimal Visuals
 Make the User interface more minimal.
@@ -377,19 +377,17 @@ Center org-mode documents.
      (savehist-mode 1))
  #+END_SRC 
 ** Marginalia
- #+BEGIN_SRC elisp
-   (setup (:pkg marginalia)
-     (:option marginalia-annotators '(marginalia-annotators-heavy
-				      marginalia-annotators-light
-				      nil))
-     (marginalia-mode))
- #+END_SRC 
+#+BEGIN_SRC elisp
+  (setup (:pkg marginalia)
+    (:option marginalia-annotators '(marginalia-annotators-heavy
+				     marginalia-annotators-light
+				     nil))
+    (marginalia-mode))
+#+END_SRC 
 ** frame transparency and maximize windows. 
 #+BEGIN_SRC elisp
-
-  ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
-
+  (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+  (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
 #+END_SRC
 ** Rainbow Delimiters
 #+begin_src elisp
@@ -404,6 +402,7 @@ Center org-mode documents.
   ;; Disable line numbers for some modes
   (dolist (mode '(org-mode-hook
                   term-mode-hook
+                  dashboard-mode-hook
                   vterm-mode-hook
                   shell-mode-hook
                   eshell-mode-hook))
@@ -579,12 +578,8 @@ Playlist functions
 * Keep Directories Clean
   Makes Emacs keep my file directories clean of unnecessary files.
 #+BEGIN_SRC elisp
-  
   (setup (:pkg no-littering)
   (require 'no-littering))
-
-  ;; (setup (:pkg no-littering
-  ;;   :defer 5)
 
   (setq backup-by-copying t)
 
@@ -599,7 +594,6 @@ Playlist functions
 
   (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
 	auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
-
 #+END_SRC
 
 * Editing Files Configuration
@@ -625,9 +619,6 @@ Playlist functions
     
 *** OrgMode Main config
 #+begin_src elisp
-  ;; (setup (:pkg org-make-toc)
-  ;;   (:hook-into org-mode))
-
   (setup (:pkg prettier))
 
   (rune/leader-keys
@@ -639,28 +630,6 @@ Playlist functions
     "ox" '(org-export-dispatch :which-key "Export Document")
     "od" '(org-deadline :which-key "Deadline")
     "os" '(org-todo :which-key "Switch"))
-
-  (defun org/org-font-setup ()
-    ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.1)
-		    (org-level-2 . 1.0)
-		    (org-level-3 . 0.95)
-		    (org-level-4 . 0.9)
-		    (org-level-5 . 0.9)
-		    (org-level-6 . 0.9)
-		    (org-level-7 . 0.9)
-		    (org-level-8 . 0.9)))
-      (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
-
-    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
-
 
   (setup (:pkg org)
     (setq org-ellipsis " ▾")
@@ -692,14 +661,43 @@ Playlist functions
 
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
-    
-    (org/org-mode-visual-fill)
-    (org/org-font-setup))
+  
+    (org/org-mode-visual-fill))
 
-  (setup (:pkg org-bullets)
+  (setup (:pkg org-superstar)
     (:load-after org)
     (:hook-into org-mode)
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (:option org-superstar-remove-leading-stars t
+	     org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+  (setup org-faces
+    ;; Make sure org-indent face is available
+    (:also-load org-indent)
+    (:when-loaded
+    
+      (dolist (face '((org-level-1 . 1.2)
+		      (org-level-2 . 1.1)
+		      (org-level-3 . 1.05)
+		      (org-level-4 . 1.0)
+		      (org-level-5 . 1.1)
+		      (org-level-6 . 1.1)
+		      (org-level-7 . 1.1)
+		      (org-level-8 . 1.1))))
+
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+      (set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+      (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+      ;; Get rid of the background on column views
+      (set-face-attribute 'org-column nil :background nil)
+      (set-face-attribute 'org-column-title nil :background nil)))
 #+END_SRC
 *** ox-pandoc
     Expand org-mode's exporting capabilities
@@ -741,37 +739,34 @@ https://revealjs.com/fragments/
 #+end_src
 *** org-super-agenda
     configuring the org-agenda view.
-  #+begin_src elisp
+#+begin_src elisp
 
-    ;; (setup (:pkg org-super-agenda
-    ;;   :defer 5
-    ;;   :config
-    ;;   (org-super-agenda-mode 1))
+  (setup (:pkg org-super-agenda)
+    (setq org-agenda-skip-scheduled-if-done t
+	  org-agenda-skip-deadline-if-done t
+	  org-agenda-include-deadlines t
+	  org-agenda-include-diary t
+	  org-agenda-block-separator nil
+	  org-agenda-compact-blocks t
+	  org-agenda-start-with-log-mode t)
 
-    ;; (setq org-agenda-skip-scheduled-if-done t
-    ;;       org-agenda-skip-deadline-if-done t
-    ;;       org-agenda-include-deadlines t
-    ;;       org-agenda-include-diary t
-    ;;       org-agenda-block-separator nil
-    ;;       org-agenda-compact-blocks t
-    ;;       org-agenda-start-with-log-mode t)
+    (setq org-agenda-span 'day)
+    (setq org-super-agenda-groups
+	  '((:name "Important"
+		   :priority "a")
+	    (:name "Due today"
+		   :deadline today)
+	    (:name "Overdue"
+		   :deadline past)
+	    (:name "Things todo"
+		   :todo "TODO")
+	    (:name "School work"
+		   :todo "WORK")
+	    (:name "Completed"
+		   :todo "COMPLETED")))
+    (org-super-agenda-mode 1))
 
-    ;; (setq org-agenda-span 'day)
-    ;; (setq org-super-agenda-groups
-    ;;       '((:name "Important"
-    ;; 	       :priority "a")
-    ;; 	(:name "Due today"
-    ;; 	       :deadline today)
-    ;; 	(:name "Overdue"
-    ;; 	       :deadline past)
-    ;; 	(:name "Things todo"
-    ;; 	       :todo "TODO")
-    ;; 	(:name "School work"
-    ;; 	       :todo "WORK")
-    ;; 	(:name "Completed"
-    ;; 	       :todo "COMPLETED")))
-
-  #+end_src
+#+end_src
 
 #+BEGIN_SRC elisp
    (setup (:pkg evil-org)
@@ -785,66 +780,97 @@ https://revealjs.com/fragments/
 *** OrgRoam
 If OrgRoam is setup on this system, you can click here for more information: [[id:8317049b-5a2b-4176-9d39-111f310061c7][Org Roam]]
 #+begin_src elisp
+  (setup (:pkg org-roam)
+    (setq org-roam-v2-ack t)
+    (setq dw/daily-note-filename "%<%Y-%m-%d>.org"
+	  dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
 
-  ;; (setup (:pkg org-roam)
+    (:when-loaded
+      (org-roam-db-autosync-mode))
+
+    (:option
+     org-roam-directory "~/Notes/"
+     org-roam-dailies-directory "Journal/"
+     org-roam-completion-everywhere t
+     org-roam-capture-templates
+     '(("d" "default" plain "%?"
+	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+	:unnarrowed t)
+       ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+	:unnarrowed t)
+       ("s" "school" plain "\n%?"
+	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
+	:unnarrowed t))
+     org-roam-dailies-capture-templates
+     `(("d" "default" entry "* %<%I:%M %p>: %?"
+	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
+       ("t" "todo" entry "* TODO: \n%?"
+	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
+       ("d" "diary" entry "* Diary: \n%?"
+	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary")))))
+
+  ;; (setup (:pkg org-roam :straight t)
   ;;   (setq org-roam-v2-ack t)
-  ;;   (org-roam-directory "~/Notes/")
-  ;;   (org-roam-completion-everywhere t)
-  ;;   (org-roam-dailies-capture-templates
-  ;;    '(
-  ;;      ("d" "default" entry "* %<%I:%M %p>: %?"
-  ;;       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
+  ;;   (:option
+  ;;    org-roam-directory "~/Notes/"
+  ;;    org-roam-dailies-directory "Journal/"
+  ;;    org-roam-completion-everywhere t
 
-  ;;      ("t" "todo" entry "* TODO: \n%?"
-  ;;       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
+  ;;    (org-roam-dailies-capture-templates
+  ;;     '(
+  ;;       ("d" "default" entry "* %<%I:%M %p>: %?"
+  ;;        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
 
-  ;;      ("d" "diary" entry "* Diary: \n%?"
-  ;;       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary"))
-  ;;      ))
+  ;;       ("t" "todo" entry "* TODO: \n%?"
+  ;;        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
 
-  ;;   (org-roam-capture-templates
-  ;;    '(
-  ;;      ("d" "default" plain "%?"
-  ;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
-  ;;       :unnarrowed t)
+  ;;       ("d" "diary" entry "* Diary: \n%?"
+  ;;        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary"))
+  ;;       ))
 
-  ;;      ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-  ;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-  ;;       :unnarrowed t)
+  ;;    (org-roam-capture-templates
+  ;;     '(
+  ;;       ("d" "default" plain "%?"
+  ;;        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+  ;;        :unnarrowed t)
 
-  ;;      ("s" "school" plain "\n%?"
-  ;;       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
-  ;;       :unnarrowed t)))
+  ;;       ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+  ;;        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+  ;;        :unnarrowed t)
 
-  ;;   (:with-map org-mode-map
-  ;;     (:bind "C-M-i" completion-at-point))
+  ;;       ("s" "school" plain "\n%?"
+  ;;        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
+  ;;        :unnarrowed t))))
+
+  ;;   (:bind "C-M-i" completion-at-point)
 
   ;;   (org-roam-setup))
 
-  ;; (defun org-roam-node-insert-immediate (arg &rest args)
-  ;;   (interactive "P")
-  ;;   (let ((args (cons arg args))
-  ;; 	(org-roam-capture-templates (list (append (car org-roam-capture-templates)
-  ;; 						  '(:immediate-finish t)))))
-  ;;     (apply #'org-roam-node-insert args)))
+  (defun org-roam-node-insert-immediate (arg &rest args)
+    (interactive "P")
+    (let ((args (cons arg args))
+	  (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+						    '(:immediate-finish t)))))
+      (apply #'org-roam-node-insert args)))
 
-  ;; (rune/leader-keys
-  ;;   "or"  '(:ignore t :which-key "Org-Roam")
-  ;;   "orc" '(org-roam-capture :which-key "Capture a node")
-  ;;   "ori" '(org-roam-node-insert :which-key "Insert note")
-  ;;   "orI" '(org-roam-node-insert-immediate :which-key "Insert and create a new node without opening it")
-  ;;   "orf" '(org-roam-node-find :which-key "Find a node")
-  ;;   "ort" '(org-roam-buffer-toggle :which-key "Toggle")
+  (rune/leader-keys
+    "or"  '(:ignore t :which-key "Org-Roam")
+    "orc" '(org-roam-capture :which-key "Capture a node")
+    "ori" '(org-roam-node-insert :which-key "Insert note")
+    "orI" '(org-roam-node-insert-immediate :which-key "Insert and create a new node without opening it")
+    "orf" '(org-roam-node-find :which-key "Find a node")
+    "ort" '(org-roam-buffer-toggle :which-key "Toggle")
 
-  ;;   "w"  '(:ignore t :which-key "Dailies")
-  ;;   "wct" '(org-roam-dailies-capture-today :which-key "Capture daily for Today")
-  ;;   "wcy" '(org-roam-dailies-capture-yesterday :which-key "Capture daily for Yesterday")
-  ;;   "wcT" '(org-roam-dailies-capture-tomorrow :which-key "Capture daily for Tomorrow")
-  ;;   "wcd" '(org-roam-dailies-capture-date :which-key "Capture daily for certain date")
-  ;;   "wgt" '(org-roam-dailies-goto-today :which-key "Check Today's daily")
-  ;;   "wgy" '(org-roam-dailies-goto-yesterday :which-key "Check Yesterday's daily")
-  ;;   "wgT" '(org-roam-dailies-goto-tomorrow :which-key "Check Tommorow's daily")
-  ;;   "wgd" '(org-roam-dailies-goto-date :which-key "Check daily for a specific date"))
+    "w"  '(:ignore t :which-key "Dailies")
+    "wct" '(org-roam-dailies-capture-today :which-key "Capture daily for Today")
+    "wcy" '(org-roam-dailies-capture-yesterday :which-key "Capture daily for Yesterday")
+    "wcT" '(org-roam-dailies-capture-tomorrow :which-key "Capture daily for Tomorrow")
+    "wcd" '(org-roam-dailies-capture-date :which-key "Capture daily for certain date")
+    "wgt" '(org-roam-dailies-goto-today :which-key "Check Today's daily")
+    "wgy" '(org-roam-dailies-goto-yesterday :which-key "Check Yesterday's daily")
+    "wgT" '(org-roam-dailies-goto-tomorrow :which-key "Check Tommorow's daily")
+    "wgd" '(org-roam-dailies-goto-date :which-key "Check daily for a specific date"))
 #+end_src
  
 * Chatting Configuration
@@ -942,10 +968,7 @@ These keybindings will open my system's config files.
 ** Mu4e
   make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
 #+BEGIN_SRC elisp
-  (use-package mu4e
-    :ensure nil
-    :defer 10 ; Wait until 10 seconds after startup
-    :config
+  (setup mu4e
 
     (require 'mu4e-org)
 
@@ -1067,18 +1090,15 @@ These keybindings will open my system's config files.
 
   ;; Make sure plain text mails flow correctly for recipients
   (setq mu4e-compose-format-flowed t)
-
 #+END_SRC
 
 ** Mu4e-Alert
 #+BEGIN_SRC elisp
-    (setup (:pkg mu4e-alert)
-    (mu4e-alert-enable-mode-line-display)
-    (mu4e-alert-set-default-style 'libnotify)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
-
+  ;; (setup (:pkg mu4e-alert)
+  ;;   (mu4e-alert-enable-mode-line-display)
+  ;;   (mu4e-alert-set-default-style 'libnotify)
+  ;;   (:hook-into after-init-hook mu4e-alert-enable-notifications))
 #+END_SRC
-   
 ** Org-mime
 #+BEGIN_SRC elisp
   (setup (:pkg org-mime)
@@ -1128,7 +1148,6 @@ These keybindings will open my system's config files.
      "ms" '(magit-status :which-key "Magit Status"))
  #+END_SRC
 ** Lsp-mode
-
 #+BEGIN_SRC elisp
   ;; (setup (:pkg lsp-mode
   ;;   :bind (:map lsp-mode-map
@@ -1215,12 +1234,10 @@ I generally don't use Javascript.
 #+END_SRC
 *** ELisp
 #+BEGIN_SRC elisp
-
   (rune/leader-keys
     "e"  '(:ignore t :which-key "E-Lisp")
     "el" '(eval-last-sexp :which-key "Evaluate last sexpression")
     "er" '(eval-region :which-key "Evaluate elisp in region"))
-
 #+END_SRC
 *** C/C++
 I know that ccls is not the best, especially where options like clangd is avalable.
@@ -1302,9 +1319,7 @@ But for now, this is the most I can get working
 #+BEGIN_SRC elisp
   (setup (:pkg smartparens)
     (:hook-into org-mode org-agenda-mode))
-
 #+END_SRC
-
 ** Company mode
 #+BEGIN_SRC elisp
   (setup (:pkg company)
@@ -1341,9 +1356,8 @@ But for now, this is the most I can get working
 		(company-complete-common)
 	      (indent-for-tab-command)))))
 #+END_SRC 
-
 ** Flycheck
-Flycheck kinda calls everything to be an error. Kind of anoyying
+Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt understand libraries)
 #+BEGIN_SRC elisp
   ;; (setup (:pkg flycheck :ensure)
 #+END_SRC
@@ -1416,13 +1430,11 @@ Uses the standard Unix password store "pass".
       (if result
 	  (funcall (plist-get (car result) :secret))
 	nil)))
-
 #+end_src
 
 * Emacs server-mode
 #+BEGIN_SRC elisp
   (server-start)
-
 #+END_SRC
 
 * Load Desktop.org
