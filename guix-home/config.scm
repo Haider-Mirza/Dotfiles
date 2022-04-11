@@ -14,8 +14,7 @@
 (home-environment
  (packages
   (map (compose list specification->package+output)
-       (list "pipewire"
-             "blender"
+       (list "blender"
              "qutebrowser"
              "mpv"
              "dunst"
@@ -39,12 +38,15 @@
              "font-jetbrains-mono"
              "libvterm"
              "slock"
+             "picom"
+             "feh"
 
 	     ;; Emacs Packages
 	     "emacs"
 	     "emacs-guix"
 	     "emacs-general"
 	     "emacs-undo-tree"
+	     ;; "emacs-dashboard"
 	     "emacs-evil"
 	     "emacs-evil-collection"
 	     "emacs-doom-themes"
@@ -70,8 +72,8 @@
 	     "emacs-org-appear"
 	     "emacs-org-super-agenda"
 	     "emacs-evil-org"
-	     "emacs-org-roam"
 	     "emacs-org-reveal"
+	     "emacs-org-roam"
 	     "emacs-org-make-toc"
 	     "emacs-erc-hl-nicks"
 	     "emacs-erc-image"
