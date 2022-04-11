@@ -154,41 +154,18 @@
       (7 "Chat")
       (8 "Mu4e")
       (9 "Mocp")))
-
-  ;; Notifications when switching Desktops 
-  ;; (add-hook 'exwm-workspace-switch-hook
-  ;; 	  (lambda ()
-  ;; 	      (message (poly/polybar-exwm-workspace))))
-
-  ;; Command to find out what workspace this is
-  (defun exwm/which-workspace ()
-    (interactive)
-    (message (poly/polybar-exwm-workspace)))
-
 #+END_SRC
 ** Initial EXWM Setup
 #+BEGIN_SRC elisp
-   (setup (:pkg exwm)
-    ;; Set the default number of workspaces
+  (setup (:pkg exwm)
     (setq exwm-workspace-number 9)
-
-    ;; When window "class" updates, use it to set the buffer name
     (add-hook 'exwm-update-class-hook #'exwm/exwm-update-class)
-
-    ;; When window title updates, use it to set the buffer name
     (add-hook 'exwm-update-title-hook #'exwm/exwm-update-title)
-
-    ;; Configure windows as they're created
     (add-hook 'exwm-manage-finish-hook #'exwm/configure-window-by-class)
-
-    ;; Load the system tray before exwm-init
     (require 'exwm-systemtray)
     (setq exwm-systemtray-height 16)
     (exwm-systemtray-enable)
-
-    ;; When EXWM starts up, do some extra configuration
     (add-hook 'exwm-init-hook #'exwm/exwm-init-hook)
-
 #+END_SRC
 ** Keybinds
 #+BEGIN_SRC elisp
@@ -205,16 +182,8 @@
 	  ?\C-\M-j  ;; Buffer list
 	  ?\C-\ ))  ;; Ctrl+Space
 
-
   (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-  ;; (exwm/bind-command
-  ;; "s-p" "playerctl play-pause"
-  ;; "s-[" "playerctl previous"
-  ;; "s-]" "playerctl next")
-
-  ;; Set up global key bindings.  These always work, no matter the input state!
-  ;; Keep in mind that changing this list after EXWM initializes has no effect.
   (setq exwm-input-global-keys
 	`(
 	  ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
@@ -253,87 +222,85 @@
   (exwm-enable))
 
 #+END_SRC
-
-** Launch Applications
+** Functions
+EXWM Functions
+*** Launch Applications
 #+BEGIN_SRC elisp
-   (defun exwm/run-qute ()
-     (interactive)
-     (exwm/run-in-background "qutebrowser --qt-flag disable-seccomp-filter-sandbox")
-     (message "Launching Qutebrowser")
-     (exwm-workspace-switch-create 2))
+  (defun exwm/run-qute ()
+    (interactive)
+    (exwm/run-in-background "qutebrowser --qt-flag disable-seccomp-filter-sandbox")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching Qutebrowser...\"")
+    (exwm-workspace-switch-create 2))
 
-   (defun exwm/run-icecat ()
-     (exwm/run-in-background "icecat")
-     (message "Launching Icecat")
-     (exwm-workspace-switch-create 2))
+  (defun exwm/run-icecat ()
+    (exwm/run-in-background "icecat")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching Icecat...\"")
+    (exwm-workspace-switch-create 2))
 
-   (defun exwm/run-alacritty ()
-     (exwm/run-in-background "alacritty")
-     (message "Launching Alacritty"))
+  (defun exwm/run-alacritty ()
+    (exwm/run-in-background "alacritty")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching Alacritty...\""))
 
-   (defun exwm/run-mocp ()
-     (exwm/run-in-background "alacritty -e mocp")
-     (message "Launching Mocp")
-     (exwm-workspace-switch-create 9))
+  (defun exwm/run-mocp ()
+    (exwm/run-in-background "alacritty -e mocp")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching Mocp...\"")
+    (exwm-workspace-switch-create 9))
 
-   (defun exwm/run-mpv ()
-     (exwm/run-in-background "mpv")
-     (message "Launching MPV")
-     (exwm-workspace-switch-create 3))
+  (defun exwm/run-mpv ()
+    (exwm/run-in-background "mpv")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching MPV...\"")
+    (exwm-workspace-switch-create 3))
 
-   (defun exwm/mpv-float ()
-     (interactive)
-     (exwm-floating-toggle-floating)
-     (exwm-layout-shrink-window 516)
-     (exwm-layout-shrink-window-horizontally 960))
+  (defun exwm/mpv-float ()
+    (interactive)
+    (exwm-floating-toggle-floating)
+    (exwm-layout-shrink-window 516)
+    (exwm-layout-shrink-window-horizontally 960))
 
-   (defun exwm/run-blen ()
-     (exwm/run-in-background "blender")
-     (message "Launching Blender")
-     (exwm-workspace-switch-create 6))
+  (defun exwm/run-blen ()
+    (exwm/run-in-background "blender")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching Blender...\"")
+    (exwm-workspace-switch-create 6))
 
-   (defun exwm/run-snip ()
-     (exwm/run-in-background "flameshot")
-     (message "Launching Flameshot"))
+  (defun exwm/run-snip ()
+    (exwm/run-in-background "flameshot")
+    (start-process-shell-command "dunst" nil "dunstify \"Launching Flameshot...\""))
 
-   (defun exwm/run-slock ()
-     (interactive)
-     (start-process-shell-command "slock" nil "slock"))
+  (defun exwm/run-slock ()
+    (interactive)
+    (start-process-shell-command "slock" nil "slock"))
 
   (defun exwm/run-rofi ()
     (interactive)
     (start-process-shell-command "rofi" nil "rofi -show run"))
 
-   (exwm/bind-function
-    "s-SPC" 'exwm/run-rofi
-    "M-s-b" 'exwm/run-qute
-    "M-s-f" 'exwm/run-icecat
-    "M-s-m" 'exwm/run-mocp
-    "s-t" 'exwm/run-alacritty
-    "M-s-v" 'exwm/run-mpv
-    "C-s-b" 'exwm/run-blen
-    "s-l" 'exwm/run-slock
-    "s-s" 'exwm/run-snip
-    "s-q" 'kill-buffer)
-
-   ;; (use-package app-launcher
-   ;;   :straight '(app-launcher :host github :repo "SebastienWae/app-launcher"))
-
-   ;;   (global-set-key (kbd "s-SPC") 'app-launcher-run-app)
-
+  (exwm/bind-function
+   "s-SPC" 'exwm/run-rofi
+   "M-s-b" 'exwm/run-qute
+   "M-s-f" 'exwm/run-icecat
+   "M-s-m" 'exwm/run-mocp
+   "s-t" 'exwm/run-alacritty
+   "M-s-v" 'exwm/run-mpv
+   "C-s-b" 'exwm/run-blen
+   "s-l" 'exwm/run-slock
+   "s-s" 'exwm/run-snip
+   "s-q" 'kill-buffer)
 #+END_SRC
-** Startup script
+*** Startup script
 #+BEGIN_SRC elisp
   (defun exwm/startup ()
     (interactive)
     (exwm/run-xmodmap)
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:33")
     (exwm-workspace-switch-create 1)
-    (exwm/run-alacritty)
+    (vterm)
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:66")
     (sleep-for 1)
-    (exwm-workspace-switch-create 2))
+    (exwm-workspace-switch-create 2)
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:100"))
 
 #+END_SRC
-** System functions
+*** System functions
 #+BEGIN_SRC elisp
   (defun shutdown ()
     (interactive)
