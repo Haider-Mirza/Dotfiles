@@ -106,7 +106,7 @@
   (defun exwm/set-wallpaper ()
     (interactive)
     (start-process-shell-command
-     "feh" nil  "feh --bg-scale ~/Wallpapers/Black.png"))
+     "feh" nil  "feh --bg-scale ~/Wallpapers/yellow.png"))
 
   (defun exwm/configure-desktop ()
     (interactive)
