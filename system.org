@@ -19,11 +19,6 @@
 	       (gnu packages mail)
 	       (gnu packages vim)
 	       (gnu packages cups)
-	       (gnu packages llvm)
-	       (gnu packages compression)
-	       (gnu packages gdb)
-	       (gnu packages gcc)
-	       ;; (gnu packages linux)
 	       (gnu packages version-control))
 
   (use-service-modules
@@ -76,44 +71,41 @@
    (services
     (append
      (list (service xfce-desktop-service-type)
-	   ;; (service pipewire-service-type
-	   ;; 	  (pipewire-configuration
-	   ;; 	   (media-session `("env" "WIREPLUMBER_DEBUG=T" (string-append ,wireplumber "/bin/wireplumber")))))
-	   (service openssh-service-type)
-	   (service cups-service-type)
-	   (set-xorg-configuration
-	    (xorg-configuration
-	     (keyboard-layout keyboard-layout))))
-     %desktop-services))
+     (service openssh-service-type)
+     (service cups-service-type)
+     (set-xorg-configuration
+      (xorg-configuration
+       (keyboard-layout keyboard-layout))))
+    %desktop-services))
 
-   (bootloader
-    (bootloader-configuration
-     (bootloader grub-bootloader)
-     (targets (list "/dev/sda"))
-     (keyboard-layout keyboard-layout)))
+  (bootloader
+   (bootloader-configuration
+    (bootloader grub-bootloader)
+    (targets (list "/dev/sda"))
+    (keyboard-layout keyboard-layout)))
 
-   (swap-devices
-    (list (swap-space
-	   (target
-	    (uuid "5a3b335d-4d35-48e5-84b9-2df556187504")))))
+  (swap-devices
+   (list (swap-space
+	  (target
+	   (uuid "5a3b335d-4d35-48e5-84b9-2df556187504")))))
 
-   (mapped-devices
-    (list (mapped-device
-	   (source
-	    (uuid "97b8d753-0d52-488d-bfcc-229d00b0248c"))
-	   (target "guix")
-	   (type luks-device-mapping))))
+  (mapped-devices
+   (list (mapped-device
+	  (source
+	   (uuid "97b8d753-0d52-488d-bfcc-229d00b0248c"))
+	  (target "guix")
+	  (type luks-device-mapping))))
 
-   (file-systems
-    (cons*
+  (file-systems
+   (cons*
 
-     (file-system
-      (mount-point "/")
-      (device "/dev/mapper/guix")
-      (type "ext4")
-      (dependencies mapped-devices))
+    (file-system
+     (mount-point "/")
+     (device "/dev/mapper/guix")
+     (type "ext4")
+     (dependencies mapped-devices))
 
-     %base-file-systems)))
+    %base-file-systems)))
 #+END_SRC
 
 * Channels.scm
