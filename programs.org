@@ -1030,6 +1030,14 @@ Switch workspace to 3 (this workspace is dedicated for videos that are launched 
 #+END_SRC
 * Dunst
 #+BEGIN_SRC fundamental :tangle "/home/haider/.config/dunst/dunstrc"
+#
+#   ██████╗ ██╗   ██╗███╗   ██╗███████╗████████╗
+#   ██╔══██╗██║   ██║████╗  ██║██╔════╝╚══██╔══╝
+#   ██║  ██║██║   ██║██╔██╗ ██║███████╗   ██║
+#   ██║  ██║██║   ██║██║╚██╗██║╚════██║   ██║
+#   ██████╔╝╚██████╔╝██║ ╚████║███████║   ██║
+#   ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝
+#
   [global]
   font = jetbrains mono 10
 
