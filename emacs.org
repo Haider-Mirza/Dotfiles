@@ -1125,14 +1125,15 @@ These keybindings will open my system's config files.
 #+end_src
 ** YASnippet
  #+begin_src elisp
-   ;; (setup (:pkg yasnippet)
-   ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-   ;;   (yas-reload-all)
-   ;;   (:hook-into prog-mode-hook yas-minor-mode)
-   ;;   (:hook-into text-mode-hook yas-minor-mode)
-   ;;   (yas-global-mode t)
-   ;;   (require 'warnings)
-   ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+       (setup (:pkg yasnippet)
+	 (yas-global-mode))
+      ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+      ;;   (yas-reload-all)
+      ;;   (:hook-into prog-mode-hook yas-minor-mode)
+      ;;   (:hook-into text-mode-hook yas-minor-mode)
+      ;;   (yas-global-mode t)
+      ;;   (require 'warnings)
+      ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
  #+end_src
 ** Magit
  #+BEGIN_SRC elisp
