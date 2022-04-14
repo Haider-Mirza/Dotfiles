@@ -886,7 +886,7 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 	erc-user-full-name "Haider Mirza"
 	erc-rename-buffers t
 	erc-track-shorten-start 8
-	erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs" "#guix"))
+	;; erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs" "#guix"))
 	erc-kill-buffer-on-part t
 	erc-fill-column 120
 	erc-fill-function 'erc-fill-static
@@ -897,7 +897,7 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 	;; erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
 	erc-track-exclude-server-buffer t
 	erc-track-enable-keybindings t
-	erc-quit-reason (lambda (s) (or s "Off to sleep!"))
+	erc-quit-reason (lambda (s) (or s "Ejected from the cyberspace!"))
 	erc-track-visibility nil) ;; Essential if using EXWM
 
   (defun chat/connect-irc ()
@@ -911,13 +911,9 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 
 
   (setup (:pkg erc-hl-nicks)
-    :defer 10
-    :config
     (add-to-list 'erc-modules 'hl-nicks))
 
   (setup (:pkg erc-image)
-    :defer 10
-    :config
     (setq erc-image-inline-rescale 300)
     (add-to-list 'erc-modules 'image))
 
