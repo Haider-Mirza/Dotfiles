@@ -1319,39 +1319,46 @@ But for now, this is the most I can get working
 #+END_SRC
 ** Company mode
 #+BEGIN_SRC elisp
-  (setup (:pkg company)
-    (:with-map company-active-map
-      (:bind "TAB" tab-indent-or-complete)))
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind (:map company-active-map
+		("<tab>" . company-complete-selection))
+    (:map lsp-mode-map
+	  ("<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0))
 
-  (setup (:pkg company-box)
-     (:hook-into company-mode company-box-mode))
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
 
-    (defun company-yasnippet-or-completion ()
-      (interactive)
-      (or (do-yas-expand)
-	  (company-complete-common)))
+  (defun company-yasnippet-or-completion ()
+    (interactive)
+    (or (do-yas-expand)
+	(company-complete-common)))
 
-    (defun check-expansion ()
-      (save-excursion
-	(if (looking-at "\\_>") t
+  (defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+	(backward-char 1)
+	(if (looking-at "\\.") t
 	  (backward-char 1)
-	  (if (looking-at "\\.") t
-	    (backward-char 1)
-	    (if (looking-at "::") t nil)))))
+	  (if (looking-at "::") t nil)))))
 
-    (defun do-yas-expand ()
-      (let ((yas/fallback-behavior 'return-nil))
-	(yas/expand)))
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
 
-    (defun tab-indent-or-complete ()
-      (interactive)
-      (if (minibufferp)
-	  (minibuffer-complete)
-	(if (or (not yas/minor-mode)
-		(null (do-yas-expand)))
-	    (if (check-expansion)
-		(company-complete-common)
-	      (indent-for-tab-command)))))
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (if (minibufferp)
+	(minibuffer-complete)
+      (if (or (not yas/minor-mode)
+	      (null (do-yas-expand)))
+	  (if (check-expansion)
+	      (company-complete-common)
+	    (indent-for-tab-command)))))
 #+END_SRC 
 ** Flycheck
 Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt understand libraries)
