@@ -62,7 +62,6 @@
 		      emacs-exwm
 		      emacs-desktop-environment
 
-		      ;; Everyone deserves git
 		      git 
 
 		      ;; for HTTPS access
