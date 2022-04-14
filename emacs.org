@@ -315,7 +315,7 @@ This keyword causes a body to be executed after other packages/features are load
 * UI Configuration
 ** Scratch Buffer
 #+BEGIN_SRC elisp
-  ;; (setq initial-scratch-message "Make sure to check OrgAgenda and OrgRoam Dailies!\nRun: (exwm/startup)")
+  (setq initial-scratch-message "Make sure to check OrgAgenda and OrgRoam Dailies!\nRun: (exwm/startup)")
 #+END_SRC
 ** Font
    Make sure "font-jetbrains-mono" is installed on your system.
