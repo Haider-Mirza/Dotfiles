@@ -1319,19 +1319,24 @@ But for now, this is the most I can get working
 #+END_SRC
 ** Company mode
 #+BEGIN_SRC elisp
-  (use-package company
-    :after lsp-mode
-    :hook (lsp-mode . company-mode)
-    :bind (:map company-active-map
-		("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-	  ("<tab>" . company-indent-or-complete-common))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0))
 
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
+  (setup (:pkg company))
+
+  (setup (:pkg company-box))
+
+  ;; (use-package company
+  ;;   :after lsp-mode
+  ;;   :hook (lsp-mode . company-mode)
+  ;;   :bind (:map company-active-map
+  ;; 	      ("<tab>" . company-complete-selection))
+  ;;   (:map lsp-mode-map
+  ;; 	("<tab>" . company-indent-or-complete-common))
+  ;;   :custom
+  ;;   (company-minimum-prefix-length 1)
+  ;;   (company-idle-delay 0.0))
+
+  ;; (use-package company-box
+  ;;   :hook (company-mode . company-box-mode))
 
   (defun company-yasnippet-or-completion ()
     (interactive)
