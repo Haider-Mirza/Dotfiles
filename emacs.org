@@ -1019,7 +1019,7 @@ These keybindings will open my system's config files.
 		(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
 	    :vars '((user-mail-address . "x7and7@gmail.com")
 		    (user-full-name    . "Haider Mirza")
-		    (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+		    ;; (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
 		    (smtpmail-smtp-server  . "smtp.gmail.com")
 		    (smtpmail-smtp-service . 465)
 		    (smtpmail-stream-type  . ssl)

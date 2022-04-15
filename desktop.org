@@ -301,7 +301,7 @@ EXWM Functions
     (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:60")
     (sleep-for 1)
     (exwm-workspace-switch-create 9)
-    (start-process-shell-command "alsamixer" nil "alacritty -e alsamixer")
+    (start-process-shell-command "pulsemixer" nil "alacritty -e pulsemixer")
     (sleep-for 1)
     (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:80")
     (exwm-workspace-switch-create 2)
