@@ -10,101 +10,80 @@
 * Config.scm
   This is the config file used in GNU Guix to manage your system.
 #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
-  ;; This file should be edited in ~/Dotfiles/System.org then tangled.
-  (use-modules (gnu)
-	       (gnu packages emacs)
-	       (gnu packages emacs-xyz)
-	       (gnu packages xorg)
-	       (gnu packages certs)
-	       (gnu packages mail)
-	       (gnu packages vim)
-	       (gnu packages cups)
-	       (gnu packages version-control))
+    ;; This file should be edited in ~/Dotfiles/System.org then tangled.
+    (use-modules (gnu)
+		 (gnu packages certs)
+		 (gnu packages emacs)
+		 (gnu packages emacs-xyz)
+		 (gnu packages version-control))
 
-  (use-service-modules
-   cups
-   desktop
-   networking
-   ssh
-   xorg)
 
-  (operating-system
-   (locale "en_GB.utf8")
-   (timezone "Europe/London")
-   (keyboard-layout (keyboard-layout "gb" "extd"))
-   (host-name "xps")
-   (users (cons* (user-account
-		  (name "haider")
-		  (comment "Haider")
-		  (group "users")
-		  (home-directory "/home/haider")
-		  (supplementary-groups
-		   '("wheel"
-		     "netdev"
-		     "audio"
-		     "video"
-		     "kvm")))
+    (use-service-modules
+     cups
+     desktop
+     networking
+     ssh
+     xorg)
 
-		 (user-account
-		  (name "hasan")
-		  (comment "Hasan")
-		  (group "users")
-		  (home-directory "/home/hasan")
-		  (supplementary-groups
-		   '("netdev"
-		     "audio"
-		     "video")))
-		 %base-user-accounts))
 
-   (packages (append (list
-		      ;; EXWM
-		      emacs
-		      emacs-exwm
-		      emacs-desktop-environment
+    (operating-system
+     (locale "en_GB.utf8")
+     (timezone "Europe/London")
+     (keyboard-layout (keyboard-layout "gb" "extd"))
+     (host-name "xps")
+     (users (cons* (user-account
+		    (name "haider")
+		    (comment "Haider")
+		    (group "users")
+		    (home-directory "/home/haider")
+		    (supplementary-groups
+		     '("wheel"
+		       "netdev"
+		       "audio"
+		       "video"
+		       "kvm")))
+		   %base-user-accounts))
 
-		      git 
+     (packages (append (list
+			;; EXWM
+			emacs
+			emacs-exwm
+			emacs-desktop-environment
 
-		      ;; for HTTPS access
-		      nss-certs)
-		     %base-packages))
-   (services
-    (append
-     (list (service xfce-desktop-service-type)
-     (service openssh-service-type)
-     (service cups-service-type)
-     (set-xorg-configuration
-      (xorg-configuration
-       (keyboard-layout keyboard-layout))))
-    %desktop-services))
+			;; Everyone deserves git
+			git 
 
-  (bootloader
-   (bootloader-configuration
-    (bootloader grub-bootloader)
-    (targets (list "/dev/sda"))
-    (keyboard-layout keyboard-layout)))
+			;; for HTTPS access
+			nss-certs)
+		       %base-packages))
 
-  (swap-devices
-   (list (swap-space
-	  (target
-	   (uuid "5a3b335d-4d35-48e5-84b9-2df556187504")))))
+     (services
+      (append
+       (list (set-xorg-configuration
+	      (xorg-configuration
+	       (keyboard-layout keyboard-layout))))
+       %desktop-services))
 
-  (mapped-devices
-   (list (mapped-device
-	  (source
-	   (uuid "97b8d753-0d52-488d-bfcc-229d00b0248c"))
-	  (target "guix")
-	  (type luks-device-mapping))))
 
-  (file-systems
-   (cons*
+     (bootloader
+      (bootloader-configuration
+       (bootloader grub-bootloader)
+       (targets (list "/dev/sda"))
+       (keyboard-layout keyboard-layout)))
 
-    (file-system
-     (mount-point "/")
-     (device "/dev/mapper/guix")
-     (type "ext4")
-     (dependencies mapped-devices))
+     (swap-devices
+      (list (swap-space
+	     (target
+	      (uuid "ac642942-86f4-4e6a-86fd-ec51e807b2dc")))))
 
-    %base-file-systems)))
+     (file-systems
+      (cons* (file-system
+	      (mount-point "/")
+	      (device
+	       (uuid "6b1c6baa-7381-40cb-9d5a-feb2a1a42a8a"
+		     'ext4))
+	      (type "ext4"))
+	     %base-file-systems)))
 #+END_SRC
 
 * Channels.scm

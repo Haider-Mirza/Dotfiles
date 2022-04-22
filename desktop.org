@@ -272,7 +272,7 @@ EXWM Functions
 
   (defun exwm/run-rofi ()
     (interactive)
-    (start-process-shell-command "rofi" nil "rofi -show run"))
+    (start-process-shell-command "rofi" nil "rofi -show drun"))
 
   (exwm/bind-function
    "s-SPC" 'exwm/run-rofi
@@ -291,23 +291,26 @@ EXWM Functions
   (defun exwm/startup ()
     (interactive)
     (exwm/run-xmodmap)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:20")
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:16")
     (exwm-workspace-switch-create 0)
     (start-process-shell-command "btop" nil "alacritty -e btop")
     (sleep-for 1)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:40")
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:32")
     (exwm-workspace-switch-create 1)
     (vterm)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:60")
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:50")
+    (sleep-for 1)
+    (exwm-workspace-switch-create 8)
+    (notmuch)
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:66")
     (sleep-for 1)
     (exwm-workspace-switch-create 9)
     (start-process-shell-command "pulsemixer" nil "alacritty -e pulsemixer")
+    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:82")
     (sleep-for 1)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:80")
     (exwm-workspace-switch-create 2)
     (exwm/run-qute)
     (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:100"))
-
 #+END_SRC
 *** System functions
 #+BEGIN_SRC elisp

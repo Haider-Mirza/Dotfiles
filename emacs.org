@@ -108,10 +108,9 @@ Here is a post on the matter
 #+END_SRC
 
 * Package Management
-
-I use Guix primarily to manage my Emacs packages, but some still require the use of an Emacs-based package manager.  I use straight.el for this purpose!
-
 ** Straight & use-package
+I use Guix primarily to manage my Emacs packages, but some still require the use of an Emacs-based package manager.  I use straight.el for this purpose!
+Sometimes it's good to clean up unused repositories if I've removed packages from my configuration.  Use =straight-remove-unused-repos= for this purpose.
 #+begin_src elisp
 
   (setq dw/is-guix-system (and (eq system-type 'gnu/linux)
@@ -138,9 +137,6 @@ I use Guix primarily to manage my Emacs packages, but some still require the use
   (straight-use-package 'use-package)
 
 #+end_src
-
-Sometimes it's good to clean up unused repositories if I've removed packages from my configuration.  Use =straight-remove-unused-repos= for this purpose.
-
 ********** Setup.el
 
 I've recently switched to the excellent [[https://www.emacswiki.org/emacs/SetupEl][setup.el]] by [[https://ruzkuku.com][pkal]] as an alternative to =use-package=.
@@ -160,9 +156,7 @@ I've recently switched to the excellent [[https://www.emacswiki.org/emacs/SetupE
 #+end_src
 
 ** :pkg
-
 The =:pkg= keyword will depend on Guix-installed Emacs packages unless the parameter seems like a =straight.el= recipe (it's a list).
-
 #+begin_src elisp
 
   ;; Recipe is always a list
@@ -199,9 +193,7 @@ The =:pkg= keyword will depend on Guix-installed Emacs packages unless the param
 #+end_src
 
 ** :delay
-
 Delay the loading of a package until a certain amount of idle time has passed.
-
 #+begin_src elisp
 
   (setup-define :delay
@@ -212,11 +204,8 @@ Delay the loading of a package until a certain amount of idle time has passed.
      :documentation "Delay loading the feature until a certain amount of idle time has passed.")
 
 #+end_src
-
 ** :disabled
-
 Used to disable a package configuration, similar to =:disabled= in =use-package=.
-
 #+begin_src elisp
 
   (setup-define :disabled
@@ -225,11 +214,8 @@ Used to disable a package configuration, similar to =:disabled= in =use-package=
     :documentation "Always stop evaluating the body.")
 
 #+end_src
-
 ** :load-after
-
 This keyword causes a body to be executed after other packages/features are loaded:
-
 #+begin_src elisp
 
   (setup-define :load-after
@@ -321,12 +307,11 @@ This keyword causes a body to be executed after other packages/features are load
    Make sure "font-jetbrains-mono" is installed on your system.
    The name may be different depending on your Operating System.
 #+begin_src elisp
-  (defvar efs/default-font-size 80)
-  
   (set-face-attribute 'default nil
-		      :font "JetBrains Mono"
-		      :weight 'light
-		      :height efs/default-font-size)
+		      :family "Jetbrains Mono"
+		      :height 80
+		      :weight 'normal
+		      :width  'normal)
 #+end_src
 ** Load Theme
 #+begin_src elisp
@@ -420,19 +405,19 @@ Center org-mode documents.
   (setup (:pkg doom-modeline)
     (:hook-into after-init-hook)
     (:option doom-modeline-lsp t
-	     doom-modeline-height 17
+	     doom-modeline-height 10
 	     doom-modeline-buffer-encoding nil
 	     doom-modeline-github nil
 	     doom-modeline-project-detection 'auto
 	     doom-modeline-number-limit 99
-	     doom-modeline-mu4e t
 	     doom-modeline-irc t)
 
     ;; Show the time and date in modeline
     (setq display-time-day-and-date t)
     ;; Enable the time & date in the modeline
-    (display-time-mode 1)
-    (setq display-time-string-forms '((format-time-string "%H:%M" now))))
+    (setq display-time-string-forms '((format-time-string "%H:%M:%S" now)))
+    (setq display-time-interval 1)
+    (display-time-mode 1))
 #+end_src 
 * General Configuration
 ** Auto Revert buffers
@@ -707,11 +692,12 @@ Playlist functions
 #+END_SRC
 *** org-appear
 #+BEGIN_SRC elisp
-   (setup (:pkg org-appear)
-     (:hook-into org-mode)
-     (setq org-appear-autoemphasis t)  ;; Enable org-appear on emphasis (bold, italics, etc)
-     (setq org-appear-autolinks t) ;; Enable on links
-     (setq org-appear-autosubmarkers t)) ;; Enable on subscript and superscript
+  (setup (:pkg org-appear)
+    (:hook-into org-mode)
+    (setq org-hide-emphasis-markers t) ;; A default setting that needs to be t for org-appear
+    (setq org-appear-autoemphasis t)  ;; Enable org-appear on emphasis (bold, italics, etc)
+    (setq org-appear-autolinks t) ;; Enable on links
+    (setq org-appear-autosubmarkers t)) ;; Enable on subscript and superscript
 #+END_SRC
 *** ox-reveal
 Export Orgmode to presentations.
@@ -809,43 +795,6 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
 	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
        ("d" "diary" entry "* Diary: \n%?"
 	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary")))))
-
-  ;; (setup (:pkg org-roam :straight t)
-  ;;   (setq org-roam-v2-ack t)
-  ;;   (:option
-  ;;    org-roam-directory "~/Notes/"
-  ;;    org-roam-dailies-directory "Journal/"
-  ;;    org-roam-completion-everywhere t
-
-  ;;    (org-roam-dailies-capture-templates
-  ;;     '(
-  ;;       ("d" "default" entry "* %<%I:%M %p>: %?"
-  ;;        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
-
-  ;;       ("t" "todo" entry "* TODO: \n%?"
-  ;;        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
-
-  ;;       ("d" "diary" entry "* Diary: \n%?"
-  ;;        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary"))
-  ;;       ))
-
-  ;;    (org-roam-capture-templates
-  ;;     '(
-  ;;       ("d" "default" plain "%?"
-  ;;        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
-  ;;        :unnarrowed t)
-
-  ;;       ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-  ;;        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-  ;;        :unnarrowed t)
-
-  ;;       ("s" "school" plain "\n%?"
-  ;;        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
-  ;;        :unnarrowed t))))
-
-  ;;   (:bind "C-M-i" completion-at-point)
-
-  ;;   (org-roam-setup))
 
   (defun org-roam-node-insert-immediate (arg &rest args)
     (interactive "P")
@@ -960,132 +909,243 @@ These keybindings will open my system's config files.
     "cs" '((lambda() (interactive) (find-file "~/dotfiles/system.org")) :which-key "System config")
     "cp" '((lambda() (interactive) (find-file "~/dotfiles/programs.org")) :which-key "Programs config"))
 #+end_src
-* MU4E EMail Configuration
-** Mu4e
-  make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
+* EMail Configuration
+** Notmuch
+I have not much email.
 #+BEGIN_SRC elisp
-  (setup mu4e
+  (setup (:pkg notmuch :straight t)
+    (autoload 'notmuch "notmuch" "Notmuch mail" t)
+    (setq notmuch-hello-logo nil
+	  mail-specify-envelope-from t
+	  notmuch-always-prompt-for-sender t
+	  ;; (setq message-send-mail-function #'message-send-mail-with-sendmail)
+	  notmuch-fcc-dirs 'nil
+	  send-mail-function #'sendmail-send-it
+	  mml-secure-openpgp-sign-with-sender t
+	  notmuch-mua-user-agent-function 'notmuch-mua-user-agent-full
+	  mm-sign-option 'guided
+	  message-kill-buffer-on-exit t
+	  message-send-mail-function 'smtpmail-send-it
+	  mail-specify-envelope-from t
+	  mail-envelope-from 'header
+	  message-sendmail-envelope-from 'header
+	  mail-user-agent 'message-user-agent
+	  mml-secure-openpgp-signers '("0237AE0A61747684EA7A935F2C52DB235E0FB36C")
+	  user-full-name "Haider Mirza"
+	  mail-host-address "smtp.gmail.com"
+	  smtpmail-stream-type 'ssl)
 
-    (require 'mu4e-org)
+    ;; Notmuch Functions
+    (defun notmuch/update ()
+      "Update Emails and load them into Notmuch's database "
+      (interactive)
+      (start-process-shell-command "Update Emails" nil "chmod +x ~/mail/.notmuch/hooks/pre-new && notmuch new"))
 
-    ;; This is set to 't' to avoid mail syncing issues when using mbsync
-    (setq mu4e-change-filenames-when-moving t)
+    (defun notmuch/trash()
+      "Set the current message to trash"
+      (interactive)
+      (evil-mode 0)
+      (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
+	  (notmuch-search-tag '("+trash" "-inbox" "-archived" "-unread"))
+	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
+	    (notmuch-show-tag '("+trash" "-inbox" "-archived" "-unread"))))
+      (evil-mode 1))
 
-    (setq org-capture-templates
-	  `(("m" "Email Workflow")
-	    ("mf" "Follow Up" entry (file+headline "~/org/Mail.org" "Follow Up")
-	     "* TODO %a\n\n  %i")
-	    ("mr" "Read Later" entry (file+headline "~/org/Mail.org" "Read Later")
-	     "* TODO %a\n\n  %i")))
+    (defun notmuch/read()
+      "Set the current message to read"
+      (interactive)
+      (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
+	  (notmuch-search-tag '("-unread" "-new"))
+	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
+	    (notmuch-show-tag '("-unread" "-new")))))
 
-    ;; Refresh mail using isync every 10 minutes
-    (setq mu4e-update-interval (* 10 60))
-    (setq mu4e-get-mail-command "mbsync -a")
-    (setq mu4e-maildir "~/Mail")
+    (defun notmuch/archive()
+      "Archive a message"
+      (interactive)
+      (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
+	  (notmuch-search-tag '("+archive"))
+	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
+	    (notmuch-show-tag '("+archive")))))
 
-    (setq message-kill-buffer-on-exit t)
-    (setq mu4e-attachment-dir "~/Downloads")
-    (setq mu4e-compose-dont-reply-to-self t)
-    (setq mu4e-headers-fields '((:human-date . 20)
-				(:flags . 6)
-				(:mailing-list . 10)
-				(:from . 22)
-				(:subject)))
-    (setq mu4e-headers-include-related t)
-    (setq mu4e-sent-messages-behavior 'delete)
-    (setq mu4e-view-show-addresses t)
-    (setq mu4e-view-show-images t)
-    (setq mm-sign-option 'guided)
+    ;; Message sending hooks
+    (add-hook 'message-send-hook
+	      (lambda ()
+		(let ((answer (read-from-minibuffer "Sign or encrypt?\nEmpty to do nothing.\n[s/e]: ")))
+		  (cond
+		   ((string-equal answer "s") (progn
+						(message "Signing message.")
+						(mml-secure-message-sign-pgpmime)))
+		   ((string-equal answer "e") (progn
+						(message "Encrypt and signing message.")
+						(mml-secure-message-encrypt-pgpmime)))
+		   (t (progn
+			(message "Dont signing or encrypting message.")
+			nil))))))
 
-    ;; Configure the function to use for sending mail
-    (setq message-send-mail-function 'smtpmail-send-it)
+    (add-hook 'message-send-hook
+	      (lambda ()
+		(if (string= (message-fetch-field "from") "Haider Mirza <x7and7@gmail.com>")
+		    (setq
+		     user-mail-address "x7and7@gmail.com"
+		     ;; notmuch-fcc-dirs "x7and7@gmail.com/sent"
+		     smtpmail-smtp-server "smtp.gmail.com"
+		     smtpmail-smtp-service 465)
 
-    (setq mu4e-contexts
-	  (list
-	   ;; Personal account
-	   (make-mu4e-context
-	    :name "Personal"
-	    :enter-func (lambda ()
-			  (mu4e-message "Entering personal context")
-			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
-			    (revert-buffer)))
-	    :leave-func (lambda ()
-			  (mu4e-message "Leaving personal context")
-			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
-			    (revert-buffer)))
-	    :match-func
-	    (lambda (msg)
-	      (when msg
-		(string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-	    :vars '((user-mail-address . "x7and7@gmail.com")
-		    (user-full-name    . "Haider Mirza")
-		    ;; (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
-		    (smtpmail-smtp-server  . "smtp.gmail.com")
-		    (smtpmail-smtp-service . 465)
-		    (smtpmail-stream-type  . ssl)
-		    (mu4e-drafts-folder  . "/Gmail/[Gmail]/Drafts")
-		    (mu4e-sent-folder  . "/Gmail/[Gmail]/Sent Mail")
-		    (mu4e-refile-folder  . "/Gmail/[Gmail]/All Mail")
-		    (mu4e-trash-folder  . "/Gmail/[Gmail]/Trash")))
+		  (if (string= (message-fetch-field "from") "Haider Mirza <ha6mi19@keaston.bham.sch.uk>")
+		      (setq
+		       user-mail-address "ha6mi19@keaston.bham.sch.uk"
+		       ;; notmuch-fcc-dirs "ha6mi19@keaston.bham.sch.uk/sent"
+		       smtpmail-smtp-server "smtp-mail.outlook.com"
+		       smtpmail-smtp-service 587)))))
 
-	   ;; Work account
-	   (make-mu4e-context
-	    :name "School"
-	    :enter-func (lambda ()
-			  (mu4e-message "Entering school context")
-			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
-			    (revert-buffer)))
-	    :leave-func (lambda ()
-			  (mu4e-message "Leaving school context")
-			  (when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
-			    (revert-buffer)))
-	    :match-func
-	    (lambda (msg)
-	      (when msg
-		(string-prefix-p "/Outlook" (mu4e-message-field msg :maildir))))
-	    :vars '((user-mail-address . "ha6mi19@keaston.bham.sch.uk")
-		    (user-full-name    . "Haider Mirza")
-		    ;;(mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
-		    (mu4e-compose-signature . nil) ;; Mu4e signature comes out to be another seperate file.
-		    ;; (smtpmail-smtp-server  . "smtp-mail.outlook.com")
-		    ;; (smtpmail-smtp-service . 587)
-		    ;; (smtpmail-stream-type  . ssl)
-		    (mu4e-drafts-folder  . "/Outlook/Drafts")
-		    (mu4e-sent-folder  . "/Outlook/Sent")
-		    (mu4e-refile-folder  . "/Outlook/Archive")
-		    (mu4e-trash-folder  . "/Outlook/Trash")))))
+    (setq notmuch-saved-searches
+	  '((:name "New" :query "tag:new" :key "n")
+	    (:name "Inbox" :query "tag:inbox" :key "i")
+	    (:name "Unread" :query "tag:unread" :key "u")
+	    (:name "Flagged" :query "tag:flagged" :key "f")
+	    (:name "Mailing Lists" :query "tag:list" :key "m")
+	    (:name "Guix" :query "tag:guix" :key "g")
+	    (:name "Sent" :query "tag:sent" :key "s")
+	    (:name "Spam" :query "tag:spam" :key "S")
+	    (:name "Drafts" :query "tag:draft" :key "d")
+	    (:name "Trash" :query "tag:trash" :key "t")
+	    (:name "Archive" :query "tag:archive" :key "a")
+	    (:name "All mail" :query "*" :key "A"))))
 
-    (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
+  (rune/leader-keys
+    "n"  '(:ignore t :which-key "Notmuch")
+    "nu" '(notmuch/update :which-key "Notmuch Update")
+    "nh" '(notmuch-hello-update :which-key "Notmuch Update Hello buffer")
+    "nt" '(notmuch/trash :which-key "Notmuch Trash")
+    "na" '(notmuch/archive :which-key "Notmuch Archive")
+    "nr" '(notmuch/read :which-key "Notmuch Read"))
+#+END_SRC
+** Mu4e
+I have switched to Notmuch due to it's superior tagging capabilities.
+Make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
+#+BEGIN_SRC elisp
+  ;; (setup mu4e
 
-    ;; ;; Sign all of my emails with opengpg keys 
-    ;; (setq mml-secure-openpgp-signers '("9EF89A5DC9CCB57E3AC00F2B4441A49825DCD754"))
-    ;; (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+  ;;   (require 'mu4e-org)
 
-    ;; (setq mu4e-context-policy 'pick-first)
+  ;;   ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  ;;   (setq mu4e-change-filenames-when-moving t)
 
-    (defun sign-or-encrypt-message ()
-      (let ((answer (read-from-minibuffer "Sign or encrypt?\nEmpty to do nothing.\n[s/e]: ")))
-	(cond
-	 ((string-equal answer "s") (progn
-				      (message "Signing message.")
-				      (mml-secure-message-sign-pgpmime)))
-	 ((string-equal answer "e") (progn
-				      (message "Encrypt and signing message.")
-				      (mml-secure-message-encrypt-pgpmime)))
-	 (t (progn
-	      (message "Dont signing or encrypting message.")
-	      nil)))))
+  ;;   (setq org-capture-templates
+  ;; 	`(("m" "Email Workflow")
+  ;; 	  ("mf" "Follow Up" entry (file+headline "~/org/Mail.org" "Follow Up")
+  ;; 	   "* TODO %a\n\n  %i")
+  ;; 	  ("mr" "Read Later" entry (file+headline "~/org/Mail.org" "Read Later")
+  ;; 	   "* TODO %a\n\n  %i")))
 
-    (add-hook 'message-send-hook 'sign-or-encrypt-message)
+  ;;   ;; Refresh mail using isync every 10 minutes
+  ;;   (setq mu4e-update-interval (* 10 60))
+  ;;   (setq mu4e-get-mail-command "mbsync -a")
+  ;;   (setq mu4e-maildir "~/Mail")
 
-    (setq mu4e-maildir-shortcuts
-	  '((:maildir "/Gmail/Inbox"    :key ?g)
-	    (:maildir "/Outlook/INBOX"     :key ?i)
-	    (:maildir "/Gmail/[Gmail]/Sent Mail" :key ?s)
-	    (:maildir "/Outlook/Sent" :key ?S))))
+  ;;   (setq message-kill-buffer-on-exit t)
+  ;;   (setq mu4e-attachment-dir "~/Downloads")
+  ;;   (setq mu4e-compose-dont-reply-to-self t)
+  ;;   (setq mu4e-headers-fields '((:human-date . 20)
+  ;; 			      (:flags . 6)
+  ;; 			      (:mailing-list . 10)
+  ;; 			      (:from . 22)
+  ;; 			      (:subject)))
+  ;;   (setq mu4e-headers-include-related t)
+  ;;   (setq mu4e-sent-messages-behavior 'delete)
+  ;;   (setq mu4e-view-show-addresses t)
+  ;;   (setq mu4e-view-show-images t)
+  ;;   (setq mm-sign-option 'guided)
 
-  ;; Make sure plain text mails flow correctly for recipients
-  (setq mu4e-compose-format-flowed t)
+  ;;   ;; Configure the function to use for sending mail
+  ;;   (setq message-send-mail-function 'smtpmail-send-it)
+
+  ;;   (setq mu4e-contexts
+  ;; 	(list
+  ;; 	 ;; Personal account
+  ;; 	 (make-mu4e-context
+  ;; 	  :name "Personal"
+  ;; 	  :enter-func (lambda ()
+  ;; 			(mu4e-message "Entering personal context")
+  ;; 			(when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+  ;; 			  (revert-buffer)))
+  ;; 	  :leave-func (lambda ()
+  ;; 			(mu4e-message "Leaving personal context")
+  ;; 			(when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+  ;; 			  (revert-buffer)))
+  ;; 	  :match-func
+  ;; 	  (lambda (msg)
+  ;; 	    (when msg
+  ;; 	      (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+  ;; 	  :vars '((user-mail-address . "x7and7@gmail.com")
+  ;; 		  (user-full-name    . "Haider Mirza")
+  ;; 		  ;; (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+  ;; 		  (smtpmail-smtp-server  . "smtp.gmail.com")
+  ;; 		  (smtpmail-smtp-service . 465)
+  ;; 		  (smtpmail-stream-type  . ssl)
+  ;; 		  (mu4e-drafts-folder  . "/Gmail/[Gmail]/Drafts")
+  ;; 		  (mu4e-sent-folder  . "/Gmail/[Gmail]/Sent Mail")
+  ;; 		  (mu4e-refile-folder  . "/Gmail/[Gmail]/All Mail")
+  ;; 		  (mu4e-trash-folder  . "/Gmail/[Gmail]/Trash")))
+
+  ;; 	 ;; Work account
+  ;; 	 (make-mu4e-context
+  ;; 	  :name "School"
+  ;; 	  :enter-func (lambda ()
+  ;; 			(mu4e-message "Entering school context")
+  ;; 			(when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+  ;; 			  (revert-buffer)))
+  ;; 	  :leave-func (lambda ()
+  ;; 			(mu4e-message "Leaving school context")
+  ;; 			(when (string-match-p (buffer-name (current-buffer)) "mu4e-main")
+  ;; 			  (revert-buffer)))
+  ;; 	  :match-func
+  ;; 	  (lambda (msg)
+  ;; 	    (when msg
+  ;; 	      (string-prefix-p "/Outlook" (mu4e-message-field msg :maildir))))
+  ;; 	  :vars '((user-mail-address . "ha6mi19@keaston.bham.sch.uk")
+  ;; 		  (user-full-name    . "Haider Mirza")
+  ;; 		  ;;(mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
+  ;; 		  (mu4e-compose-signature . nil) ;; Mu4e signature comes out to be another seperate file.
+  ;; 		  ;; (smtpmail-smtp-server  . "smtp-mail.outlook.com")
+  ;; 		  ;; (smtpmail-smtp-service . 587)
+  ;; 		  ;; (smtpmail-stream-type  . ssl)
+  ;; 		  (mu4e-drafts-folder  . "/Outlook/Drafts")
+  ;; 		  (mu4e-sent-folder  . "/Outlook/Sent")
+  ;; 		  (mu4e-refile-folder  . "/Outlook/Archive")
+  ;; 		  (mu4e-trash-folder  . "/Outlook/Trash")))))
+
+  ;;   (add-to-list 'mu4e-bookmarks '("m:/Outlook/INBOX or m:/Gmail/Inbox" "All Inboxes" ?i))
+
+  ;;   ;; ;; Sign all of my emails with opengpg keys 
+  ;;   ;; (setq mml-secure-openpgp-signers '("2C52DB235E0FB36C"))
+  ;;   ;; (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+
+  ;;   ;; (setq mu4e-context-policy 'pick-first)
+
+  ;;   (defun sign-or-encrypt-message ()
+  ;;     (let ((answer (read-from-minibuffer "Sign or encrypt?\nEmpty to do nothing.\n[s/e]: ")))
+  ;;       (cond
+  ;;        ((string-equal answer "s") (progn
+  ;; 				    (message "Signing message.")
+  ;; 				    (mml-secure-message-sign-pgpmime)))
+  ;;        ((string-equal answer "e") (progn
+  ;; 				    (message "Encrypt and signing message.")
+  ;; 				    (mml-secure-message-encrypt-pgpmime)))
+  ;;        (t (progn
+  ;; 	    (message "Dont signing or encrypting message.")
+  ;; 	    nil)))))
+
+  ;;   (add-hook 'message-send-hook 'sign-or-encrypt-message)
+
+  ;;   (setq mu4e-maildir-shortcuts
+  ;; 	'((:maildir "/Gmail/Inbox"    :key ?g)
+  ;; 	  (:maildir "/Outlook/INBOX"     :key ?i)
+  ;; 	  (:maildir "/Gmail/[Gmail]/Sent Mail" :key ?s)
+  ;; 	  (:maildir "/Outlook/Sent" :key ?S))))
+
+  ;; ;; Make sure plain text mails flow correctly for recipients
+  ;; (setq mu4e-compose-format-flowed t)
 #+END_SRC
 
 ** Mu4e-Alert
@@ -1097,18 +1157,18 @@ These keybindings will open my system's config files.
 #+END_SRC
 ** Org-mime
 #+BEGIN_SRC elisp
-  (setup (:pkg org-mime)
-    (setq org-mime-export-options '(:section-numbers nil
-						     :with-author nil
-						     :with-toc nil)))
+  ;; (setup (:pkg org-mime)
+  ;;   (setq org-mime-export-options '(:section-numbers nil
+  ;; 						   :with-author nil
+  ;; 						   :with-toc nil)))
 
-  (add-hook 'org-mime-html-hook
-	    (lambda ()
-	      (org-mime-change-element-style
-	       "pre" (format "color: %s; background-color: %s; padding: 0.5em;"
-			     "#E6E1DC" "#232323"))))
+  ;; (add-hook 'org-mime-html-hook
+  ;; 	  (lambda ()
+  ;; 	    (org-mime-change-element-style
+  ;; 	     "pre" (format "color: %s; background-color: %s; padding: 0.5em;"
+  ;; 			   "#E6E1DC" "#232323"))))
 
-  (add-hook 'message-send-hook 'org-mime-htmlize)
+  ;; (add-hook 'message-send-hook 'org-mime-htmlize)
 #+END_SRC
 * Development Configuration
 ** Projectile
@@ -1125,15 +1185,15 @@ These keybindings will open my system's config files.
 #+end_src
 ** YASnippet
  #+begin_src elisp
-       (setup (:pkg yasnippet)
-	 (yas-global-mode))
-      ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-      ;;   (yas-reload-all)
-      ;;   (:hook-into prog-mode-hook yas-minor-mode)
-      ;;   (:hook-into text-mode-hook yas-minor-mode)
-      ;;   (yas-global-mode t)
-      ;;   (require 'warnings)
-      ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+     (setup (:pkg yasnippet)
+       (yas-global-mode))
+   ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+   ;;   (yas-reload-all)
+   ;;   (:hook-into prog-mode-hook yas-minor-mode)
+   ;;   (:hook-into text-mode-hook yas-minor-mode)
+   ;;   (yas-global-mode t)
+   ;;   (require 'warnings)
+   ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
  #+end_src
 ** Magit
  #+BEGIN_SRC elisp
@@ -1146,51 +1206,20 @@ These keybindings will open my system's config files.
  #+END_SRC
 ** Lsp-mode
 #+BEGIN_SRC elisp
-  ;; (setup (:pkg lsp-mode
-  ;;   :bind (:map lsp-mode-map
-  ;; 	      ("TAB" . completion-at-point))
-  ;;   :custom
-  ;;   (lsp-auto-guess-root nil)
-  ;;   (lsp-file-watch-threshold 2000)
-  ;;   (read-process-output-max (* 1024 1024))
-  ;;   (lsp-eldoc-hook nil)
-  ;;   ;; :hook ((c++-mode . lsp)
-  ;;   ;; 	 (c-mode . lsp))
-  ;;   :commands lsp)
+  (setup (:pkg lsp-mode)
+    (:bind "TAB" completion-at-point)
+    (add-hook 'c-mode-hook 'lsp)
+    (add-hook 'c++-mode-hook 'lsp)
 
-  ;; ;; optionally
-  ;; (setup (:pkg lsp-ui
-  ;;   :config (lsp-ui-mode))
-
-  ;; (setup (:pkg lsp-treemacs)
-
-  ;; (rune/leader-keys
-  ;;   "l"  '(:ignore t :which-key "Lsp Mode")
-  ;;   "ld" '(lsp-find-definition :which-key "Find definition"))
-
-#+END_SRC
-** Dap-mode
-#+BEGIN_SRC elisp
-
-  ;; (setup (:pkg dap-mode)
-
-  ;; ;; Uncomment the config below if you want all UI panes to be hidden by default!
-  ;; ;; :custom
-  ;; ;; (lsp-enable-dap-auto-configure nil)
-  ;; ;; :config
-  ;; ;; (dap-ui-mode 1)
-
-  ;; :config
-  ;; ;; Set up Node debugging
-  ;; (require 'dap-lldb)
-  ;; (require 'dap-node)
-  ;; (require 'dap-cpptools)
-  ;; (require 'dap-gdb-lldb)
-
-
-  ;; (dap-node-setup) ;; Automatically installs Node debug adapter if needed
-
-  ;; (global-set-key (kbd "C-s-d") 'dap-hydra)
+    (setq gc-cons-threshold (* 100 1024 1024)
+	  lsp-diagnostics-provider :none
+	  lsp-modeline-diagnostics-enable nil
+	  lsp-headerline-breadcrumb-enable-diagnostics nil
+	  read-process-output-max (* 1024 1024)
+	  treemacs-space-between-root-nodes nil
+	  company-idle-delay 0.0
+	  company-minimum-prefix-length 1
+	  lsp-idle-delay 0.0))
 #+END_SRC
 ** Languages
 *** Javascript
@@ -1229,6 +1258,10 @@ I generally don't use Javascript.
   ;;   (setq prettier-js-show-errors nil))
 
 #+END_SRC
+*** CMake
+#+BEGIN_SRC elisp
+   (setup (:pkg cmake-mode :straight t))
+#+END_SRC
 *** ELisp
 #+BEGIN_SRC elisp
   (rune/leader-keys
@@ -1240,8 +1273,7 @@ I generally don't use Javascript.
 I know that ccls is not the best, especially where options like clangd is avalable.
 But for now, this is the most I can get working
 #+BEGIN_SRC elisp
-  ;; (setup (:pkg ccls
-  ;;   :defer 5)
+   (setup (:pkg ccls :straight t))
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
@@ -1322,7 +1354,7 @@ But for now, this is the most I can get working
 
   (setup (:pkg company))
 
-  (setup (:pkg company-box))
+  ;; (setup (:pkg company-box))
 
   ;; (use-package company
   ;;   :after lsp-mode

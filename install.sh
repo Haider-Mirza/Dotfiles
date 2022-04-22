@@ -72,8 +72,9 @@ elif [ $((x)) == 3 ]; then
     mkdir ~/Mail/
     mkdir ~/Mail/Gmail/
     mkdir ~/Mail/Outlook/
-    mu init --maildir=~/Mail --my-address=x7and7@gmail.com --my-address=ha6mi19@keaston.bham.sch.uk
+    mu init --maildir=~/mail --my-address=x7and7@gmail.com --my-address=ha6mi19@keaston.bham.sch.uk
     mu index
+    sudo notmuch --config=/home/haider/.config/notmuch/default/config new
     echo -e "Syncing Mail\n"
     mbsync -a
 

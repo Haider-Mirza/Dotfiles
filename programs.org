@@ -16,58 +16,158 @@
 
 * About This Config
   This literate configuration is for the programs I commonly use
-* Mbsyncrc
+* Email Configuration
+** Notmuch
+#+BEGIN_SRC conf :tangle "/home/haider/.notmuch-config"
+[user]
+name=Haider Mirza
+primary_email=x7and7@gmail.com
+other_email=ha6mi19@keaston.bham.sch.uk
+
+[database]
+path=/home/haider/mail
+mail_root=/home/haider/mail
+
+[maildir]
+synchronize_flags=true
+
+[search]
+exclude_flags=trash;spam
+
+[new]
+tags=new;inbox
+ignore=.mbsyncstate;.uidvalidity
+#+END_SRC
+** Notmuch hooks
+#+BEGIN_SRC conf :tangle "/home/haider/mail/.notmuch/hooks/pre-new"
+  #!/bin/sh
+  mbsync -a
+
+  # if in "foo" directory add "foo" tag
+  notmuch tag +inbox -- path:/.*\\/inbox/ 
+  notmuch tag +draft -- path:/.*\\/draft/ 
+  notmuch tag +sent -inbox -draft -trash -spam -- path:/.*\\/sent/ 
+  notmuch tag +trash -- path:/.*\\/trash/ 
+  notmuch tag +spam -new -unread -- path:/.*\\/spam/ 
+
+  # If file was moved out of folder on server, remove respective tag
+  notmuch tag -inbox -- not path:/.*\\/inbox/ and tag:inbox
+  notmuch tag -trash -- not path:/.*\\/trash/ and tag:trash
+  notmuch tag -spam -- not path:/.*\\/spam/ and tag:spam
+
+  notmuch tag +school -- path:ha6mi19@keaston.bham.sch.uk/**
+  notmuch tag +work -- path:x7and7@gmail.com/**
+
+  # Retag all "new" messages "inbox" and "unread"
+  notmuch tag +inbox +unread -- tag:new
+  notmuch tag -inbox -- tag:sent
+
+  # Tag Mailing Lists
+  notmuch tag -inbox +list '(' to:crew@morningbrew.com or from:crew@morningbrew.com ')'
+
+  # Tag Guix emails
+  notmuch tag +guix '(' to:help-debbugs@gnu.org or from:help-debbugs@gnu.org ')'
+  notmuch tag +guix '(' to:help-guix@gnu.org or from:help-guix@gnu.org ')'
+  notmuch tag +guix '(' to:bug-guix@gnu.org or from:bug-guix@gnu.org ')'
+  notmuch tag +guix -- subject:guix
+  notmuch tag +guix -- body:guix
+
+#+END_SRC
+** Mbsyncrc
   This file is the config file used for managing email in Mu4e.
 #+BEGIN_SRC conf :tangle "/home/haider/.mbsyncrc"
-  IMAPAccount gmail
-  Host imap.gmail.com
-  User x7and7@gmail.com
-  PassCmd "emacsclient -e \"(password-store-get \\\"ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
-  SSLType IMAPS
-  CertificateFile /etc/ssl/certs/ca-certificates.crt
-
-  IMAPStore gmail-remote
-  Account gmail
-
-  MaildirStore gmail-local
-  Subfolders Verbatim
-  Path ~/Mail/Gmail/
-  Inbox ~/Mail/Gmail/Inbox
-
-  Channel gmail
-  Far :gmail-remote:
-  Near :gmail-local:
-  Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail" "[Gmail]/Trash"
   Create Both
+  Expunge Both
   SyncState *
 
-  IMAPAccount outlook
-  Host outlook.office365.com
-  Port 993
-  User ha6mi19@keaston.bham.sch.uk
+  # Work account
+  IMAPAccount work
+  Host "imap.gmail.com"
+  User "x7and7@gmail.com"
   PassCmd "emacsclient -e \"(password-store-get \\\"x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
   SSLType IMAPS
-  SSLVersions TLSv1.2
-  CertificateFile /etc/ssl/certs/ca-certificates.crt
 
-  IMAPStore outlook-remote
-  Account outlook
+  IMAPStore work-remote
+  Account work
 
-  MaildirStore outlook-local
-  Path ~/Mail/Outlook/
-  Inbox ~/Mail/Outlook/INBOX/
-  Trash ~/Mail/Outlook/Trash/
-  SubFolders Verbatim
+  MaildirStore work-local
+  Subfolders Verbatim
+  Path "/home/haider/mail/x7and7@gmail.com/"
+  Inbox "/home/haider/mail/x7and7@gmail.com/inbox"
 
-  Channel outlook
-  Far :outlook-remote:
-  Near :outlook-local:
-  Patterns *
-  Expunge None
-  CopyArrivalDate yes
-  Sync All
-  Create Both
-  SyncState *
+  channel work-inbox
+  near ":work-local:inbox"
+  far ":work-remote:INBOX"
+
+  channel work-sent
+  near ":work-local:sent"
+  far ":work-remote:[Gmail]/Sent Mail"
+
+  channel work-drafts
+  near ":work-local:drafts"
+  far ":work-remote:[Gmail]/Drafts"
+
+  channel work-all
+  near ":work-local:all"
+  far ":work-remote:[Gmail]/All Mail"
+
+  channel work-trash
+  near ":work-local:trash"
+  far ":work-remote:[Gmail]/Trash"
+
+  channel work-spam
+  near ":work-local:spam"
+  far ":work-remote:[Gmail]/Spam"
+
+  group work
+  channel work-inbox
+  channel work-sent
+  channel work-drafts
+  channel work-all
+  channel work-trash
+  channel work-spam
+
+  # Work account
+  IMAPAccount school
+  Host "outlook.office365.com"
+  User "ha6mi19@keaston.bham.sch.uk"
+  PassCmd "emacsclient -e \"(password-store-get \\\"ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
+  SSLType IMAPS
+
+  IMAPStore school-remote
+  Account school
+
+  MaildirStore school-local
+  Subfolders Verbatim
+  Path "/home/haider/mail/ha6mi19@keaston.bham.sch.uk/"
+  Inbox "/home/haider/mail/ha6mi19@keaston.bham.sch.uk/inbox"
+
+  channel school-inbox
+  near ":school-local:inbox"
+  far ":school-remote:INBOX"
+
+  channel school-sent
+  near ":school-local:sent"
+  far ":school-remote:/Sent Items"
+
+  channel school-drafts
+  near ":school-local:drafts"
+  far ":school-remote:/Drafts"
+
+  channel school-trash
+  near ":school-local:trash"
+  far ":school-remote:/Deleted Items"
+
+  channel school-spam
+  near ":school-local:spam"
+  far ":school-remote:/Junk Email"
+
+  group school
+  channel school-inbox
+  channel school-sent
+  channel school-drafts
+  channel school-trash
+  channel school-spam
 #+END_SRC
 * Moc
 ** Config
@@ -1089,196 +1189,198 @@ Switch workspace to 3 (this workspace is dedicated for videos that are launched 
   timeout = 10
 #+END_SRC
 * Rofi
+I know, I hate the formatting
 #+BEGIN_SRC conf :tangle "/home/haider/.config/rofi/config.rasi"
-  configuration {
-    timeout {
-	action: "kb-cancel";
-	delay:  0;
-    }
-    filebrowser {
-	directories-first: true;
-	sorting-method:    "name";
-    }
-  }
+configuration {
+modi: "window,drun,ssh,run";
+timeout {
+action: "kb-cancel";
+delay:  0;
+}
+filebrowser {
+directories-first: true;
+sorting-method:    "name";
+}
+}
 
-  /**
-   ,* rofi -dump-theme output.
-   ,* Rofi version: 1.7.0
-   ,**/
+/**
+,* rofi -dump-theme output.
+,* Rofi version: 1.7.0
+,**/
 
-  ,*{
-      active-background:           @background;
-      active-foreground:           @foreground;
-      normal-background:           @background;
-      normal-foreground:           @foreground;
-      urgent-background:           #1C304B;
-      urgent-foreground:           @foreground;
+,*{
+active-background:           @background;
+active-foreground:           @foreground;
+normal-background:           @background;
+normal-foreground:           @foreground;
+urgent-background:           #1C304B;
+urgent-foreground:           @foreground;
 
-      alternate-active-background: @background;
-      alternate-active-foreground: @foreground;
-      alternate-normal-background: @background;
-      alternate-normal-foreground: @foreground;
-      alternate-urgent-background: @background;
-      alternate-urgent-foreground: @foreground;
+alternate-active-background: @background;
+alternate-active-foreground: @foreground;
+alternate-normal-background: @background;
+alternate-normal-foreground: @foreground;
+alternate-urgent-background: @background;
+alternate-urgent-foreground: @foreground;
 
-      selected-active-background:  #58344C;
-      selected-active-foreground:  @foreground;
-      selected-normal-background:  @background;
-      selected-normal-foreground:  @border-color;
-      selected-urgent-background:  #839BBC;
-      selected-urgent-foreground:  @foreground;
+selected-active-background:  #58344C;
+selected-active-foreground:  @foreground;
+selected-normal-background:  @background;
+selected-normal-foreground:  @border-color;
+selected-urgent-background:  #839BBC;
+selected-urgent-foreground:  @foreground;
 
-      lightfg:                     rgba ( 88, 104, 117, 100 % );
-      separatorcolor:              @foreground;
-      lightbg:                     rgba ( 238, 232, 213, 100 % );
-      normal-foreground:           @foreground;
+lightfg:                     rgba ( 88, 104, 117, 100 % );
+separatorcolor:              @foreground;
+lightbg:                     rgba ( 238, 232, 213, 100 % );
+normal-foreground:           @foreground;
 
-      background-color:            @background;
-      background:                  #121a27;
-      foreground:                  #b0bfc4;
-      border-color:                #DA1C52;
-      spacing:                     2;
-      font: "Hack Nerd Font Mono 9";
-  }
-  element {
-      padding: 1px ;
-      cursor:  pointer;
-      spacing: 5px ;
-      border:  0;
-  }
-  element normal.normal {
-      background-color: @normal-background;
-      text-color:       @normal-foreground;
-  }
-  element normal.urgent {
-      background-color: @urgent-background;
-      text-color:       @urgent-foreground;
-  }
-  element normal.active {
-      background-color: @active-background;
-      text-color:       @active-foreground;
-  }
-  element selected.normal {
-      background-color: @selected-normal-background;
-      text-color:       @selected-normal-foreground;
-  }
-  element selected.urgent {
-      background-color: @selected-urgent-background;
-      text-color:       @selected-urgent-foreground;
-  }
-  element selected.active {
-      background-color: @selected-active-background;
-      text-color:       @selected-active-foreground;
-  }
-  element alternate.normal {
-      background-color: @alternate-normal-background;
-      text-color:       @alternate-normal-foreground;
-  }
-  element alternate.urgent {
-      background-color: @alternate-urgent-background;
-      text-color:       @alternate-urgent-foreground;
-  }
-  element alternate.active {
-      background-color: @alternate-active-background;
-      text-color:       @alternate-active-foreground;
-  }
-  element-text {
-      background-color: rgba ( 0, 0, 0, 0 % );
-      cursor:           inherit;
-      highlight:        inherit;
-      text-color:       inherit;
-  }
-  element-icon {
-      background-color: rgba ( 0, 0, 0, 0 % );
-      size:             1.0000em ;
-      cursor:           inherit;
-      text-color:       inherit;
-  }
-  window {
-      background-color: @background;
-      height: 55%;
-      width: 35%;
-      border:    0;
-      padding:   2.5ch;
-  }
-  mainbox {
-      padding: 0;
-      border:  0;
-  }
-  message {
-      padding:      1px ;
-      border-color: var(separatorcolor);
-      border:       2px dash 0px 0px ;
-  }
-  textbox {
-      text-color: @foreground;
-  }
-  listview {
-      padding:      2px 0px 0px ;
-      scrollbar:    false;
-      border-color: @border-color;
-      spacing:      2px ;
-      fixed-height: 0;
-      border:       0px dash 0px 0px ;
-  }
-  scrollbar {
-      width:        4px ;
-      padding:      0;
-      handle-width: 8px ;
-      border:       0;
-      handle-color: @normal-foreground;
-  }
-  sidebar {
-      border-color: var(separatorcolor);
-      border:       2px dash 0px 0px ;
-  }
-  button {
-      cursor:     pointer;
-      spacing:    0;
-      text-color: @normal-foreground;
-  }
-  button selected {
-      background-color: @selected-normal-background;
-      text-color:       @selected-normal-foreground;
-  }
-  num-filtered-rows {
-      expand:     false;
-      text-color: rgba ( 128, 128, 128, 100 % );
-  }
-  num-rows {
-      expand:     false;
-      text-color: rgba ( 128, 128, 128, 100 % );
-  }
-  textbox-num-sep {
-      expand:     false;
-      str:        "/";
-      text-color: rgba ( 128, 128, 128, 100 % );
-  }
-  inputbar {
-      padding:    1px ;
-      spacing:    0px ;
-      text-color: @normal-foreground;
-      children:   [ prompt,textbox-prompt-colon,entry,num-filtered-rows,textbox-num-sep,num-rows,case-indicator ];
-  }
-  case-indicator {
-      spacing:    0;
-      text-color: @normal-foreground;
-  }
-  entry {
-      text-color:        @normal-foreground;
-      cursor:            text;
-      spacing:           0;
-      placeholder-color: rgba ( 128, 128, 128, 100 % );
-      placeholder:       "Type to filter";
-  }
-  prompt {
-      spacing:    0;
-      text-color: @normal-foreground;
-  }
-  textbox-prompt-colon {
-      margin:     0px 0.3000em 0.0000em 0.0000em ;
-      expand:     false;
-      str:        ":";
-      text-color: inherit;
-  }
+background-color:            @background;
+background:                  #121a27;
+foreground:                  #b0bfc4;
+border-color:                #DA1C52;
+spacing:                     2;
+font: "Hack Nerd Font Mono 9";
+}
+element {
+padding: 1px ;
+cursor:  pointer;
+spacing: 5px ;
+border:  0;
+}
+element normal.normal {
+background-color: @normal-background;
+text-color:       @normal-foreground;
+}
+element normal.urgent {
+background-color: @urgent-background;
+text-color:       @urgent-foreground;
+}
+element normal.active {
+background-color: @active-background;
+text-color:       @active-foreground;
+}
+element selected.normal {
+background-color: @selected-normal-background;
+text-color:       @selected-normal-foreground;
+}
+element selected.urgent {
+background-color: @selected-urgent-background;
+text-color:       @selected-urgent-foreground;
+}
+element selected.active {
+background-color: @selected-active-background;
+text-color:       @selected-active-foreground;
+}
+element alternate.normal {
+background-color: @alternate-normal-background;
+text-color:       @alternate-normal-foreground;
+}
+element alternate.urgent {
+background-color: @alternate-urgent-background;
+text-color:       @alternate-urgent-foreground;
+}
+element alternate.active {
+background-color: @alternate-active-background;
+text-color:       @alternate-active-foreground;
+}
+element-text {
+background-color: rgba ( 0, 0, 0, 0 % );
+cursor:           inherit;
+highlight:        inherit;
+text-color:       inherit;
+}
+element-icon {
+background-color: rgba ( 0, 0, 0, 0 % );
+size:             1.0000em ;
+cursor:           inherit;
+text-color:       inherit;
+}
+window {
+background-color: @background;
+height: 55%;
+width: 35%;
+border:    0;
+padding:   2.5ch;
+}
+mainbox {
+padding: 0;
+border:  0;
+}
+message {
+padding:      1px ;
+border-color: var(separatorcolor);
+border:       2px dash 0px 0px ;
+}
+textbox {
+text-color: @foreground;
+}
+listview {
+padding:      2px 0px 0px ;
+scrollbar:    false;
+border-color: @border-color;
+spacing:      2px ;
+fixed-height: 0;
+border:       0px dash 0px 0px ;
+}
+scrollbar {
+width:        4px ;
+padding:      0;
+handle-width: 8px ;
+border:       0;
+handle-color: @normal-foreground;
+}
+sidebar {
+border-color: var(separatorcolor);
+border:       2px dash 0px 0px ;
+}
+button {
+cursor:     pointer;
+spacing:    0;
+text-color: @normal-foreground;
+}
+button selected {
+background-color: @selected-normal-background;
+text-color:       @selected-normal-foreground;
+}
+num-filtered-rows {
+expand:     false;
+text-color: rgba ( 128, 128, 128, 100 % );
+}
+num-rows {
+expand:     false;
+text-color: rgba ( 128, 128, 128, 100 % );
+}
+textbox-num-sep {
+expand:     false;
+str:        "/";
+text-color: rgba ( 128, 128, 128, 100 % );
+}
+inputbar {
+padding:    1px ;
+spacing:    0px ;
+text-color: @normal-foreground;
+children:   [ prompt,textbox-prompt-colon,entry,num-filtered-rows,textbox-num-sep,num-rows,case-indicator ];
+}
+case-indicator {
+spacing:    0;
+text-color: @normal-foreground;
+}
+entry {
+text-color:        @normal-foreground;
+cursor:            text;
+spacing:           0;
+placeholder-color: rgba ( 128, 128, 128, 100 % );
+placeholder:       "Type to filter";
+}
+prompt {
+spacing:    0;
+text-color: @normal-foreground;
+}
+textbox-prompt-colon {
+margin:     0px 0.3000em 0.0000em 0.0000em ;
+expand:     false;
+str:        ":";
+text-color: inherit;
+}
 #+END_SRC
