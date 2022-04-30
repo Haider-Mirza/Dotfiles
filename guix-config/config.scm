@@ -51,6 +51,7 @@
 
 	     ;; Emacs Packages
 	     "emacs"
+	     "ispell" ;; flyspell
 	     "emacs-guix"
 	     "emacs-gnus-alias"
 	     "emacs-general"

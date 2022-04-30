@@ -880,24 +880,61 @@ These keybindings will open my system's config files.
 * EMail Configuration
 ** Notmuch
 I have not much email.
+Special Thanks to kzar for their configuration that heavily enspired mine: [[https://github.com/kzar/davemail][davemail]].
 #+BEGIN_SRC elisp
   ;; TODO: Switch to the Guix package
   (setup (:pkg gnus-alias :straight t))
   (setup (:pkg notmuch :straight t)
-    ;; (autoload 'notmuch "notmuch" "Notmuch mail" t)
-    (setq
-     message-kill-buffer-on-exit t
-     notmuch-fcc-dirs
-     '(("x7and7@gmail.com" .
-	"\"x7and7@gmail.com/sent\" +sent +work -inbox")
-       (".*" . "\"ha6mi19@keaston.bham.sch.uk/sent\" +sent +school -inbox")))
+    (add-hook 'message-setup-hook 'mml-secure-message-sign-pgpmime)
+    (setq message-kill-buffer-on-exit t
+	  notmuch-search-oldest-first 'nil
+	  mml-default-sign-method 'gpg
+	  notmuch-fcc-dirs
+	  '(("x7and7@gmail.com" .
+	     "\"x7and7@gmail.com/sent\" +sent +work -inbox -unread")
+	    (".*" . "\"ha6mi19@keaston.bham.sch.uk/sent\" +sent +school -inbox -unread"))
+	  notmuch-saved-searches
+	  '((:name "Unread" :query "tag:unread" :key "u")
+	    (:name "Inbox" :query "tag:inbox" :key "i")
+	    (:name "Guix" :query "tag:guix" :key "g")
+	    (:name "Mailing Lists" :query "tag:list" :key "m")
+	    (:name "Sent" :query "tag:sent" :key "s")
+	    (:name "Spam" :query "tag:spam" :key "S")
+	    (:name "Drafts" :query "tag:draft" :key "d")
+	    (:name "Trash" :query "tag:trash" :key "t")
+	    (:name "Archive" :query "tag:archive" :key "a")
+	    (:name "All mail" :query "*" :key "A")))
 
-    ;; Notmuch Functions
+    ;; Modeline
+    (setq modeline/notmuch-activity-string "")
+    (add-to-list 'global-mode-string '((:eval modeline/notmuch-activity-string)) t)
+
+    (defun modeline/get-notmuch-incoming-count ()
+      (string-trim
+       (shell-command-to-string
+	"notmuch count tag:unread")))
+
+    (defun modeline/format-notmuch-mode-string (count)
+      (let* ((no-email (string= count "0"))
+	     (email-text (if no-email " No Mail" " Unread Emails")))
+	(concat email-text "[" (if no-email "" count) "]")))
+
+    (defun modeline/update-notmuch-activity-string (&rest args)
+      (interactive)
+      (setq modeline/notmuch-activity-string
+	    (modeline/format-notmuch-mode-string (modeline/get-notmuch-incoming-count)))
+      (force-mode-line-update))
+
+    (add-hook 'notmuch-after-tag-hook 'modeline/update-notmuch-activity-string)
+    (add-hook 'after-init-hook #'modeline/update-notmuch-activity-string)
+
+    ;; Update Notmuch
     (defun notmuch/update ()
       "Update Emails and load them into Notmuch's database "
       (interactive)
       (start-process-shell-command "Update Emails" nil "chmod +x ~/mail/.notmuch/hooks/pre-new && notmuch new"))
 
+    ;; Manual tagging
     (defun notmuch/trash()
       "Set the current message to trash"
       (interactive)
@@ -912,9 +949,9 @@ I have not much email.
       "Set the current message to read"
       (interactive)
       (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
-	  (notmuch-search-tag '("-unread" "-new"))
+	  (notmuch-search-tag '("-unread"))
 	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
-	    (notmuch-show-tag '("-unread" "-new")))))
+	    (notmuch-show-tag '("-unread")))))
 
     (defun notmuch/archive()
       "Archive a message"
@@ -957,33 +994,51 @@ I have not much email.
     (setq gnus-alias-default-identity "work")
 
     ;; Message sending hooks
-    (add-hook 'message-send-hook
-	      (lambda ()
-		(let ((answer (read-from-minibuffer "Sign or encrypt?\nEmpty to do nothing.\n[s/e]: ")))
-		  (cond
-		   ((string-equal answer "s") (progn
-						(message "Signing message.")
-						(mml-secure-message-sign-pgpmime)))
-		   ((string-equal answer "e") (progn
-						(message "Encrypt and signing message.")
-						(mml-secure-message-encrypt-pgpmime)))
-		   (t (progn
-			(message "Dont signing or encrypting message.")
-			nil))))))
+    ;; (add-hook 'message-send-hook
+    ;; 	    (lambda ()
+    ;; 	      (let ((answer (read-from-minibuffer "Sign or encrypt?\nEmpty to do nothing.\n[s/e]: ")))
+    ;; 		(cond
+    ;; 		 ((string-equal answer "s") (progn
+    ;; 					      (message "Signing message.")
+    ;; 					      (mml-secure-message-sign-pgpmime)))
+    ;; 		 ((string-equal answer "e") (progn
+    ;; 					      (message "Encrypt and signing message.")
+    ;; 					      (mml-secure-message-encrypt-pgpmime)))
+    ;; 		 (t (progn
+    ;; 		      (message "Dont signing or encrypting message.")
+    ;; 		      nil))))))
 
     (setq send-mail-function 'sendmail-send-it
 	  sendmail-program "/home/haider/.guix-profile/bin/msmtp"
 	  mail-specify-envelope-from t
 	  message-sendmail-envelope-from 'header
-	  mail-envelope-from 'header)
+	  mail-envelope-from 'header))
 
-    (rune/leader-keys
-      "n"  '(:ignore t :which-key "Notmuch")
-      "nu" '(notmuch/update :which-key "Notmuch Update")
-      "nh" '(notmuch-hello-update :which-key "Notmuch Update Hello buffer")
-      "nt" '(notmuch/trash :which-key "Notmuch Trash")
-      "na" '(notmuch/archive :which-key "Notmuch Archive")
-      "nr" '(notmuch/read :which-key "Notmuch Read"))
+  (rune/leader-keys
+    "n"  '(:ignore t :which-key "Notmuch")
+    "nu" '(notmuch/update :which-key "Notmuch Update")
+    "nh" '(notmuch-hello-update :which-key "Notmuch Update Hello buffer")
+    "nt" '(notmuch/trash :which-key "Notmuch Trash")
+    "na" '(notmuch/archive :which-key "Notmuch Archive")
+    "nr" '(notmuch/read :which-key "Notmuch Read"))
+
+#+END_SRC
+** Flyspell
+I use flyspell in my emails.
+Auto-correct word with C-M-I.
+#+BEGIN_SRC elisp
+  (defun my-save-word ()
+    "Save a word to a dictionary that is stored in ~/.aspell.en.pws"
+    (interactive)
+    (let ((current-location (point))
+	  (word (flyspell-get-word)))
+      (when (consp word)    
+	(flyspell-do-correct 'save nil (car word) current-location (cadr word) (caddr word) current-location))))
+
+  (rune/leader-keys
+    "f"  '(:ignore t :which-key "Flyspell")
+    "fm" '(flyspell-mode :which-key "Start Flyspell-Mode")
+    "fa" '(my-save-word :which-key "Add word to Flyspell"))
 #+END_SRC
 ** Mu4e
 I have switched to Notmuch due to it's superior tagging capabilities.
@@ -1008,28 +1063,6 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
   ;;   (setq mu4e-get-mail-command "mbsync -a")
   ;;   (setq mu4e-maildir "~/Mail")
 
-  ;;   (setq message-kill-buffer-on-exit t)
-  ;;   (setq mu4e-attachment-dir "~/Downloads")
-  ;;   (setq mu4e-compose-dont-reply-to-self t)
-  ;;   (setq mu4e-headers-fields '((:human-date . 20)
-  ;; 			      (:flags . 6)
-  ;; 			      (:mailing-list . 10)
-  ;; 			      (:from . 22)
-  ;; 			      (:subject)))
-  ;;   (setq mu4e-headers-include-related t)
-  ;;   (setq mu4e-sent-messages-behavior 'delete)
-  ;;   (setq mu4e-view-show-addresses t)
-  ;;   (setq mu4e-view-show-images t)
-  ;;   (setq mm-sign-option 'guided)
-
-  ;;   ;; Configure the function to use for sending mail
-  ;;   (setq message-send-mail-function 'smtpmail-send-it)
-
-  ;;   (setq mu4e-contexts
-  ;; 	(list
-  ;; 	 ;; Personal account
-  ;; 	 (make-mu4e-context
-  ;; 	  :name "Personal"
   ;; 	  :enter-func (lambda ()
   ;; 			(mu4e-message "Entering personal context")
   ;; 			(when (string-match-p (buffer-name (current-buffer)) "mu4e-main")

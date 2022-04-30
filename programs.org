@@ -35,7 +35,7 @@
   exclude_flags=trash;spam
 
   [new]
-  tags=new;inbox
+  tags=inbox;unread
   ignore=.mbsyncstate;.uidvalidity
 	  
   [crypto]
@@ -51,7 +51,7 @@
   notmuch tag +draft -- path:/.*\\/draft/ 
   notmuch tag +sent -inbox -draft -trash -spam -- path:/.*\\/sent/ 
   notmuch tag +trash -- path:/.*\\/trash/ 
-  notmuch tag +spam -new -unread -- path:/.*\\/spam/ 
+  notmuch tag +spam -- path:/.*\\/spam/ 
 
   # If file was moved out of folder on server, remove respective tag
   notmuch tag -inbox -- not path:/.*\\/inbox/ and tag:inbox
@@ -74,6 +74,8 @@
   notmuch tag +guix '(' to:bug-guix@gnu.org or from:bug-guix@gnu.org ')'
   notmuch tag +guix -- subject:guix
   notmuch tag +guix -- body:guix
+
+  emacsclient -e "(modeline/update-notmuch-activity-string)"
 
 #+END_SRC
 ** Mbsyncrc
