@@ -916,8 +916,8 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
 
     (defun modeline/format-notmuch-mode-string (count)
       (let* ((no-email (string= count "0"))
-	     (email-text (if no-email " No Mail" " Unread Emails")))
-	(concat email-text "[" (if no-email "" count) "]")))
+	     (email-text (if no-email " | No Mail" " | Unread Emails")))
+	(concat email-text " [" (if no-email "" count) "] |")))
 
     (defun modeline/update-notmuch-activity-string (&rest args)
       (interactive)
