@@ -19,24 +19,27 @@
 * Email Configuration
 ** Notmuch
 #+BEGIN_SRC conf :tangle "/home/haider/.notmuch-config"
-[user]
-name=Haider Mirza
-primary_email=x7and7@gmail.com
-other_email=ha6mi19@keaston.bham.sch.uk
+  [user]
+  name=Haider Mirza
+  primary_email=x7and7@gmail.com
+  other_email=ha6mi19@keaston.bham.sch.uk
 
-[database]
-path=/home/haider/mail
-mail_root=/home/haider/mail
+  [database]
+  path=/home/haider/mail
+  mail_root=/home/haider/mail
 
-[maildir]
-synchronize_flags=true
+  [maildir]
+  synchronize_flags=true
 
-[search]
-exclude_flags=trash;spam
+  [search]
+  exclude_flags=trash;spam
 
-[new]
-tags=new;inbox
-ignore=.mbsyncstate;.uidvalidity
+  [new]
+  tags=new;inbox
+  ignore=.mbsyncstate;.uidvalidity
+	  
+  [crypto]
+  gpg_path=gpg
 #+END_SRC
 ** Notmuch hooks
 #+BEGIN_SRC conf :tangle "/home/haider/mail/.notmuch/hooks/pre-new"
@@ -59,8 +62,8 @@ ignore=.mbsyncstate;.uidvalidity
   notmuch tag +work -- path:x7and7@gmail.com/**
 
   # Retag all "new" messages "inbox" and "unread"
-  notmuch tag +inbox +unread -- tag:new
-  notmuch tag -inbox -- tag:sent
+  # notmuch tag +inbox +unread -- tag:new
+  # notmuch tag -inbox -- tag:sent
 
   # Tag Mailing Lists
   notmuch tag -inbox +list '(' to:crew@morningbrew.com or from:crew@morningbrew.com ')'
@@ -168,6 +171,38 @@ ignore=.mbsyncstate;.uidvalidity
   channel school-drafts
   channel school-trash
   channel school-spam
+#+END_SRC
+** MSMTP
+#+BEGIN_SRC conf :tangle "/home/haider/.msmtprc"
+  # Set default values for all following accounts.
+  defaults
+  auth           on
+  tls            on
+  tls_starttls off
+  tls_trust_file /etc/ssl/certs/ca-certificates.crt
+  logfile        ~/.msmtp.log
+
+  # Gmail
+  account        personal
+  host           smtp.gmail.com
+  port           465
+  from           x7and7@gmail.com
+  user           x7and7
+  # passwordeval   emacsclient -e "\"(password-store-get \\\"x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
+  passwordeval   "pass x7and7@gmail.com | head -n1"
+
+
+  # Gmail
+  account        school 
+  host           smtp-mail.outlook.com
+  port           587
+  host           ha6mi19@keaston.bham.sch.uk
+  user           ha6mi19
+  # passwordeval   emacsclient -e "\"(password-store-get \\\"ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
+  passwordeval   "pass ha6mi19@keaston.bham.sch.uk | head -n1"
+
+  # Set a default account
+  account default : personal
 #+END_SRC
 * Moc
 ** Config

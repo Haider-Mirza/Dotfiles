@@ -20,6 +20,7 @@
              "mpv"
              "ccls"
              "notmuch"
+             "msmtp"
              "l2md"
              "dunst"
              "unzip"
@@ -51,6 +52,7 @@
 	     ;; Emacs Packages
 	     "emacs"
 	     "emacs-guix"
+	     "emacs-gnus-alias"
 	     "emacs-general"
 	     "emacs-notmuch"
 	     "emacs-undo-tree"

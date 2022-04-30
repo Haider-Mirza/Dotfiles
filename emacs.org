@@ -73,38 +73,38 @@
 My Emacs packages are installed by the GNU Guix package manager and by using it's Guix Home feature.
 Make sure to load my Guix Home configuration or install all the packages using Emacs. 
 ** Replace Capslock with CTRL
-   You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
-   Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
-   So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
-   Doing this will prevent you from having to bend your pinky down all day long to hit all those fabled Emacs keybindings,
-   allowing you to keep your hands on the home row of the keyboard.
+You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
+Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
+So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
+Doing this will prevent you from having to bend your pinky down all day long to hit all those fabled Emacs keybindings,
+allowing you to keep your hands on the home row of the keyboard.
 
-   There are many ways to accomplish this in Linux, but the easiest (and most repeatable) I’ve found is to use xmodmap.
-   First, make sure you have it xmodmap installed.
-   Then, create a file named .Xmodmap in your home folder and populate it like so:
+There are many ways to accomplish this in Linux, but the easiest (and most repeatable) I’ve found is to use xmodmap.
+First, make sure you have it xmodmap installed.
+Then, create a file named .Xmodmap in your home folder and populate it like so:
 
-   #+BEGIN_SRC
+#+BEGIN_SRC
    clear lock
    clear control
    keycode 66 = Control_L
    add control = Control_L
    add Lock = Control_R
-   #+end_src
+#+end_src
 
-   This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case you ever need to use it.
-   Most login systems (GDM, KDM, etc) will load this file when you log in so you might not need to do anything extra for it to take effect, just log out and log back in again.
-   If that doesn’t seem to work, you can add this line to one of your startup files (.xinitrc, .profile, window manager configuration, etc):
-   (I have already enabled this in my EXWM config (desktop.org))
-   #+BEGIN_SRC
+This replaces CapsLock with control and also replaces the Ctrl key on the right side with CapsLock just in case you ever need to use it.
+Most login systems (GDM, KDM, etc) will load this file when you log in so you might not need to do anything extra for it to take effect, just log out and log back in again.
+If that doesn’t seem to work, you can add this line to one of your startup files (.xinitrc, .profile, window manager configuration, etc):
+(I have already enabled this in my EXWM config (desktop.org))
+#+BEGIN_SRC
    xmodmap ~/path/to/.Xmodmap
-   #+end_src
+#+end_src
 * Package Cl
 When starting up Emacs, there is a error saying "Package cl is depricated" 
 You can disable this by tangling this to *early-init.el*.
 Here is a post on the matter
 
 #+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/early-init.el"
-(setq byte-compile-warnings '(cl-functions))
+  (setq byte-compile-warnings '(cl-functions))
 #+END_SRC
 
 * Package Management
@@ -114,33 +114,31 @@ Sometimes it's good to clean up unused repositories if I've removed packages fro
 #+begin_src elisp
 
   (setq dw/is-guix-system (and (eq system-type 'gnu/linux)
-			       (require 'f)
-			       (string-equal (f-read "/etc/issue")
-					     "\nThis is the GNU system.  Welcome.\n")))
+                               (require 'f)
+                               (string-equal (f-read "/etc/issue")
+                                             "\nThis is the GNU system.  Welcome.\n")))
 
   (unless (featurep 'straight)
     ;; Bootstrap straight.el
     (defvar bootstrap-version)
     (let ((bootstrap-file
-	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	  (bootstrap-version 5))
+           (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+          (bootstrap-version 5))
       (unless (file-exists-p bootstrap-file)
-	(with-current-buffer
-	    (url-retrieve-synchronously
-	     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp)))
+        (with-current-buffer
+            (url-retrieve-synchronously
+             "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+             'silent 'inhibit-cookies)
+          (goto-char (point-max))
+          (eval-print-last-sexp)))
       (load bootstrap-file nil 'nomessage)))
 
   ;; Use straight.el for use-package expressions
   (straight-use-package 'use-package)
 
 #+end_src
-********** Setup.el
-
+** Setup.el
 I've recently switched to the excellent [[https://www.emacswiki.org/emacs/SetupEl][setup.el]] by [[https://ruzkuku.com][pkal]] as an alternative to =use-package=.
-
 #+begin_src elisp
 
   (straight-use-package '(setup :type git :host nil :repo "https://git.sr.ht/~pkal/setup"))
@@ -153,8 +151,7 @@ I've recently switched to the excellent [[https://www.emacswiki.org/emacs/SetupE
   ;;                     (file-name-nondirectory (car args))))))
   ;; (add-to-list 'after-load-functions #'dw/log-require)
 
-#+end_src
-
+  #+end_src
 ** :pkg
 The =:pkg= keyword will depend on Guix-installed Emacs packages unless the parameter seems like a =straight.el= recipe (it's a list).
 #+begin_src elisp
@@ -197,11 +194,11 @@ Delay the loading of a package until a certain amount of idle time has passed.
 #+begin_src elisp
 
   (setup-define :delay
-     (lambda (&rest time)
-       `(run-with-idle-timer ,(or time 1)
-                             nil ;; Don't repeat
-                             (lambda () (require ',(setup-get 'feature)))))
-     :documentation "Delay loading the feature until a certain amount of idle time has passed.")
+    (lambda (&rest time)
+      `(run-with-idle-timer ,(or time 1)
+                            nil ;; Don't repeat
+                            (lambda () (require ',(setup-get 'feature)))))
+    :documentation "Delay loading the feature until a certain amount of idle time has passed.")
 
 #+end_src
 ** :disabled
@@ -219,35 +216,35 @@ This keyword causes a body to be executed after other packages/features are load
 #+begin_src elisp
 
   (setup-define :load-after
-      (lambda (features &rest body)
-        (let ((body `(progn
-                       (require ',(setup-get 'feature))
-                       ,@body)))
-          (dolist (feature (if (listp features)
-                               (nreverse features)
-                             (list features)))
-            (setq body `(with-eval-after-load ',feature ,body)))
-          body))
+    (lambda (features &rest body)
+      (let ((body `(progn
+                     (require ',(setup-get 'feature))
+                     ,@body)))
+        (dolist (feature (if (listp features)
+                             (nreverse features)
+                           (list features)))
+          (setq body `(with-eval-after-load ',feature ,body)))
+        body))
     :documentation "Load the current feature after FEATURES."
     :indent 1)
 
 #+end_src 
 * Tweak Garbage Collector
-  This variable will set to normal at the end of my config.
-  #+BEGIN_SRC elisp
-    ;; The default is 800 kilobytes.  Measured in bytes.
-    (setq gc-cons-threshold (* 50 1000 1000))
+This variable will set to normal at the end of my config.
+#+BEGIN_SRC elisp
+  ;; The default is 800 kilobytes.  Measured in bytes.
+  (setq gc-cons-threshold (* 50 1000 1000))
 
-  #+END_SRC
+#+END_SRC
 * Startup Performance
-  Find out how long it had taken to load Emacs.
+Find out how long it had taken to load Emacs.
 #+BEGIN_SRC elisp
   (defun efs/display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
-	     (format "%.2f seconds"
-		     (float-time
-		     (time-subtract after-init-time before-init-time)))
-	     gcs-done))
+             (format "%.2f seconds"
+                     (float-time
+                      (time-subtract after-init-time before-init-time)))
+             gcs-done))
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+END_SRC
@@ -269,29 +266,29 @@ This keyword causes a body to be executed after other packages/features are load
     (setq undo-tree-auto-save-history nil)
     (global-undo-tree-mode 1))
 
-    (setup (:pkg evil)
-      (setq evil-want-integration t)
-      (setq evil-want-keybinding nil)
-      (setq evil-want-C-u-scroll t)
-      (setq evil-want-C-i-jump nil)
-      (setq evil-respect-visual-line-mode t)
-      (setq evil-undo-system 'undo-tree)
-
-      (evil-mode 1)
-      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-      (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
-      ;; Use visual line motions even outside of visual-line-mode buffers
-      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-      (evil-set-initial-state 'messages-buffer-mode 'normal)
-      (evil-set-initial-state 'dashboard-mode 'normal))
+  (setup (:pkg evil)
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    (setq evil-respect-visual-line-mode t)
+    (setq evil-undo-system 'undo-tree)
 
     (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-    ;; Make ESC quit prompts
-    (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+
+  (evil-mode 1)
+
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 ** Evil Collection
 #+begin_src elisp
@@ -304,20 +301,20 @@ This keyword causes a body to be executed after other packages/features are load
   (setq initial-scratch-message "Make sure to check OrgAgenda and OrgRoam Dailies!\nRun: (exwm/startup)")
 #+END_SRC
 ** Font
-   Make sure "font-jetbrains-mono" is installed on your system.
-   The name may be different depending on your Operating System.
+Make sure "font-jetbrains-mono" is installed on your system.
+The name may be different depending on your Operating System.
 #+begin_src elisp
   (set-face-attribute 'default nil
-		      :family "Jetbrains Mono"
-		      :height 80
-		      :weight 'normal
-		      :width  'normal)
+                      :family "Jetbrains Mono"
+                      :height 80
+                      :weight 'normal
+                      :width  'normal)
 #+end_src
 ** Load Theme
 #+begin_src elisp
   (setup (:pkg doom-themes))
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-molokai t)
 #+end_src
 ** Minimal Visuals
@@ -342,31 +339,31 @@ Center org-mode documents.
 #+begin_src elisp
   (defun org/org-mode-visual-fill ()
     (setq visual-fill-column-width 180
-	  visual-fill-column-center-text t)
+          visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
 
   (setup (:pkg visual-fill-column)
     (:hook-into org-mode))
 #+end_src
 ** Vertico
- #+BEGIN_SRC elisp
-   (setup (:pkg vertico)
-     (vertico-mode)
-     (:with-map vertico-map
-       (:bind "C-j" vertico-next
-	      "C-k" vertico-previous
-	      "C-f" vertico-exit))
-     (:option vertico-cycle t))
+#+BEGIN_SRC elisp
+  (setup (:pkg vertico)
+    (vertico-mode)
+    (:with-map vertico-map
+      (:bind "C-j" vertico-next
+             "C-k" vertico-previous
+             "C-f" vertico-exit))
+    (:option vertico-cycle t))
 
-   (setup savehist
-     (savehist-mode 1))
- #+END_SRC 
+  (setup savehist
+    (savehist-mode 1))
+#+END_SRC 
 ** Marginalia
 #+BEGIN_SRC elisp
   (setup (:pkg marginalia)
     (:option marginalia-annotators '(marginalia-annotators-heavy
-				     marginalia-annotators-light
-				     nil))
+                                     marginalia-annotators-light
+                                     nil))
     (marginalia-mode))
 #+END_SRC 
 ** frame transparency and maximize windows. 
@@ -405,12 +402,12 @@ Center org-mode documents.
   (setup (:pkg doom-modeline)
     (:hook-into after-init-hook)
     (:option doom-modeline-lsp t
-	     doom-modeline-height 10
-	     doom-modeline-buffer-encoding nil
-	     doom-modeline-github nil
-	     doom-modeline-project-detection 'auto
-	     doom-modeline-number-limit 99
-	     doom-modeline-irc t)
+             doom-modeline-height 10
+             doom-modeline-buffer-encoding nil
+             doom-modeline-github nil
+             doom-modeline-project-detection 'auto
+             doom-modeline-number-limit 99
+             doom-modeline-irc t)
 
     ;; Show the time and date in modeline
     (setq display-time-day-and-date t)
@@ -442,20 +439,20 @@ This can also happen in Dired.
 #+end_src
 ** Windows movement
 #+BEGIN_SRC elisp
-    (global-set-key (kbd "<s-left>") 'windmove-left)
-    (global-set-key (kbd "<s-right>") 'windmove-right)
-    (global-set-key (kbd "<s-up>") 'windmove-up)
-    (global-set-key (kbd "<s-down>") 'windmove-down)
+  (global-set-key (kbd "<s-left>") 'windmove-left)
+  (global-set-key (kbd "<s-right>") 'windmove-right)
+  (global-set-key (kbd "<s-up>") 'windmove-up)
+  (global-set-key (kbd "<s-down>") 'windmove-down)
 #+END_SRC 
 ** File control
 #+BEGIN_SRC elisp
   (rune/leader-keys
-  "x"  '(:ignore t :which-key "Delete")
-  "c"  '(:ignore t :which-key "Create")
-  "xf" '(delete-file :which-key "Delete file")
-  "xd" '(delete-directory :which-key "Delete directory")
-  "cf" '(make-empty-file :which-key "Create empty file")
-  "cf" '(make-directory :which-key "Create directory"))
+    "x"  '(:ignore t :which-key "Delete")
+    "c"  '(:ignore t :which-key "Create")
+    "xf" '(delete-file :which-key "Delete file")
+    "xd" '(delete-directory :which-key "Delete directory")
+    "cf" '(make-empty-file :which-key "Create empty file")
+    "cf" '(make-directory :which-key "Create directory"))
 
 #+END_SRC
 ** Recentf
@@ -472,53 +469,53 @@ This can also happen in Dired.
 ** Interactions
   
 #+BEGIN_SRC elisp
-   (fset 'yes-or-no-p 'y-or-n-p)
-   (setq confirm-kill-emacs 'yes-or-no-p)
- #+END_SRC
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (setq confirm-kill-emacs 'yes-or-no-p)
+#+END_SRC
 ** Counsel
 Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
 #+begin_src elisp
   (setup (:pkg counsel)
-       (:bind "M-x" counsel-M-x))
+    (:bind "M-x" counsel-M-x))
 #+end_src
 
 ** Helpful
-   Helpful adds a lot of very helpful (get it?) information to Emacs’ describe- command buffers.
-   For example, if you use describe-function, you will not only get the documentation about the function,
-   you will also see the source code of the function and where it gets used in other places in the Emacs configuration.
-   It is very useful for figuring out how things work in Emacs.
+Helpful adds a lot of very helpful (get it?) information to Emacs’ describe- command buffers.
+For example, if you use describe-function, you will not only get the documentation about the function,
+you will also see the source code of the function and where it gets used in other places in the Emacs configuration.
+It is very useful for figuring out how things work in Emacs.
 #+begin_src elisp
   (setup (:pkg helpful))
 #+end_src
 ** Hydra
 
- [[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
- I don't use hydra right now.
+[[https://github.com/abo-abo/hydra#sample-hydras][Hydra's Github Page]]
+I don't use hydra right now.
 #+BEGIN_SRC elisp
-   (setup (:pkg hydra)
-     (require 'hydra))
+  (setup (:pkg hydra)
+    (require 'hydra))
 
-   ;; This needs a more elegant ASCII banner
-   (defhydra hydra-exwm-move-resize
-     (global-map "<C-M-tab>")
-     "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
-     ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
-     ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
-     ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
-     ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
-     ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
-     ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
-     ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
-     ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
-     ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
-     ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
-     ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
-     ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
-     ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
-     ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
-     ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
-     ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
-     ("f" nil "finished" :exit t))
+  ;; This needs a more elegant ASCII banner
+  (defhydra hydra-exwm-move-resize
+    (global-map "<C-M-tab>")
+    "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
+    ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
+    ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
+    ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
+    ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
+    ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
+    ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
+    ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
+    ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
+    ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
+    ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
+    ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
+    ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
+    ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
+    ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
+    ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
+    ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
+    ("f" nil "finished" :exit t))
 #+END_SRC 
 ** Buffers
 #+begin_src elisp
@@ -541,12 +538,12 @@ Playlist functions
     "Load web videos from playlist.txt"
     (interactive)
     (setq mpv-playlist-line
-	  (completing-read "Select Video: "
-			   (with-current-buffer (find-file-noselect mpv-playlist.txt)
-			     (mapcar (lambda (x) (split-string x " " t))
-				     (split-string
-				      (buffer-substring-no-properties (point-min) (point-max))
-				      "\n")))))
+          (completing-read "Select Video: "
+                           (with-current-buffer (find-file-noselect mpv-playlist.txt)
+                             (mapcar (lambda (x) (split-string x " " t))
+                                     (split-string
+                                      (buffer-substring-no-properties (point-min) (point-max))
+                                      "\n")))))
 
 
     (setq mpv-selected-video (delete (car (split-string mpv-playlist-line "-")) (split-string mpv-playlist-line "-")))
@@ -561,47 +558,47 @@ Playlist functions
 
 #+END_SRC
 * Keep Directories Clean
-  Makes Emacs keep my file directories clean of unnecessary files.
+Makes Emacs keep my file directories clean of unnecessary files.
 #+BEGIN_SRC elisp
   (setup (:pkg no-littering)
-  (require 'no-littering))
+    (require 'no-littering))
 
   (setq backup-by-copying t)
 
   (setq delete-old-versions t
-	kept-new-versions 6
-	kept-old-versions 2
-	version-control t)
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)
 
   (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
   ;; auto-save-mode doesn't create the path automatically!
   (make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
 
   (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
-	auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
+        auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
 #+END_SRC
 
 * Editing Files Configuration
 ** Swiper
-   #+BEGIN_SRC elisp
+#+BEGIN_SRC elisp
   (global-set-key (kbd "C-s-s") 'swiper)
-   #+END_SRC
+#+END_SRC
 ** Comment Lines
 #+BEGIN_SRC elisp
   (rune/leader-keys
-  "TAB" '(comment-dwim :which-key "comment lines"))
+    "TAB" '(comment-dwim :which-key "comment lines"))
 #+END_SRC
 ** Org
 
-   Here consists configs for:
-   - Org Mode
-   - Org Agenda
-   - Org Roam
-   - Org pandoc
-   - Org reveal
-   - Org superstar
-   - Org appear
-    
+Here consists configs for:
+- Org Mode
+- Org Agenda
+- Org Roam
+- Org pandoc
+- Org reveal
+- Org superstar
+- Org appear
+
 *** OrgMode Main config
 #+begin_src elisp
   (setup (:pkg prettier))
@@ -628,65 +625,36 @@ Playlist functions
     (setq org-image-actual-width nil)
 
     (setq org-agenda-files
-	  '("~/documents/Home/Reminders.org"
-	    "~/documents/Home/TODO.org"
-	    "~/documents/School/Homework.org"
-	    "~/documents/School/School-Reminders.org"))
+          '("~/documents/Home/Reminders.org"
+            "~/documents/Home/TODO.org"
+            "~/documents/School/Homework.org"
+            "~/documents/School/School-Reminders.org"))
 
     (setq org-todo-keywords
-	  '((sequence
-	     "TODO(t)"
-	     "WORK(w)"
-	     "RESEARCH(r)"
-	     "HOLD(h)"
-	     "PLAN(p)"
-	     "|"
-	     "DONE(d)"
-	     "FAILED(f)")))
+          '((sequence
+             "TODO(t)"
+             "WORK(w)"
+             "RESEARCH(r)"
+             "HOLD(h)"
+             "PLAN(p)"
+             "|"
+             "DONE(d)"
+             "FAILED(f)")))
 
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
-  
+
     (org/org-mode-visual-fill))
 
   (setup (:pkg org-superstar)
     (:load-after org)
     (:hook-into org-mode)
     (:option org-superstar-remove-leading-stars t
-	     org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-  (setup org-faces
-    ;; Make sure org-indent face is available
-    (:also-load org-indent)
-    (:when-loaded
-    
-      (dolist (face '((org-level-1 . 1.2)
-		      (org-level-2 . 1.1)
-		      (org-level-3 . 1.05)
-		      (org-level-4 . 1.0)
-		      (org-level-5 . 1.1)
-		      (org-level-6 . 1.1)
-		      (org-level-7 . 1.1)
-		      (org-level-8 . 1.1))))
-
-      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-      (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-      (set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
-      (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-      (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-      (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-
-      ;; Get rid of the background on column views
-      (set-face-attribute 'org-column nil :background nil)
-      (set-face-attribute 'org-column-title nil :background nil)))
+             org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+END_SRC
 *** ox-pandoc
-    Expand org-mode's exporting capabilities
-    Make sure the pandoc is installed on your system.
+Expand org-mode's exporting capabilities
+Make sure the pandoc is installed on your system.
 #+BEGIN_SRC elisp
   (setup (:pkg pandoc))
 #+END_SRC
@@ -707,60 +675,60 @@ Here is the git repository https://github.com/yjwen/org-reveal/
 Documenation can also be found here: https://revealjs.com/
 **** main config
 #+begin_src fundamental
-:reveal_properties:
-#+reveal_root: https://cdn.jsdelivr.net/npm/reveal.js
-#+reveal_reveal_js_version: 4
-#+reveal_theme: serif
-#+options: timestamp:nil toc:1 num:nil
-:end:
+  :reveal_properties:
+  ,#+reveal_root: https://cdn.jsdelivr.net/npm/reveal.js
+  ,#+reveal_reveal_js_version: 4
+  ,#+reveal_theme: serif
+  ,#+options: timestamp:nil toc:1 num:nil
+  :end:
 #+end_src
 **** every line per space
 https://revealjs.com/fragments/
 #+begin_src fundamental
-#+aatr_reveal: :frag (appear)
+  ,#+aatr_reveal: :frag (appear)
 #+end_src
 **** images
 #+begin_src fundamental
-#+aatr_html: :width 45% :align center
+  ,#+aatr_html: :width 45% :align center
 #+end_src
 *** org-super-agenda
-    configuring the org-agenda view.
+configuring the org-agenda view.
 #+begin_src elisp
 
   (setup (:pkg org-super-agenda)
     (setq org-agenda-skip-scheduled-if-done t
-	  org-agenda-skip-deadline-if-done t
-	  org-agenda-include-deadlines t
-	  org-agenda-include-diary t
-	  org-agenda-block-separator nil
-	  org-agenda-compact-blocks t
-	  org-agenda-start-with-log-mode t)
+          org-agenda-skip-deadline-if-done t
+          org-agenda-include-deadlines t
+          org-agenda-include-diary t
+          org-agenda-block-separator nil
+          org-agenda-compact-blocks t
+          org-agenda-start-with-log-mode t)
 
     (setq org-agenda-span 'day)
     (setq org-super-agenda-groups
-	  '((:name "Important"
-		   :priority "a")
-	    (:name "Due today"
-		   :deadline today)
-	    (:name "Overdue"
-		   :deadline past)
-	    (:name "Things todo"
-		   :todo "TODO")
-	    (:name "School work"
-		   :todo "WORK")
-	    (:name "Completed"
-		   :todo "COMPLETED")))
+          '((:name "Important"
+                   :priority "a")
+            (:name "Due today"
+                   :deadline today)
+            (:name "Overdue"
+                   :deadline past)
+            (:name "Things todo"
+                   :todo "TODO")
+            (:name "School work"
+                   :todo "WORK")
+            (:name "Completed"
+                   :todo "COMPLETED")))
     (org-super-agenda-mode 1))
 
 #+end_src
 
 #+BEGIN_SRC elisp
-   (setup (:pkg evil-org)
-     (:hook-into org-mode org-agenda-mode)
-     (require 'evil-org)
-     (require 'evil-org-agenda)
-     (evil-org-set-key-theme '(navigation todo insert textobjects additional))
-     (evil-org-agenda-set-keys))
+  (setup (:pkg evil-org)
+    (:hook-into org-mode org-agenda-mode)
+    (require 'evil-org)
+    (require 'evil-org-agenda)
+    (evil-org-set-key-theme '(navigation todo insert textobjects additional))
+    (evil-org-agenda-set-keys))
 #+END_SRC
  
 *** OrgRoam
@@ -769,7 +737,7 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
   (setup (:pkg org-roam)
     (setq org-roam-v2-ack t)
     (setq dw/daily-note-filename "%<%Y-%m-%d>.org"
-	  dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
+          dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
 
     (:when-loaded
       (org-roam-db-autosync-mode))
@@ -780,27 +748,27 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
      org-roam-completion-everywhere t
      org-roam-capture-templates
      '(("d" "default" plain "%?"
-	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
-	:unnarrowed t)
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+        :unnarrowed t)
        ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-	:unnarrowed t)
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+        :unnarrowed t)
        ("s" "school" plain "\n%?"
-	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
-	:unnarrowed t))
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#filetags: School")
+        :unnarrowed t))
      org-roam-dailies-capture-templates
      `(("d" "default" entry "* %<%I:%M %p>: %?"
-	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
+        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDef"))
        ("t" "todo" entry "* TODO: \n%?"
-	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
+        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyTodo"))
        ("d" "diary" entry "* Diary: \n%?"
-	:if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary")))))
+        :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n#+filetags: DailyDiary")))))
 
   (defun org-roam-node-insert-immediate (arg &rest args)
     (interactive "P")
     (let ((args (cons arg args))
-	  (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-						    '(:immediate-finish t)))))
+          (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                    '(:immediate-finish t)))))
       (apply #'org-roam-node-insert args)))
 
   (rune/leader-keys
@@ -824,30 +792,30 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
  
 * Chatting Configuration
 ** ERC
-   ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
-   Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-streams/june-04-2021/][Systemcrafters-Wiki]].
+ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
+Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-streams/june-04-2021/][Systemcrafters-Wiki]].
 #+BEGIN_SRC elisp
 
   (require 'erc) ;; Notifications require this to be required
 
   (setq erc-server "irc.libera.chat"
-	erc-nick "Haider"
-	erc-user-full-name "Haider Mirza"
-	erc-rename-buffers t
-	erc-track-shorten-start 8
-	;; erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs" "#guix"))
-	erc-kill-buffer-on-part t
-	erc-fill-column 120
-	erc-fill-function 'erc-fill-static
-	erc-fill-static-center 20
-	erc-auto-query 'bury
-	erc-track-exclude '("#emacs")
-	;; erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
-	;; erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
-	erc-track-exclude-server-buffer t
-	erc-track-enable-keybindings t
-	erc-quit-reason (lambda (s) (or s "Ejected from the cyberspace!"))
-	erc-track-visibility nil) ;; Essential if using EXWM
+        erc-nick "Haider"
+        erc-user-full-name "Haider Mirza"
+        erc-rename-buffers t
+        erc-track-shorten-start 8
+        ;; erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs" "#guix"))
+        erc-kill-buffer-on-part t
+        erc-fill-column 120
+        erc-fill-function 'erc-fill-static
+        erc-fill-static-center 20
+        erc-auto-query 'bury
+        erc-track-exclude '("#emacs")
+        ;; erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+        ;; erc-hide-list '("JOIN" "NICK" "PART" "QUIT" "MODE" "AWAY")
+        erc-track-exclude-server-buffer t
+        erc-track-enable-keybindings t
+        erc-quit-reason (lambda (s) (or s "Ejected from the cyberspace!"))
+        erc-track-visibility nil) ;; Essential if using EXWM
 
   (defun chat/connect-irc ()
     (interactive)
@@ -913,27 +881,16 @@ These keybindings will open my system's config files.
 ** Notmuch
 I have not much email.
 #+BEGIN_SRC elisp
+  ;; TODO: Switch to the Guix package
+  (setup (:pkg gnus-alias :straight t))
   (setup (:pkg notmuch :straight t)
-    (autoload 'notmuch "notmuch" "Notmuch mail" t)
-    (setq notmuch-hello-logo nil
-	  mail-specify-envelope-from t
-	  notmuch-always-prompt-for-sender t
-	  ;; (setq message-send-mail-function #'message-send-mail-with-sendmail)
-	  notmuch-fcc-dirs 'nil
-	  send-mail-function #'sendmail-send-it
-	  mml-secure-openpgp-sign-with-sender t
-	  notmuch-mua-user-agent-function 'notmuch-mua-user-agent-full
-	  mm-sign-option 'guided
-	  message-kill-buffer-on-exit t
-	  message-send-mail-function 'smtpmail-send-it
-	  mail-specify-envelope-from t
-	  mail-envelope-from 'header
-	  message-sendmail-envelope-from 'header
-	  mail-user-agent 'message-user-agent
-	  mml-secure-openpgp-signers '("0237AE0A61747684EA7A935F2C52DB235E0FB36C")
-	  user-full-name "Haider Mirza"
-	  mail-host-address "smtp.gmail.com"
-	  smtpmail-stream-type 'ssl)
+    ;; (autoload 'notmuch "notmuch" "Notmuch mail" t)
+    (setq
+     message-kill-buffer-on-exit t
+     notmuch-fcc-dirs
+     '(("x7and7@gmail.com" .
+	"\"x7and7@gmail.com/sent\" +sent +work -inbox")
+       (".*" . "\"ha6mi19@keaston.bham.sch.uk/sent\" +sent +school -inbox")))
 
     ;; Notmuch Functions
     (defun notmuch/update ()
@@ -967,6 +924,38 @@ I have not much email.
 	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
 	    (notmuch-show-tag '("+archive")))))
 
+    (add-hook 'message-setup-hook
+	      (lambda ()
+		(gnus-alias-determine-identity)
+		(define-key message-mode-map (kbd "C-c f")
+		  (lambda ()
+		    (interactive)
+		    (message-remove-header "Fcc")
+		    (message-remove-header "Organization")
+		    (gnus-alias-select-identity)
+		    (notmuch-fcc-header-setup)))
+		(flyspell-mode)))
+
+					  ; gnus-alias
+    (autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
+    (setq gnus-alias-identity-alist
+	  '(("work"
+	     nil ;; Does not refer to any other identity
+	     "Haider Mirza <x7and7@gmail.com>"
+	     nil ;; No organization header
+	     nil ;; No extra headers
+	     nil ;; No extra body text
+	     nil)
+	    ("school"
+	     nil ;; Does not refer to any other identity
+	     "Haider Mirza <ha6mi19@keaston.bham.sch.uk>"
+	     nil 
+	     nil ;; No extra headers
+	     nil ;; No extra body text
+	     nil)))
+
+    (setq gnus-alias-default-identity "work")
+
     ;; Message sending hooks
     (add-hook 'message-send-hook
 	      (lambda ()
@@ -982,43 +971,19 @@ I have not much email.
 			(message "Dont signing or encrypting message.")
 			nil))))))
 
-    (add-hook 'message-send-hook
-	      (lambda ()
-		(if (string= (message-fetch-field "from") "Haider Mirza <x7and7@gmail.com>")
-		    (setq
-		     user-mail-address "x7and7@gmail.com"
-		     ;; notmuch-fcc-dirs "x7and7@gmail.com/sent"
-		     smtpmail-smtp-server "smtp.gmail.com"
-		     smtpmail-smtp-service 465)
+    (setq send-mail-function 'sendmail-send-it
+	  sendmail-program "/home/haider/.guix-profile/bin/msmtp"
+	  mail-specify-envelope-from t
+	  message-sendmail-envelope-from 'header
+	  mail-envelope-from 'header)
 
-		  (if (string= (message-fetch-field "from") "Haider Mirza <ha6mi19@keaston.bham.sch.uk>")
-		      (setq
-		       user-mail-address "ha6mi19@keaston.bham.sch.uk"
-		       ;; notmuch-fcc-dirs "ha6mi19@keaston.bham.sch.uk/sent"
-		       smtpmail-smtp-server "smtp-mail.outlook.com"
-		       smtpmail-smtp-service 587)))))
-
-    (setq notmuch-saved-searches
-	  '((:name "New" :query "tag:new" :key "n")
-	    (:name "Inbox" :query "tag:inbox" :key "i")
-	    (:name "Unread" :query "tag:unread" :key "u")
-	    (:name "Flagged" :query "tag:flagged" :key "f")
-	    (:name "Mailing Lists" :query "tag:list" :key "m")
-	    (:name "Guix" :query "tag:guix" :key "g")
-	    (:name "Sent" :query "tag:sent" :key "s")
-	    (:name "Spam" :query "tag:spam" :key "S")
-	    (:name "Drafts" :query "tag:draft" :key "d")
-	    (:name "Trash" :query "tag:trash" :key "t")
-	    (:name "Archive" :query "tag:archive" :key "a")
-	    (:name "All mail" :query "*" :key "A"))))
-
-  (rune/leader-keys
-    "n"  '(:ignore t :which-key "Notmuch")
-    "nu" '(notmuch/update :which-key "Notmuch Update")
-    "nh" '(notmuch-hello-update :which-key "Notmuch Update Hello buffer")
-    "nt" '(notmuch/trash :which-key "Notmuch Trash")
-    "na" '(notmuch/archive :which-key "Notmuch Archive")
-    "nr" '(notmuch/read :which-key "Notmuch Read"))
+    (rune/leader-keys
+      "n"  '(:ignore t :which-key "Notmuch")
+      "nu" '(notmuch/update :which-key "Notmuch Update")
+      "nh" '(notmuch-hello-update :which-key "Notmuch Update Hello buffer")
+      "nt" '(notmuch/trash :which-key "Notmuch Trash")
+      "na" '(notmuch/archive :which-key "Notmuch Archive")
+      "nr" '(notmuch/read :which-key "Notmuch Read"))
 #+END_SRC
 ** Mu4e
 I have switched to Notmuch due to it's superior tagging capabilities.
@@ -1175,35 +1140,35 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
 #+begin_src elisp
   (setup (:pkg projectile)
     (:with-map
-	(:bind projectile-command-map))
+        (:bind projectile-command-map))
     (when (file-directory-p "~/code")
       (setq projectile-project-search-path '("~/code")))
     (setq projectile-switch-project-action #'projectile-find-file))
 
   (setup (:pkg counsel-projectile)
-	       (counsel-projectile-mode))
+    (counsel-projectile-mode))
 #+end_src
 ** YASnippet
- #+begin_src elisp
-     (setup (:pkg yasnippet)
-       (yas-global-mode))
-   ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-   ;;   (yas-reload-all)
-   ;;   (:hook-into prog-mode-hook yas-minor-mode)
-   ;;   (:hook-into text-mode-hook yas-minor-mode)
-   ;;   (yas-global-mode t)
-   ;;   (require 'warnings)
-   ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
- #+end_src
+#+begin_src elisp
+  (setup (:pkg yasnippet)
+    (yas-global-mode))
+  ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+  ;;   (yas-reload-all)
+  ;;   (:hook-into prog-mode-hook yas-minor-mode)
+  ;;   (:hook-into text-mode-hook yas-minor-mode)
+  ;;   (yas-global-mode t)
+  ;;   (require 'warnings)
+  ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+#+end_src
 ** Magit
- #+BEGIN_SRC elisp
-   (setup (:pkg magit))
-     ;; (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+BEGIN_SRC elisp
+  (setup (:pkg magit))
+  ;; (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-   (rune/leader-keys
-     "m"  '(:ignore t :which-key "Magit")
-     "ms" '(magit-status :which-key "Magit Status"))
- #+END_SRC
+  (rune/leader-keys
+    "m"  '(:ignore t :which-key "Magit")
+    "ms" '(magit-status :which-key "Magit Status"))
+#+END_SRC
 ** Lsp-mode
 #+BEGIN_SRC elisp
   (setup (:pkg lsp-mode)
@@ -1212,14 +1177,14 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
     (add-hook 'c++-mode-hook 'lsp)
 
     (setq gc-cons-threshold (* 100 1024 1024)
-	  lsp-diagnostics-provider :none
-	  lsp-modeline-diagnostics-enable nil
-	  lsp-headerline-breadcrumb-enable-diagnostics nil
-	  read-process-output-max (* 1024 1024)
-	  treemacs-space-between-root-nodes nil
-	  company-idle-delay 0.0
-	  company-minimum-prefix-length 1
-	  lsp-idle-delay 0.0))
+          lsp-diagnostics-provider :none
+          lsp-modeline-diagnostics-enable nil
+          lsp-headerline-breadcrumb-enable-diagnostics nil
+          read-process-output-max (* 1024 1024)
+          treemacs-space-between-root-nodes nil
+          company-idle-delay 0.0
+          company-minimum-prefix-length 1
+          lsp-idle-delay 0.0))
 #+END_SRC
 ** Languages
 *** Javascript
@@ -1260,7 +1225,7 @@ I generally don't use Javascript.
 #+END_SRC
 *** CMake
 #+BEGIN_SRC elisp
-   (setup (:pkg cmake-mode :straight t))
+  (setup (:pkg cmake-mode :straight t))
 #+END_SRC
 *** ELisp
 #+BEGIN_SRC elisp
@@ -1273,7 +1238,7 @@ I generally don't use Javascript.
 I know that ccls is not the best, especially where options like clangd is avalable.
 But for now, this is the most I can get working
 #+BEGIN_SRC elisp
-   (setup (:pkg ccls :straight t))
+  (setup (:pkg ccls :straight t))
 #+END_SRC
 *** Rust
 #+BEGIN_SRC elisp
@@ -1303,7 +1268,7 @@ But for now, this is the most I can get working
 *** Scheme
 #+BEGIN_SRC elisp
   (setup (:pkg geiser-guile))
-  
+
   (setup (:pkg geiser)
     (setq geiser-default-implementation 'guile)
     (setq geiser-active-implementations '(guile))
@@ -1311,8 +1276,8 @@ But for now, this is the most I can get working
     (setq geiser-implementations-alist '(((regexp "\\.scm$") guile))))
 
   (rune/leader-keys
-  "s"  '(:ignore t :which-key "Scheme")
-  "sr" '(run-guile :which-key "Start a REPL"))
+    "s"  '(:ignore t :which-key "Scheme")
+    "sr" '(run-guile :which-key "Start a REPL"))
 #+END_SRC
 *** HTML
 #+BEGIN_SRC elisp
@@ -1373,15 +1338,15 @@ But for now, this is the most I can get working
   (defun company-yasnippet-or-completion ()
     (interactive)
     (or (do-yas-expand)
-	(company-complete-common)))
+        (company-complete-common)))
 
   (defun check-expansion ()
     (save-excursion
       (if (looking-at "\\_>") t
-	(backward-char 1)
-	(if (looking-at "\\.") t
-	  (backward-char 1)
-	  (if (looking-at "::") t nil)))))
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "::") t nil)))))
 
   (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))
@@ -1390,12 +1355,12 @@ But for now, this is the most I can get working
   (defun tab-indent-or-complete ()
     (interactive)
     (if (minibufferp)
-	(minibuffer-complete)
+        (minibuffer-complete)
       (if (or (not yas/minor-mode)
-	      (null (do-yas-expand)))
-	  (if (check-expansion)
-	      (company-complete-common)
-	    (indent-for-tab-command)))))
+              (null (do-yas-expand)))
+          (if (check-expansion)
+              (company-complete-common)
+            (indent-for-tab-command)))))
 #+END_SRC 
 ** Flycheck
 Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt understand libraries)
@@ -1403,28 +1368,28 @@ Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt 
   ;; (setup (:pkg flycheck :ensure)
 #+END_SRC
 ** Tree
-   I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
+I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
 *** Neotree
- The tree directory listing in Emacs.
- #+begin_src elisp
-   ;; (setup (:pkg neotree)
-   ;; (setq neo-smart-open t
-   ;;       neo-window-fixed-size nil)
-   ;; (setq doom-neotree-enable-variable-pitch t)
-   ;; (rune/leader-keys
-   ;;   "n"  '(:ignore t :which-key "Neotree")
-   ;;   "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
-   ;;   "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
+The tree directory listing in Emacs.
+#+begin_src elisp
+  ;; (setup (:pkg neotree)
+  ;; (setq neo-smart-open t
+  ;;       neo-window-fixed-size nil)
+  ;; (setq doom-neotree-enable-variable-pitch t)
+  ;; (rune/leader-keys
+  ;;   "n"  '(:ignore t :which-key "Neotree")
+  ;;   "nt" '(neotree-toggle :which-key "Toggle neotree in file viewer")
+  ;;   "nd" '(neotree-dir :which-key "Open a directory in Neotree"))
 
- #+end_src
+#+end_src
 *** Org-Sidebar
- #+BEGIN_SRC elisp
-   ;; (setup (:pkg org-sidebar)
+#+BEGIN_SRC elisp
+  ;; (setup (:pkg org-sidebar)
 
-   ;; (rune/leader-keys
-   ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
+  ;; (rune/leader-keys
+  ;;   "no" '(org-sidebar-tree :which-key "Tree Org"))
 
- #+END_SRC
+#+END_SRC
 * Terminal Configurations
 ** Term
 #+BEGIN_SRC elisp
@@ -1438,11 +1403,11 @@ Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt 
 #+END_SRC
 ** VTerm
 #+BEGIN_SRC elisp
-   (setup (:pkg vterm)
-     (setq vterm-max-scrollback 10000)
-     (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
+  (setup (:pkg vterm)
+    (setq vterm-max-scrollback 10000)
+    (advice-add 'evil-collection-vterm-insert :before #'vterm-reset-cursor-point))
 
-   (global-set-key (kbd "s-v") 'vterm)
+  (global-set-key (kbd "s-v") 'vterm)
 #+END_SRC
 *** VTerm-toggle
 #+BEGIN_SRC elisp
@@ -1451,11 +1416,11 @@ Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt 
 ** Eshell
 #+BEGIN_SRC elisp
   (rune/leader-keys
-  "e"  '(:ignore t :which-key "Eshell")
-  "es" '(eshell :which-key "Launch Eshell")
-  "eh" '(counsel-esh-history :which-key "Eshell History"))
+    "e"  '(:ignore t :which-key "Eshell")
+    "es" '(eshell :which-key "Launch Eshell")
+    "eh" '(counsel-esh-history :which-key "Eshell History"))
 
- #+END_SRC 
+#+END_SRC 
 * Password Managment
 Uses the standard Unix password store "pass".
 
@@ -1463,14 +1428,14 @@ Uses the standard Unix password store "pass".
   (setup (:pkg password-store))
 
   (setq epa-pinentry-mode 'loopback)
-  
+
   ;; Used to access passwords through emacs using Emacs's server-mode
   (defun efs/lookup-password (&rest keys)
     (interactive)
     (let ((result (apply #'auth-source-search keys)))
       (if result
-	  (funcall (plist-get (car result) :secret))
-	nil)))
+          (funcall (plist-get (car result) :secret))
+        nil)))
 #+end_src
 
 * Emacs server-mode
@@ -1479,13 +1444,13 @@ Uses the standard Unix password store "pass".
 #+END_SRC
 
 * Load Desktop.org
-  This loads EXWM and the rest of my system.
+This loads EXWM and the rest of my system.
 #+BEGIN_SRC elisp
   (load-file "~/.emacs.d/desktop.el")
 #+END_SRC
 
 * Garbage Collecter Hack
-  #+BEGIN_SRC elisp
-    ;; Make gc pauses faster by decreasing the threshold.
-    (setq gc-cons-threshold (* 2 1000 1000))
-  #+END_SRC
+#+BEGIN_SRC elisp
+  ;; Make gc pauses faster by decreasing the threshold.
+  (setq gc-cons-threshold (* 2 1000 1000))
+#+END_SRC

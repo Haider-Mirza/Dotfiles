@@ -10,80 +10,99 @@
 * Config.scm
   This is the config file used in GNU Guix to manage your system.
 #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
-    ;; This file should be edited in ~/Dotfiles/System.org then tangled.
-    (use-modules (gnu)
-		 (gnu packages certs)
-		 (gnu packages emacs)
-		 (gnu packages emacs-xyz)
-		 (gnu packages version-control))
+  ;; This file should be edited in ~/Dotfiles/System.org then tangled.
+  (use-modules (gnu)
+	       (gnu packages certs)
+	       (gnu packages emacs)
+	       (gnu packages emacs-xyz)
+	       (gnu packages version-control))
 
 
-    (use-service-modules
-     cups
-     desktop
-     networking
-     ssh
-     xorg)
+  (use-service-modules
+   cups
+   desktop
+   networking
+   ssh
+   ;; nix
+   xorg
+   virtualization)
 
 
-    (operating-system
-     (locale "en_GB.utf8")
-     (timezone "Europe/London")
-     (keyboard-layout (keyboard-layout "gb" "extd"))
-     (host-name "xps")
-     (users (cons* (user-account
-		    (name "haider")
-		    (comment "Haider")
-		    (group "users")
-		    (home-directory "/home/haider")
-		    (supplementary-groups
-		     '("wheel"
-		       "netdev"
-		       "audio"
-		       "video"
-		       "kvm")))
-		   %base-user-accounts))
+  (operating-system
+   (locale "en_GB.utf8")
+   (timezone "Europe/London")
+   (keyboard-layout (keyboard-layout "gb" "extd"))
+   (host-name "xps")
+   (users (cons* (user-account
+		  (name "haider")
+		  (comment "Haider")
+		  (group "users")
+		  (home-directory "/home/haider")
+		  (supplementary-groups
+		   '("wheel"
+		     "netdev"
+		     "audio"
+		     "video"
+		     "kvm")))
+		 (user-account
+		  (name "hasan")
+		  (comment "Hasan")
+		  (group "users")
+		  (home-directory "/home/hasan")
+		  (password "hasan")
+		  (supplementary-groups
+		   '("wheel"
+		     "netdev"
+		     "audio"
+		     "video")))
+		 %base-user-accounts))
 
-     (packages (append (list
-			;; EXWM
-			emacs
-			emacs-exwm
-			emacs-desktop-environment
+   (packages (append (list
+		      emacs
+		      emacs-exwm
+		      emacs-desktop-environment
+		      git 
+		      binutils
+		      nss-certs)
+		     %base-packages))
 
-			;; Everyone deserves git
-			git 
+   (services
+    (append
+     (list (set-xorg-configuration
+	    (xorg-configuration
+	     (keyboard-layout keyboard-layout)))
+	   (service libvirt-service-type
+		    (libvirt-configuration
+		     (unix-sock-group "libvirt")
+		     (tls-port "16555")))
+	   (extra-special-file
+	    "/lib64/ld-linux-x86-64.so.2"
+	    (file-append glibc "/lib/ld-linux-x86-64.so.2"))
+	   (extra-special-file
+	    "/usr/bin/env"
+	    (file-append coreutils "/bin/env")))
+     %desktop-services))
 
-			;; for HTTPS access
-			nss-certs)
-		       %base-packages))
 
-     (services
-      (append
-       (list (set-xorg-configuration
-	      (xorg-configuration
-	       (keyboard-layout keyboard-layout))))
-       %desktop-services))
+   (bootloader
+    (bootloader-configuration
+     (bootloader grub-bootloader)
+     (targets (list "/dev/sda"))
+     (keyboard-layout keyboard-layout)))
 
+   (swap-devices
+    (list (swap-space
+	   (target
+	    (uuid "ac642942-86f4-4e6a-86fd-ec51e807b2dc")))))
 
-     (bootloader
-      (bootloader-configuration
-       (bootloader grub-bootloader)
-       (targets (list "/dev/sda"))
-       (keyboard-layout keyboard-layout)))
-
-     (swap-devices
-      (list (swap-space
-	     (target
-	      (uuid "ac642942-86f4-4e6a-86fd-ec51e807b2dc")))))
-
-     (file-systems
-      (cons* (file-system
-	      (mount-point "/")
-	      (device
-	       (uuid "6b1c6baa-7381-40cb-9d5a-feb2a1a42a8a"
-		     'ext4))
-	      (type "ext4"))
-	     %base-file-systems)))
+   (file-systems
+    (cons* (file-system
+	    (mount-point "/")
+	    (device
+	     (uuid "6b1c6baa-7381-40cb-9d5a-feb2a1a42a8a"
+		   'ext4))
+	    (type "ext4"))
+	   %base-file-systems)))
 #+END_SRC
 
 * Channels.scm
