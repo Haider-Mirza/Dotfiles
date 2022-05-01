@@ -44,9 +44,10 @@
 		     "audio"
 		     "video"
 		     "kvm")))
+
 		 (user-account
 		  (name "hasan")
-		  (comment "Hasan")
+		  (comment "Hasan Mirza")
 		  (group "users")
 		  (home-directory "/home/hasan")
 		  (password "hasan")
@@ -88,7 +89,10 @@
     (bootloader-configuration
      (bootloader grub-bootloader)
      (targets (list "/dev/sda"))
-     (keyboard-layout keyboard-layout)))
+     (keyboard-layout keyboard-layout)
+     (theme (grub-theme
+	     (inherit (grub-theme))
+	     (gfxmode '("1024x786x32" "auto"))))))
 
    (swap-devices
     (list (swap-space
