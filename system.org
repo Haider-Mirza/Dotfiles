@@ -11,22 +11,44 @@
   This is the config file used in GNU Guix to manage your system.
 #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
   ;; This file should be edited in ~/Dotfiles/System.org then tangled.
-  (use-modules (gnu)
-	       (gnu packages certs)
-	       (gnu packages emacs)
-	       (gnu packages emacs-xyz)
-	       (gnu packages version-control))
-
+  (use-modules
+   (gnu)
+   (gnu packages certs)
+   (gnu packages emacs)
+   (gnu packages emacs-xyz)
+   (gnu packages graphics)
+   (gnu packages video)
+   (gnu packages cpp)
+   (gnu packages mail)
+   (gnu packages dunst)
+   (gnu packages llvm)
+   (gnu packages compression)
+   (gnu packages web-browsers)
+   (gnu packages image-viewers)
+   (gnu packages virtualization)
+   (gnu packages ssh)
+   (gnu packages node)
+   (gnu packages image)
+   (gnu packages terminals)
+   (gnu packages haskell-xyz)
+   (gnu packages gnupg)
+   (gnu packages password-utils)
+   (gnu packages linux)
+   (gnu packages xdisorg)
+   (gnu packages xorg)
+   (gnu packages pulseaudio)
+   (gnu packages fonts)
+   (gnu packages compton)
+   (gnu packages aspell)
+   (gnu packages version-control))
 
   (use-service-modules
    cups
    desktop
    networking
    ssh
-   ;; nix
    xorg
    virtualization)
-
 
   (operating-system
    (locale "en_GB.utf8")
@@ -47,43 +69,134 @@
 
 		 (user-account
 		  (name "hasan")
-		  (comment "Hasan Mirza")
+		  (comment "Hasan")
 		  (group "users")
 		  (home-directory "/home/hasan")
 		  (password "hasan")
 		  (supplementary-groups
-		   '("wheel"
-		     "netdev"
+		   '("netdev"
 		     "audio"
 		     "video")))
 		 %base-user-accounts))
 
    (packages (append (list
-		      emacs
-		      emacs-exwm
-		      emacs-desktop-environment
-		      git 
 		      binutils
-		      nss-certs)
+		      blender
+		      qutebrowser
+		      mpv
+		      ccls
+		      notmuch
+		      feh
+		      msmtp
+		      l2md
+		      dunst
+		      unzip
+		      clang
+		      qemu
+		      virt-manager
+		      git
+		      openssh
+		      ;; rofi
+		      node
+		      flameshot
+		      ;; polybar
+		      libvirt
+		      isync
+		      alacritty
+		      pandoc
+		      pinentry-tty
+		      password-store
+		      gnupg
+		      alsa-utils
+		      unclutter
+		      xmodmap
+		      pulsemixer
+		      font-jetbrains-mono
+		      libvterm
+		      picom
+
+		      ;; Emacs Packages
+		      emacs
+		      ispell
+		      emacs-guix
+		      emacs-gnus-alias
+		      emacs-general
+		      emacs-notmuch
+		      emacs-undo-tree
+		      emacs-evil
+		      emacs-evil-collection
+		      emacs-doom-themes
+		      emacs-visual-fill-column
+		      emacs-vertico
+		      emacs-marginalia
+		      emacs-rainbow-delimiters
+		      emacs-all-the-icons
+		      emacs-all-the-icons-completion
+		      emacs-doom-modeline
+		      emacs-which-key
+		      emacs-diminish
+		      emacs-counsel
+		      emacs-helpful
+		      emacs-hydra
+		      emacs-no-littering
+		      emacs-prettier
+		      emacs-org
+		      emacs-org-superstar
+		      emacs-org-bullets
+		      emacs-ox-pandoc
+		      emacs-org-appear
+		      emacs-org-super-agenda
+		      emacs-evil-org
+		      emacs-org-reveal
+		      emacs-org-roam
+		      emacs-org-make-toc
+		      emacs-erc-hl-nicks
+		      emacs-erc-image
+		      emacs-emojify
+		      emacs-org-mime
+		      emacs-projectile
+		      emacs-counsel-projectile
+		      emacs-yasnippet
+		      emacs-magit
+		      emacs-sudo-edit
+		      emacs-ccls
+		      emacs-lsp-mode
+		      emacs-lsp-ui
+		      emacs-lsp-treemacs
+		      emacs-geiser-guile
+		      emacs-geiser
+		      emacs-smartparens
+		      emacs-company
+		      emacs-company-box
+		      emacs-vterm
+		      emacs-password-store
+		      emacs-exwm
+		      emacs-consult)
 		     %base-packages))
 
    (services
     (append
-     (list (set-xorg-configuration
-	    (xorg-configuration
-	     (keyboard-layout keyboard-layout)))
+     (list (service slim-service-type
+		    ;; (slim-configuration
+		    ;;  (auto-login? #t)
+		    ;;  (default-user "haider"))
+		    )
+
 	   (service libvirt-service-type
 		    (libvirt-configuration
 		     (unix-sock-group "libvirt")
 		     (tls-port "16555")))
+
 	   (extra-special-file
 	    "/lib64/ld-linux-x86-64.so.2"
 	    (file-append glibc "/lib/ld-linux-x86-64.so.2"))
+
 	   (extra-special-file
 	    "/usr/bin/env"
 	    (file-append coreutils "/bin/env")))
-     %desktop-services))
 
+     (modify-services %desktop-services
+		      (delete gdm-service-type))))
 
    (bootloader
     (bootloader-configuration
