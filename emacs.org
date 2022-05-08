@@ -68,6 +68,9 @@
 - [[#load-desktoporg][Load Desktop.org]]
 - [[#garbage-collecter-hack][Garbage Collecter Hack]]
   
+* Preface
+GNU Emacs isn’t a text editor, it’s the ultimate productivity environment for hackers.
+This document contains the core parts of my Emacs configuration which drive the workflow I use every day.
 * Note
 ** Package Management
 My Emacs packages are installed by the GNU Guix package manager and by using it's Guix Home feature.
@@ -105,6 +108,9 @@ Here is a post on the matter
 
 #+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/early-init.el"
   (setq byte-compile-warnings '(cl-functions))
+
+  (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
 
 * Package Management
@@ -337,14 +343,18 @@ Make the User interface more minimal.
 Center org-mode documents.
 
 #+begin_src elisp
-  (defun org/org-mode-visual-fill ()
-    (setq visual-fill-column-width 180
-          visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
+  ;; (defun org/org-mode-visual-fill ()
+  ;;   (setq visual-fill-column-width 180
+  ;;         visual-fill-column-center-text t)
+  ;;   (visual-fill-column-mode 1))
 
-  (setup (:pkg visual-fill-column)
-    (:hook-into org-mode))
+  ;; (setup (:pkg visual-fill-column)
+  ;;   (:hook-into org-mode))
 #+end_src
+** Beacon
+#+BEGIN_SRC elisp
+  (setup (:pkg beacon))
+#+END_SRC
 ** Vertico
 #+BEGIN_SRC elisp
   (setup (:pkg vertico)
@@ -364,6 +374,7 @@ Center org-mode documents.
     (:option marginalia-annotators '(marginalia-annotators-heavy
                                      marginalia-annotators-light
                                      nil))
+    (setq marginalia-align 'right)
     (marginalia-mode))
 #+END_SRC 
 ** frame transparency and maximize windows. 
@@ -382,7 +393,7 @@ Center org-mode documents.
   (global-display-line-numbers-mode t)
 
   ;; Disable line numbers for some modes
-  (dolist (mode '(org-mode-hook
+  (dolist (mode '(;; org-mode-hook
                   term-mode-hook
                   dashboard-mode-hook
                   vterm-mode-hook
@@ -588,18 +599,7 @@ Makes Emacs keep my file directories clean of unnecessary files.
   (rune/leader-keys
     "TAB" '(comment-dwim :which-key "comment lines"))
 #+END_SRC
-** Org
-
-Here consists configs for:
-- Org Mode
-- Org Agenda
-- Org Roam
-- Org pandoc
-- Org reveal
-- Org superstar
-- Org appear
-
-*** OrgMode Main config
+** OrgMode
 #+begin_src elisp
   (setup (:pkg prettier))
 
@@ -611,18 +611,21 @@ Here consists configs for:
     "ot" '(org-babel-tangle :which-key "Tangle Document")
     "ox" '(org-export-dispatch :which-key "Export Document")
     "od" '(org-deadline :which-key "Deadline")
-    "os" '(org-todo :which-key "Switch"))
+    "os" '(org-schedule :which-key "Schedule")
+    "oh" '(org-todo :which-key "Add a todo header thing"))
 
   (setup (:pkg org)
     (setq org-ellipsis " ▾")
 
     (setq org-agenda-start-with-log-mode t)
-    (setq org-log-done 'time)
+    (setq org-log-done t)
     (setq org-log-into-drawer t)
 
     (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
     (setq org-startup-folded t) ;; Org files start up folded by default
     (setq org-image-actual-width nil)
+
+  (add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)))
 
     (setq org-agenda-files
           '("~/documents/Home/Reminders.org"
@@ -644,21 +647,22 @@ Here consists configs for:
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    (org/org-mode-visual-fill))
+    ;; (org/org-mode-visual-fill))
+    )
 
   (setup (:pkg org-superstar)
-    (:load-after org)
-    (:hook-into org-mode)
-    (:option org-superstar-remove-leading-stars t
-             org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (:hook-into org-mode))
+
+  (setq org-startup-indented t)           ;; Indent according to section
+  (setq org-startup-with-inline-images t) ;; Display images in-buffer by default
 #+END_SRC
-*** ox-pandoc
+** ox-pandoc
 Expand org-mode's exporting capabilities
 Make sure the pandoc is installed on your system.
 #+BEGIN_SRC elisp
   (setup (:pkg pandoc))
 #+END_SRC
-*** org-appear
+** org-appear
 #+BEGIN_SRC elisp
   (setup (:pkg org-appear)
     (:hook-into org-mode)
@@ -667,75 +671,52 @@ Make sure the pandoc is installed on your system.
     (setq org-appear-autolinks t) ;; Enable on links
     (setq org-appear-autosubmarkers t)) ;; Enable on subscript and superscript
 #+END_SRC
-*** ox-reveal
-Export Orgmode to presentations.
-This Emacs file has been installed by Guix.
-Here is my configuration; Place this at the top of your OrgMode document then export with *org export dispach*
-Here is the git repository https://github.com/yjwen/org-reveal/
-Documenation can also be found here: https://revealjs.com/
-**** main config
-#+begin_src fundamental
-  :reveal_properties:
-  ,#+reveal_root: https://cdn.jsdelivr.net/npm/reveal.js
-  ,#+reveal_reveal_js_version: 4
-  ,#+reveal_theme: serif
-  ,#+options: timestamp:nil toc:1 num:nil
-  :end:
-#+end_src
-**** every line per space
-https://revealjs.com/fragments/
-#+begin_src fundamental
-  ,#+aatr_reveal: :frag (appear)
-#+end_src
-**** images
-#+begin_src fundamental
-  ,#+aatr_html: :width 45% :align center
-#+end_src
-*** org-super-agenda
+** org-super-agenda
 configuring the org-agenda view.
 #+begin_src elisp
 
-  (setup (:pkg org-super-agenda)
-    (setq org-agenda-skip-scheduled-if-done t
-          org-agenda-skip-deadline-if-done t
-          org-agenda-include-deadlines t
-          org-agenda-include-diary t
-          org-agenda-block-separator nil
-          org-agenda-compact-blocks t
-          org-agenda-start-with-log-mode t)
+  ;; (setup (:pkg org-super-agenda)
+  ;;   (setq org-agenda-skip-scheduled-if-done t
+  ;;         org-agenda-skip-deadline-if-done t
+  ;;         org-agenda-include-deadlines t
+  ;;         org-agenda-include-diary t
+  ;;         org-agenda-block-separator nil
+  ;;         org-agenda-compact-blocks t
+  ;;         org-agenda-start-with-log-mode t)
 
-    (setq org-agenda-span 'day)
-    (setq org-super-agenda-groups
-          '((:name "Important"
-                   :priority "a")
-            (:name "Due today"
-                   :deadline today)
-            (:name "Overdue"
-                   :deadline past)
-            (:name "Things todo"
-                   :todo "TODO")
-            (:name "School work"
-                   :todo "WORK")
-            (:name "Completed"
-                   :todo "COMPLETED")))
-    (org-super-agenda-mode 1))
+  ;;   (setq org-agenda-span 'day)
+  ;;   (setq org-super-agenda-groups
+  ;;         '((:name "Important"
+  ;;                  :priority "a")
+  ;;           (:name "Due today"
+  ;;                  :deadline today)
+  ;;           (:name "Overdue"
+  ;;                  :deadline past)
+  ;;           (:name "Things todo"
+  ;;                  :todo "TODO")
+  ;;           (:name "School work"
+  ;;                  :todo "WORK")
+  ;;           (:name "Completed"
+  ;;                  :todo "COMPLETED")))
+  ;;   (org-super-agenda-mode 1))
 
 #+end_src
 
 #+BEGIN_SRC elisp
   (setup (:pkg evil-org)
-    (:hook-into org-mode org-agenda-mode)
+    ;; (:hook-into org-mode org-agenda-mode)
     (require 'evil-org)
     (require 'evil-org-agenda)
     (evil-org-set-key-theme '(navigation todo insert textobjects additional))
     (evil-org-agenda-set-keys))
 #+END_SRC
  
-*** OrgRoam
+** OrgRoam
 If OrgRoam is setup on this system, you can click here for more information: [[id:8317049b-5a2b-4176-9d39-111f310061c7][Org Roam]]
 #+begin_src elisp
   (setup (:pkg org-roam)
     (setq org-roam-v2-ack t)
+    (setq org-roam-db-location (concat (getenv "HOME") "/Notes/org-roam.db"))
     (setq dw/daily-note-filename "%<%Y-%m-%d>.org"
           dw/daily-note-header "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n")
 
@@ -932,7 +913,7 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
     (defun notmuch/update ()
       "Update Emails and load them into Notmuch's database "
       (interactive)
-      (start-process-shell-command "Update Emails" nil "chmod +x ~/mail/.notmuch/hooks/pre-new && notmuch new"))
+      (start-process-shell-command "Update Emails" nil "chmod +x ~/mail/.notmuch/hooks/pre-new ~/mail/.notmuch/hooks/post-new && notmuch new"))
 
     ;; Manual tagging
     (defun notmuch/trash()

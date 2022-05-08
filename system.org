@@ -24,6 +24,9 @@
    (gnu packages llvm)
    (gnu packages compression)
    (gnu packages web-browsers)
+   (gnu packages gnuzilla)
+   (gnu packages gcc)
+   (gnu packages commencement)
    (gnu packages image-viewers)
    (gnu packages virtualization)
    (gnu packages ssh)
@@ -37,6 +40,7 @@
    (gnu packages xdisorg)
    (gnu packages xorg)
    (gnu packages pulseaudio)
+   (gnu packages package-management)
    (gnu packages fonts)
    (gnu packages compton)
    (gnu packages aspell)
@@ -56,147 +60,151 @@
    (keyboard-layout (keyboard-layout "gb" "extd"))
    (host-name "xps")
    (users (cons* (user-account
-		  (name "haider")
-		  (comment "Haider")
-		  (group "users")
-		  (home-directory "/home/haider")
-		  (supplementary-groups
-		   '("wheel"
-		     "netdev"
-		     "audio"
-		     "video"
-		     "kvm")))
+                  (name "haider")
+                  (comment "Haider")
+                  (group "users")
+                  (home-directory "/home/haider")
+                  (supplementary-groups
+                   '("wheel"
+                     "netdev"
+                     "audio"
+                     "video"
+                     "kvm")))
 
-		 (user-account
-		  (name "hasan")
-		  (comment "Hasan")
-		  (group "users")
-		  (home-directory "/home/hasan")
-		  (password "hasan")
-		  (supplementary-groups
-		   '("netdev"
-		     "audio"
-		     "video")))
-		 %base-user-accounts))
+                 (user-account
+                  (name "hasan")
+                  (comment "Hasan")
+                  (group "users")
+                  (home-directory "/home/hasan")
+                  (password "hasan")
+                  (supplementary-groups
+                   '("netdev"
+                     "audio"
+                     "video")))
+                 %base-user-accounts))
 
    (packages (append (list
-		      binutils
-		      blender
-		      qutebrowser
-		      mpv
-		      ccls
-		      notmuch
-		      feh
-		      msmtp
-		      l2md
-		      dunst
-		      unzip
-		      clang
-		      qemu
-		      virt-manager
-		      git
-		      openssh
-		      ;; rofi
-		      node
-		      flameshot
-		      ;; polybar
-		      libvirt
-		      isync
-		      alacritty
-		      pandoc
-		      pinentry-tty
-		      password-store
-		      gnupg
-		      alsa-utils
-		      unclutter
-		      xmodmap
-		      pulsemixer
-		      font-jetbrains-mono
-		      libvterm
-		      picom
+                      nss-certs
+                      binutils
+                      blender
+                      qutebrowser
+                      icecat
+                      mpv
+                      ccls
+                      notmuch
+                      feh
+                      msmtp
+                      l2md
+                      dunst
+                      unzip
+                      clang
+                      qemu
+                      virt-manager
+                      git
+                      openssh
+                      node
+                      flameshot
+                      stow
+                      libvirt
+                      isync
+                      alacritty
+                      pandoc
+                      pinentry-tty
+                      password-store
+                      gnupg
+                      alsa-utils
+                      unclutter
+                      xmodmap
+                      pulsemixer
+                      font-jetbrains-mono
+                      libvterm
+                      picom
+                      flatpak
 
-		      ;; Emacs Packages
-		      emacs
-		      ispell
-		      emacs-guix
-		      emacs-gnus-alias
-		      emacs-general
-		      emacs-notmuch
-		      emacs-undo-tree
-		      emacs-evil
-		      emacs-evil-collection
-		      emacs-doom-themes
-		      emacs-visual-fill-column
-		      emacs-vertico
-		      emacs-marginalia
-		      emacs-rainbow-delimiters
-		      emacs-all-the-icons
-		      emacs-all-the-icons-completion
-		      emacs-doom-modeline
-		      emacs-which-key
-		      emacs-diminish
-		      emacs-counsel
-		      emacs-helpful
-		      emacs-hydra
-		      emacs-no-littering
-		      emacs-prettier
-		      emacs-org
-		      emacs-org-superstar
-		      emacs-org-bullets
-		      emacs-ox-pandoc
-		      emacs-org-appear
-		      emacs-org-super-agenda
-		      emacs-evil-org
-		      emacs-org-reveal
-		      emacs-org-roam
-		      emacs-org-make-toc
-		      emacs-erc-hl-nicks
-		      emacs-erc-image
-		      emacs-emojify
-		      emacs-org-mime
-		      emacs-projectile
-		      emacs-counsel-projectile
-		      emacs-yasnippet
-		      emacs-magit
-		      emacs-sudo-edit
-		      emacs-ccls
-		      emacs-lsp-mode
-		      emacs-lsp-ui
-		      emacs-lsp-treemacs
-		      emacs-geiser-guile
-		      emacs-geiser
-		      emacs-smartparens
-		      emacs-company
-		      emacs-company-box
-		      emacs-vterm
-		      emacs-password-store
-		      emacs-exwm
-		      emacs-consult)
-		     %base-packages))
+                      ;; Emacs Packages
+                      emacs
+                      ispell
+                      emacs-guix
+                      emacs-gnus-alias
+                      emacs-general
+                      emacs-notmuch
+                      emacs-undo-tree
+                      emacs-evil
+                      emacs-evil-collection
+                      emacs-doom-themes
+                      emacs-visual-fill-column
+                      emacs-vertico
+                      emacs-marginalia
+                      emacs-rainbow-delimiters
+                      emacs-all-the-icons
+                      emacs-all-the-icons-completion
+                      emacs-doom-modeline
+                      emacs-which-key
+                      emacs-diminish
+                      emacs-counsel
+                      emacs-helpful
+                      emacs-hydra
+                      emacs-no-littering
+                      emacs-prettier
+                      emacs-org
+                      emacs-org-superstar
+                      emacs-org-bullets
+                      emacs-ox-pandoc
+                      emacs-org-appear
+                      emacs-org-super-agenda
+                      emacs-evil-org
+                      emacs-org-reveal
+                      emacs-org-roam
+                      gcc
+                      gcc-toolchain
+                      emacs-org-make-toc
+                      emacs-erc-hl-nicks
+                      emacs-erc-image
+                      emacs-emojify
+                      emacs-org-mime
+                      emacs-projectile
+                      emacs-counsel-projectile
+                      emacs-yasnippet
+                      emacs-magit
+                      emacs-sudo-edit
+                      emacs-ccls
+                      emacs-lsp-mode
+                      emacs-lsp-ui
+                      emacs-lsp-treemacs
+                      emacs-geiser-guile
+                      emacs-geiser
+                      emacs-smartparens
+                      emacs-company
+                      emacs-company-box
+                      emacs-vterm
+                      emacs-password-store
+                      emacs-exwm
+                      emacs-consult)
+                     %base-packages))
 
    (services
     (append
      (list (service slim-service-type
-		    ;; (slim-configuration
-		    ;;  (auto-login? #t)
-		    ;;  (default-user "haider"))
-		    )
+                    ;; (slim-configuration
+                    ;;  (auto-login? #t)
+                    ;;  (default-user "haider"))
+                    )
 
-	   (service libvirt-service-type
-		    (libvirt-configuration
-		     (unix-sock-group "libvirt")
-		     (tls-port "16555")))
+           (service libvirt-service-type
+                    (libvirt-configuration
+                     (unix-sock-group "libvirt")
+                     (tls-port "16555")))
 
-	   (extra-special-file
-	    "/lib64/ld-linux-x86-64.so.2"
-	    (file-append glibc "/lib/ld-linux-x86-64.so.2"))
+           (extra-special-file
+            "/lib64/ld-linux-x86-64.so.2"
+            (file-append glibc "/lib/ld-linux-x86-64.so.2"))
 
-	   (extra-special-file
-	    "/usr/bin/env"
-	    (file-append coreutils "/bin/env")))
+           (extra-special-file
+            "/usr/bin/env"
+            (file-append coreutils "/bin/env")))
 
      (modify-services %desktop-services
-		      (delete gdm-service-type))))
+                      (delete gdm-service-type))))
 
    (bootloader
     (bootloader-configuration
@@ -204,22 +212,22 @@
      (targets (list "/dev/sda"))
      (keyboard-layout keyboard-layout)
      (theme (grub-theme
-	     (inherit (grub-theme))
-	     (gfxmode '("1024x786x32" "auto"))))))
+             (inherit (grub-theme))
+             (gfxmode '("1024x786x32" "auto"))))))
 
    (swap-devices
     (list (swap-space
-	   (target
-	    (uuid "ac642942-86f4-4e6a-86fd-ec51e807b2dc")))))
+           (target
+            (uuid "ac642942-86f4-4e6a-86fd-ec51e807b2dc")))))
 
    (file-systems
     (cons* (file-system
-	    (mount-point "/")
-	    (device
-	     (uuid "6b1c6baa-7381-40cb-9d5a-feb2a1a42a8a"
-		   'ext4))
-	    (type "ext4"))
-	   %base-file-systems)))
+            (mount-point "/")
+            (device
+             (uuid "6b1c6baa-7381-40cb-9d5a-feb2a1a42a8a"
+                   'ext4))
+            (type "ext4"))
+           %base-file-systems)))
 #+END_SRC
 
 * Channels.scm
