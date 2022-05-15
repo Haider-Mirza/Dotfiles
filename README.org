@@ -1,4 +1,3 @@
-
 #+TITLE: =Dotfiles=
 #+AUTHOR: Haider Mirza
 * Table Of Contents :toc:

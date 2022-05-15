@@ -89,7 +89,7 @@
   IMAPAccount work
   Host "imap.gmail.com"
   User "x7and7@gmail.com"
-  PassCmd "emacsclient -e \"(password-store-get \\\"x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
+  PassCmd "emacsclient -e \"(password-store-get \\\"Email/x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
   SSLType IMAPS
 
   IMAPStore work-remote
@@ -136,7 +136,7 @@
   IMAPAccount school
   Host "outlook.office365.com"
   User "ha6mi19@keaston.bham.sch.uk"
-  PassCmd "emacsclient -e \"(password-store-get \\\"ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
+  PassCmd "emacsclient -e \"(password-store-get \\\"Email/ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
   SSLType IMAPS
 
   IMAPStore school-remote
@@ -191,7 +191,7 @@
   from           x7and7@gmail.com
   user           x7and7
   # passwordeval   emacsclient -e "\"(password-store-get \\\"x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
-  passwordeval   "pass x7and7@gmail.com | head -n1"
+  passwordeval   "pass Email/x7and7@gmail.com | head -n1"
 
 
   # Gmail
@@ -201,7 +201,7 @@
   host           ha6mi19@keaston.bham.sch.uk
   user           ha6mi19
   # passwordeval   emacsclient -e "\"(password-store-get \\\"ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
-  passwordeval   "pass ha6mi19@keaston.bham.sch.uk | head -n1"
+  passwordeval   "pass Email/ha6mi19@keaston.bham.sch.uk | head -n1"
 
   # Set a default account
   account default : personal

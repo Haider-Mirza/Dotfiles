@@ -10,41 +10,11 @@
 * Config.scm
   This is the config file used in GNU Guix to manage your system.
 #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
-  ;; This file should be edited in ~/Dotfiles/System.org then tangled.
   (use-modules
    (gnu)
    (gnu packages certs)
-   (gnu packages emacs)
-   (gnu packages emacs-xyz)
-   (gnu packages graphics)
-   (gnu packages video)
-   (gnu packages cpp)
-   (gnu packages mail)
-   (gnu packages dunst)
-   (gnu packages llvm)
-   (gnu packages compression)
-   (gnu packages web-browsers)
-   (gnu packages gnuzilla)
-   (gnu packages gcc)
-   (gnu packages commencement)
-   (gnu packages image-viewers)
-   (gnu packages virtualization)
-   (gnu packages ssh)
-   (gnu packages node)
-   (gnu packages image)
-   (gnu packages terminals)
-   (gnu packages haskell-xyz)
-   (gnu packages gnupg)
-   (gnu packages password-utils)
-   (gnu packages linux)
-   (gnu packages xdisorg)
-   (gnu packages xorg)
    (gnu packages pulseaudio)
-   (gnu packages package-management)
-   (gnu packages fonts)
-   (gnu packages compton)
-   (gnu packages aspell)
-   (gnu packages version-control))
+   (gnu packages emacs))
 
   (use-service-modules
    cups
@@ -73,127 +43,128 @@
 
                  (user-account
                   (name "hasan")
-                  (comment "Hasan")
+                  (comment "Haider's Brother")
                   (group "users")
                   (home-directory "/home/hasan")
-                  (password "hasan")
+                  (password "")
                   (supplementary-groups
                    '("netdev"
                      "audio"
                      "video")))
                  %base-user-accounts))
 
-   (packages (append (list
-                      nss-certs
-                      binutils
-                      blender
-                      qutebrowser
-                      icecat
-                      mpv
-                      ccls
-                      notmuch
-                      feh
-                      msmtp
-                      l2md
-                      dunst
-                      unzip
-                      clang
-                      qemu
-                      virt-manager
-                      git
-                      openssh
-                      node
-                      flameshot
-                      stow
-                      libvirt
-                      isync
-                      alacritty
-                      pandoc
-                      pinentry-tty
-                      password-store
-                      gnupg
-                      alsa-utils
-                      unclutter
-                      xmodmap
-                      pulsemixer
-                      font-jetbrains-mono
-                      libvterm
-                      picom
-                      flatpak
+   (packages (append (map specification->package
+                          '("nss-certs"
+                            "binutils"
+                            "blender"
+                            "qutebrowser"
+                            "icecat"
+                            "mpv"
+                            "ccls"
+                            "notmuch"
+                            "msmtp"
+                            "feh"
+                            "msmtp"
+                            "l2md"
+                            "dunst"
+                            "unzip"
+                            "clang"
+                            "virt-manager"
+                            "qemu"
+                            "git"
+                            "openssh"
+                            "node"
+                            "flameshot"
+                            "stow"
+                            "isync"
+                            "alacritty"
+                            "pandoc"
+                            "pinentry-tty"
+                            "password-store"
+                            "gnupg"
+                            "alsa-utils"
+                            "unclutter"
+                            "xmodmap"
+                            "pulsemixer"
+                            "font-jetbrains-mono"
+                            "libvterm"
+                            "picom"
+                            "flatpak"
 
-                      ;; Emacs Packages
-                      emacs
-                      ispell
-                      emacs-guix
-                      emacs-gnus-alias
-                      emacs-general
-                      emacs-notmuch
-                      emacs-undo-tree
-                      emacs-evil
-                      emacs-evil-collection
-                      emacs-doom-themes
-                      emacs-visual-fill-column
-                      emacs-vertico
-                      emacs-marginalia
-                      emacs-rainbow-delimiters
-                      emacs-all-the-icons
-                      emacs-all-the-icons-completion
-                      emacs-doom-modeline
-                      emacs-which-key
-                      emacs-diminish
-                      emacs-counsel
-                      emacs-helpful
-                      emacs-hydra
-                      emacs-no-littering
-                      emacs-prettier
-                      emacs-org
-                      emacs-org-superstar
-                      emacs-org-bullets
-                      emacs-ox-pandoc
-                      emacs-org-appear
-                      emacs-org-super-agenda
-                      emacs-evil-org
-                      emacs-org-reveal
-                      emacs-org-roam
-                      gcc
-                      gcc-toolchain
-                      emacs-org-make-toc
-                      emacs-erc-hl-nicks
-                      emacs-erc-image
-                      emacs-emojify
-                      emacs-org-mime
-                      emacs-projectile
-                      emacs-counsel-projectile
-                      emacs-yasnippet
-                      emacs-magit
-                      emacs-sudo-edit
-                      emacs-ccls
-                      emacs-lsp-mode
-                      emacs-lsp-ui
-                      emacs-lsp-treemacs
-                      emacs-geiser-guile
-                      emacs-geiser
-                      emacs-smartparens
-                      emacs-company
-                      emacs-company-box
-                      emacs-vterm
-                      emacs-password-store
-                      emacs-exwm
-                      emacs-consult)
+                            ;; Emacs Packages
+                            "emacs"
+                            "ispell"
+                            "emacs-guix"
+                            "emacs-gnus-alias"
+                            "emacs-general"
+                            "emacs-notmuch"
+                            "emacs-undo-tree"
+                            "emacs-evil"
+                            "emacs-evil-collection"
+                            "emacs-doom-themes"
+                            "emacs-visual-fill-column"
+                            "emacs-vertico"
+                            "emacs-marginalia"
+                            "emacs-rainbow-delimiters"
+                            "emacs-all-the-icons"
+                            "emacs-all-the-icons-completion"
+                            "emacs-doom-modeline"
+                            "emacs-which-key"
+                            "emacs-diminish"
+                            "emacs-counsel"
+                            "emacs-helpful"
+                            "emacs-hydra"
+                            "emacs-no-littering"
+                            "emacs-prettier"
+                            "emacs-org"
+                            "emacs-org-superstar"
+                            "emacs-org-bullets"
+                            "emacs-ox-pandoc"
+                            "emacs-org-appear"
+                            "emacs-org-super-agenda"
+                            "emacs-evil-org"
+                            "emacs-org-reveal"
+                            "emacs-org-roam"
+                            "gcc"
+                            "gcc-toolchain"
+                            "emacs-org-make-toc"
+                            "emacs-erc-hl-nicks"
+                            "emacs-erc-image"
+                            "emacs-emojify"
+                            "emacs-org-mime"
+                            "emacs-projectile"
+                            "emacs-counsel-projectile"
+                            "emacs-yasnippet"
+                            "emacs-magit"
+                            "emacs-sudo-edit"
+                            "emacs-ccls"
+                            "emacs-lsp-mode"
+                            "emacs-lsp-ui"
+                            "emacs-lsp-treemacs"
+                            "emacs-geiser-guile"
+                            "emacs-geiser"
+                            "emacs-smartparens"
+                            "emacs-company"
+                            "emacs-company-box"
+                            "emacs-vterm"
+                            "emacs-password-store"
+                            "emacs-exwm"
+                            "emacs-desktop-environment"
+                            "emacs-consult"))
                      %base-packages))
 
    (services
     (append
      (list (service slim-service-type
-                    ;; (slim-configuration
-                    ;;  (auto-login? #t)
-                    ;;  (default-user "haider"))
-                    )
+                    (slim-configuration
+                     (xorg-configuration
+                      (xorg-configuration
+                       (keyboard-layout keyboard-layout)))))
 
-           (service libvirt-service-type
-                    (libvirt-configuration
-                     (unix-sock-group "libvirt")
-                     (tls-port "16555")))
+           ;; (service libvirt-service-type
+           ;;          (libvirt-configuration
+           ;;           (unix-sock-group "libvirt")
+           ;;           (tls-port "16555")))
 
            (extra-special-file
             "/lib64/ld-linux-x86-64.so.2"
@@ -210,21 +181,18 @@
     (bootloader-configuration
      (bootloader grub-bootloader)
      (targets (list "/dev/sda"))
-     (keyboard-layout keyboard-layout)
-     (theme (grub-theme
-             (inherit (grub-theme))
-             (gfxmode '("1024x786x32" "auto"))))))
+     (keyboard-layout keyboard-layout)))
 
    (swap-devices
     (list (swap-space
            (target
-            (uuid "ac642942-86f4-4e6a-86fd-ec51e807b2dc")))))
+            (uuid "c12505e5-3ecd-4ca3-a71a-ee01bbe9116b")))))
 
    (file-systems
     (cons* (file-system
             (mount-point "/")
             (device
-             (uuid "6b1c6baa-7381-40cb-9d5a-feb2a1a42a8a"
+             (uuid "adf17b8c-6726-4048-8671-5ba77da3f58d"
                    'ext4))
             (type "ext4"))
            %base-file-systems)))

@@ -16,7 +16,7 @@ Here are some snippets I made for OrgMode
   # key: <t
   # --
   ,#+TITLE: ${1:Title}
-  ,#+AUTHOR: Haider M
+  ,#+AUTHOR: Haider Mirza
   ,#+DATE: `(let ((x (org-insert-time-stamp nil nil t ))))`
   :PROPERTIES:
   ,#+OPTIONS:
