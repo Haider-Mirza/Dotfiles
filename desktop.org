@@ -94,7 +94,7 @@
   (defun exwm/unclutter ()
     (interactive)
     (start-process-shell-command "unclutter" nil "unclutter -idle 0.01 -root"))
-  
+
   (defun exwm/kill-unclutter ()
     (interactive)
     (start-process-shell-command "kill unclutter" nil "pkill unclutter"))
@@ -111,7 +111,10 @@
   (defun exwm/configure-desktop ()
     (interactive)
     (exwm/set-wallpaper)
-    (exwm/picom))
+    (exwm/picom)
+    (start-process-shell-command "sound-effect" nil "mpv --no-video /home/haider/do-not-delete/startup.mp3")
+    (exwm/startup)
+    (message "Post Inititialization script..."))
 
 #+END_SRC
 ** Configuration
@@ -311,6 +314,7 @@ EXWM Functions
     (exwm-workspace-switch-create 2)
     (exwm/run-qute)
     (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:100"))
+
 #+END_SRC
 *** System functions
 #+BEGIN_SRC elisp

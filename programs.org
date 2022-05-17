@@ -42,6 +42,7 @@
   gpg_path=gpg
 #+END_SRC
 ** Notmuch hooks
+** pre-new
 #+BEGIN_SRC conf :tangle "/home/haider/mail/.notmuch/hooks/pre-new"
   #!/bin/sh
   mbsync -a
@@ -75,8 +76,11 @@
   notmuch tag +guix -- subject:guix
   notmuch tag +guix -- body:guix
 
+#+END_SRC
+** post-new
+#+BEGIN_SRC conf :tangle "/home/haider/mail/.notmuch/hooks/post-new"
+  #!/bin/sh
   emacsclient -e "(modeline/update-notmuch-activity-string)"
-
 #+END_SRC
 ** Mbsyncrc
   This file is the config file used for managing email in Mu4e.
