@@ -21,7 +21,7 @@
 #+BEGIN_SRC conf :tangle "/home/haider/.notmuch-config"
   [user]
   name=Haider Mirza
-  primary_email=x7and7@gmail.com
+  primary_email=haider@haider.gq
   other_email=ha6mi19@keaston.bham.sch.uk
 
   [database]
@@ -37,7 +37,7 @@
   [new]
   tags=inbox;unread
   ignore=.mbsyncstate;.uidvalidity
-	  
+
   [crypto]
   gpg_path=gpg
 #+END_SRC
@@ -60,7 +60,7 @@
   notmuch tag -spam -- not path:/.*\\/spam/ and tag:spam
 
   notmuch tag +school -- path:ha6mi19@keaston.bham.sch.uk/**
-  notmuch tag +work -- path:x7and7@gmail.com/**
+  notmuch tag +work -- path:haider@haider.gq/**
 
   # Retag all "new" messages "inbox" and "unread"
   # notmuch tag +inbox +unread -- tag:new
@@ -91,9 +91,10 @@
 
   # Work account
   IMAPAccount work
-  Host "imap.gmail.com"
-  User "x7and7@gmail.com"
-  PassCmd "emacsclient -e \"(password-store-get \\\"Email/x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
+  Host "outlook.office365.com"
+  User "haider@haider.gq"
+  # PassCmd   "pass Email/haider@haider.gq | head -n1"
+  PassCmd "emacsclient -e \"(password-store-get \\\"Email/haider@haider.gq\\\")\" | cut -d '\"' -f2"
   SSLType IMAPS
 
   IMAPStore work-remote
@@ -101,8 +102,35 @@
 
   MaildirStore work-local
   Subfolders Verbatim
-  Path "/home/haider/mail/x7and7@gmail.com/"
-  Inbox "/home/haider/mail/x7and7@gmail.com/inbox"
+  Path "/home/haider/mail/haider@haider.gq/"
+  Inbox "/home/haider/mail/haider@haider.gq/inbox"
+
+  # channel work-inbox
+  # near ":work-local:inbox"
+  # far ":work-remote:INBOX"
+
+  # channel work-sent
+  # near ":work-local:sent"
+  # far ":work-remote:/Sent"
+
+  # channel work-drafts
+  # near ":work-local:drafts"
+  # far ":work-remote:/Drafts"
+
+  # channel work-trash
+  # near ":work-local:trash"
+  # far ":work-remote:/Deleted"
+
+  # channel work-spam
+  # near ":work-local:spam"
+  # far ":work-remote:/Junk"
+
+  # group work
+  # channel work-inbox
+  # channel work-sent
+  # channel work-drafts
+  # channel work-trash
+  # channel work-spam
 
   channel work-inbox
   near ":work-local:inbox"
@@ -110,29 +138,24 @@
 
   channel work-sent
   near ":work-local:sent"
-  far ":work-remote:[Gmail]/Sent Mail"
+  far ":work-remote:/Sent Items"
 
   channel work-drafts
   near ":work-local:drafts"
-  far ":work-remote:[Gmail]/Drafts"
-
-  channel work-all
-  near ":work-local:all"
-  far ":work-remote:[Gmail]/All Mail"
+  far ":work-remote:/Drafts"
 
   channel work-trash
   near ":work-local:trash"
-  far ":work-remote:[Gmail]/Trash"
+  far ":work-remote:/Deleted Items"
 
   channel work-spam
   near ":work-local:spam"
-  far ":work-remote:[Gmail]/Spam"
+  far ":work-remote:/Junk Email"
 
-  group work
+  group work 
   channel work-inbox
   channel work-sent
   channel work-drafts
-  channel work-all
   channel work-trash
   channel work-spam
 
@@ -141,6 +164,7 @@
   Host "outlook.office365.com"
   User "ha6mi19@keaston.bham.sch.uk"
   PassCmd "emacsclient -e \"(password-store-get \\\"Email/ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
+  # PassCmd   "pass Email/ha6mi19@keaston.bham.sch.uk | head -n1"
   SSLType IMAPS
 
   IMAPStore school-remote
@@ -184,19 +208,19 @@
   defaults
   auth           on
   tls            on
-  tls_starttls off
+  tls_starttls on
   tls_trust_file /etc/ssl/certs/ca-certificates.crt
   logfile        ~/.msmtp.log
 
   # Gmail
   account        personal
-  host           smtp.gmail.com
-  port           465
-  from           x7and7@gmail.com
-  user           x7and7
-  # passwordeval   emacsclient -e "\"(password-store-get \\\"x7and7@gmail.com\\\")\" | cut -d '\"' -f2"
-  passwordeval   "pass Email/x7and7@gmail.com | head -n1"
-
+  host smtp-mail.outlook.com
+  port 587
+  from haider@haider.gq 
+  user haider@haider.gq 
+  passwordeval   "pass Email/haider@haider.gq | head -n1"
+  auth on
+  tls on
 
   # Gmail
   account        school 
@@ -204,7 +228,6 @@
   port           587
   host           ha6mi19@keaston.bham.sch.uk
   user           ha6mi19
-  # passwordeval   emacsclient -e "\"(password-store-get \\\"ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
   passwordeval   "pass Email/ha6mi19@keaston.bham.sch.uk | head -n1"
 
   # Set a default account
@@ -994,9 +1017,12 @@ This is (by far) my favourite browser where vimb is a worthy alternative.
 
   # Use dark mode where possible
   c.colors.webpage.preferred_color_scheme = "dark"
-  # c.colors.webpage.darkmode.enabled = True
-  # c.colors.webpage.darkmode.policy.images = "never"
+  c.colors.webpage.darkmode.enabled = True
+  c.colors.webpage.darkmode.policy.images = "never"
   # c.colors.webpage.bg = "black"
+
+  # Scale pages and UI better for hidpi
+  c.fonts.hints = "bold 15pt monospace"
 
   # Set Downloads Directory
   c.downloads.location.directory = '~/Downloads'
@@ -1010,7 +1036,7 @@ This is (by far) my favourite browser where vimb is a worthy alternative.
   c.url.default_page = 'https://start.duckduckgo.com/'
   c.url.start_pages = 'https://start.duckduckgo.com/'
 
-  c.url.searchengines = {'DEFAULT': 'https://duckduckgo.com/?q={}', 'am': 'https://www.amazon.com/s?k={}', 'aw': 'https://wiki.archlinux.org/?search={}', 'goog': 'https://www.google.com/search?q={}', 'hoog': 'https://hoogle.haskell.org/?hoogle={}', 're': 'https://www.reddit.com/r/{}', 'ub': 'https://www.urbandictionary.com/define.php?term={}', 'wiki': 'https://en.wikipedia.org/wiki/{}', 'yt': 'https://www.youtube.com/results?search_query={}', 'aur': 'https://aur.archlinux.org/packages/?O=0&K={}'}
+  c.url.searchengines = {'DEFAULT': 'https://duckduckgo.com/?q={}', 'am': 'https://www.amazon.com/s?k={}', 'aw': 'https://wiki.archlinux.org/?search={}', 'goog': 'https://www.google.com/search?q={}', 'hoog': 'https://hoogle.haskell.org/?hoogle={}', 're': 'https://www.reddit.com/r/{}', 'ub': 'https://www.urbandictionary.com/define.php?term={}', 'wiki': 'https://en.wikipedia.org/wiki/{}', 'yt': 'https://www.youtube.com/results?search_query={}', 'aur': 'https://aur.archlinux.org/packages/?O=0&K={}', 'od': 'https://odysee.com/$/search?q={}'}
 
   c.colors.completion.fg = ['#9cc4ff', 'white', 'white']
   c.colors.completion.odd.bg = '#1c1f24'
