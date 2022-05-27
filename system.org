@@ -14,6 +14,7 @@
    (gnu)
    (gnu packages certs)
    (gnu packages pulseaudio)
+   (gnu packages shells)
    (gnu packages emacs))
 
   (use-service-modules
@@ -21,6 +22,7 @@
    desktop
    networking
    ssh
+   nix
    xorg
    virtualization)
 
@@ -34,11 +36,13 @@
                   (comment "Haider")
                   (group "users")
                   (home-directory "/home/haider")
+                  (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups
                    '("wheel"
                      "netdev"
                      "audio"
                      "video"
+                     "libvirt"
                      "kvm")))
 
                  (user-account
@@ -58,19 +62,28 @@
                             "binutils"
                             "blender"
                             "qutebrowser"
-                            "icecat"
+                            "ungoogled-chromium"
                             "mpv"
                             "ccls"
                             "notmuch"
                             "msmtp"
                             "feh"
-                            "msmtp"
+                            "wine64"
                             "l2md"
                             "dunst"
                             "unzip"
                             "clang"
+                            "lxappearance"
+                            "gnome-themes-standard"
+                            "xset"
+
+                            ;; Virt manager
                             "virt-manager"
+                            "dconf" ;; Needed for virt-manager (See Guix note)
+                            "adwaita-icon-theme"
+                            "hicolor-icon-theme"
                             "qemu"
+
                             "git"
                             "openssh"
                             "node"
@@ -155,19 +168,26 @@
 
    (services
     (append
-     (list (service slim-service-type
-                    (slim-configuration
-                     (xorg-configuration
-                      (xorg-configuration
-                       (keyboard-layout keyboard-layout)))))
+     (list
+      (service slim-service-type (slim-configuration
+                                  (xorg-configuration
+                                   (xorg-configuration
+                                    (keyboard-layout keyboard-layout)))))
 
-           (extra-special-file
-            "/lib64/ld-linux-x86-64.so.2"
-            (file-append glibc "/lib/ld-linux-x86-64.so.2"))
+      (service libvirt-service-type
+               (libvirt-configuration
+                (unix-sock-group "libvirt")
+                (tls-port "16555")))
 
-           (extra-special-file
-            "/usr/bin/env"
-            (file-append coreutils "/bin/env")))
+      (service nix-service-type)
+
+      (extra-special-file
+       "/lib64/ld-linux-x86-64.so.2"
+       (file-append glibc "/lib/ld-linux-x86-64.so.2"))
+
+      (extra-special-file
+       "/usr/bin/env"
+       (file-append coreutils "/bin/env")))
 
      (modify-services %desktop-services
                       (delete gdm-service-type))))
@@ -190,6 +210,13 @@
              (uuid "adf17b8c-6726-4048-8671-5ba77da3f58d"
                    'ext4))
             (type "ext4"))
+
+           ;; (file-system
+           ;;  (mount-point "/home/haider/drive/")
+           ;;  (device
+           ;;   (uuid "83f6e0ed-4743-4f32-94be-f8ffe2f029c6"
+           ;;         'ext4))
+           ;;  (type "ext4"))
            %base-file-systems)))
 #+END_SRC
 
