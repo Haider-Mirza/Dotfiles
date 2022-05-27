@@ -112,9 +112,11 @@
     (interactive)
     (exwm/set-wallpaper)
     (exwm/picom)
-    (start-process-shell-command "sound-effect" nil "mpv --no-video /home/haider/do-not-delete/startup.mp3")
+    (start-process-shell-command "scroll speed" nil "xset r rate 200 30")
     (exwm/startup)
-    (message "Post Inititialization script..."))
+    (message "Post Inititialization script...")
+    (sleep-for 8)
+    (start-process-shell-command "sound-effect" nil "mpv --no-video /home/haider/do-not-delete/startup.mp3"))
 
 #+END_SRC
 ** Configuration
@@ -124,8 +126,8 @@
   (defun exwm/exwm-init-hook ()
     (exwm-workspace-switch-create 1)
     (exwm/unclutter)
-    (exwm/configure-desktop))
-  ;; (exwm/run-in-background "dunst")                      ;; Launch Dunst
+    (exwm/configure-desktop)
+  (exwm/run-in-background "dunst"))                      ;; Launch Dunst
 
   (defun exwm/configure-window-by-class ()
     (interactive)
@@ -139,8 +141,8 @@
 
   ;; Hide the modeline on all floating windows
   (add-hook 'exwm-floating-setup-hook
-	    (lambda ()
-	      (exwm-layout-hide-mode-line)))
+            (lambda ()
+              (exwm-layout-hide-mode-line)))
 
 #+END_SRC
 ** Polybar Panel
@@ -160,6 +162,9 @@
 #+END_SRC
 ** Initial EXWM Setup
 #+BEGIN_SRC elisp
+  (require 'desktop-environment)
+  (desktop-environment-volume-set "50%")
+
   (setup (:pkg exwm)
     (setq exwm-workspace-number 9)
     (add-hook 'exwm-update-class-hook #'exwm/exwm-update-class)
@@ -172,55 +177,56 @@
 #+END_SRC
 ** Keybinds
 #+BEGIN_SRC elisp
+
   (setq exwm-input-prefix-keys
-	'(?\C-x
-	  ?\C-u
-	  ?\C-h
-	  ?\M-x
-	  ?\M-`
-	  ?\M-&
-	  ?\s-q
-	  ?\s-f
-	  ?\M-:
-	  ?\C-\M-j  ;; Buffer list
-	  ?\C-\ ))  ;; Ctrl+Space
+        '(?\C-x
+          ?\C-u
+          ?\C-h
+          ?\M-x
+          ?\M-`
+          ?\M-&
+          ?\s-q
+          ?\s-f
+          ?\M-:
+          ?\C-\M-j  ;; Buffer list
+          ?\C-\ ))  ;; Ctrl+Space
 
   (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
   (setq exwm-input-global-keys
-	`(
-	  ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-	  ([?\s-r] . exwm-reset)
-	  ([?\s-f] . exwm-layout-toggle-fullscreen)
-	  ([?\s-z] . exwm-layout-toggle-mode-line)
-	  ([?\s-b] . consult-buffer)
-	  ([?\s-g] . consult-buffer-other-frame)
-	  ([\f6] . desktop-environment-toggle-mute)
-	  ([\f7] . desktop-environment-volume-decrement)
-	  ([\f8] . desktop-environment-volume-increment)
-	  ([?\s-x] . exwm-floating-toggle-floating)
-	  ([?\s-j] . win/position-window-left-corner)
-	  ([?\s-k] . win/position-window-right-corner)
-	  ([?\s-m] . exwm/mpv-float)
+        `(
+          ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+          ([?\s-r] . exwm-reset)
+          ([?\s-f] . exwm-layout-toggle-fullscreen)
+          ([?\s-z] . exwm-layout-toggle-mode-line)
+          ([?\s-b] . consult-buffer)
+          ([?\s-g] . consult-buffer-other-frame)
+          ([\f6] . desktop-environment-toggle-mute)
+          ([\f7] . desktop-environment-volume-decrement)
+          ([\f8] . desktop-environment-volume-increment)
+          ([?\s-x] . exwm-floating-toggle-floating)
+          ([?\s-j] . win/position-window-left-corner)
+          ([?\s-k] . win/position-window-right-corner)
+          ([?\s-m] . exwm/mpv-float)
 
-	  ;; Launch applications via shell command
-	  ([?\s-&] . (lambda (command)
-		       (interactive (list (read-shell-command "$ ")))
-		       (start-process-shell-command command nil command)))
+          ;; Launch applications via shell command
+          ([?\s-&] . (lambda (command)
+                       (interactive (list (read-shell-command "$ ")))
+                       (start-process-shell-command command nil command)))
 
-	  ;; Switch workspace
-	  ([?\s-w] . exwm-workspace-switch)
+          ;; Switch workspace
+          ([?\s-w] . exwm-workspace-switch)
 
-	  ([?\s-E] . (lambda () (interactive) (dired "~")))
-	  ([?\s-Q] . (lambda () (interactive) (kill-buffer)))
+          ([?\s-E] . (lambda () (interactive) (dired "~")))
+          ([?\s-Q] . (lambda () (interactive) (kill-buffer)))
 
-	  ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-	  ,@(mapcar (lambda (i)
-		      `(,(kbd (format "s-%d" i)) .
-			(lambda ()
-			  (interactive)
-			  (exwm-workspace-switch-create ,i))))
-		    (number-sequence 0 9))))
+          ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+          ,@(mapcar (lambda (i)
+                      `(,(kbd (format "s-%d" i)) .
+                        (lambda ()
+                          (interactive)
+                          (exwm-workspace-switch-create ,i))))
+                    (number-sequence 0 9))))
 
   (exwm-enable))
 
@@ -294,26 +300,26 @@ EXWM Functions
   (defun exwm/startup ()
     (interactive)
     (exwm/run-xmodmap)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:16")
+    (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:16")
     (exwm-workspace-switch-create 0)
     (start-process-shell-command "btop" nil "alacritty -e btop")
     (sleep-for 1)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:32")
+    (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:32")
     (exwm-workspace-switch-create 1)
     (vterm)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:50")
+    (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:50")
     (sleep-for 1)
     (exwm-workspace-switch-create 8)
     (notmuch)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:66")
+    (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:66")
     (sleep-for 1)
     (exwm-workspace-switch-create 9)
     (start-process-shell-command "pulsemixer" nil "alacritty -e pulsemixer")
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:82")
+    (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:82")
     (sleep-for 1)
     (exwm-workspace-switch-create 2)
     (exwm/run-qute)
-    (start-process-shell-command "dunst" nil "dunstify" "Progress: -h int:value:100"))
+    (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:100"))
 
 #+END_SRC
 *** System functions
