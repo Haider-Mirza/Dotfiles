@@ -496,7 +496,8 @@ For example, if you use describe-function, you will not only get the documentati
 you will also see the source code of the function and where it gets used in other places in the Emacs configuration.
 It is very useful for figuring out how things work in Emacs.
 #+begin_src elisp
-  (setup (:pkg helpful))
+  ;; (setup (:pkg helpful))
+  ;; I personally never use it (but I should)
 #+end_src
 ** Hydra
 
@@ -625,7 +626,7 @@ Makes Emacs keep my file directories clean of unnecessary files.
     (setq org-startup-folded t) ;; Org files start up folded by default
     (setq org-image-actual-width nil)
 
-  (add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)))
+  (add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)(org-make-toc-mode)))
 
     (setq org-agenda-files
           '("~/documents/Home/Reminders.org"
@@ -647,8 +648,7 @@ Makes Emacs keep my file directories clean of unnecessary files.
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    ;; (org/org-mode-visual-fill))
-    )
+    (setq org-agenda-span 'month))
 
   (setup (:pkg org-superstar)
     (:hook-into org-mode))
@@ -703,12 +703,12 @@ configuring the org-agenda view.
 #+end_src
 
 #+BEGIN_SRC elisp
-  (setup (:pkg evil-org)
-    ;; (:hook-into org-mode org-agenda-mode)
-    (require 'evil-org)
-    (require 'evil-org-agenda)
-    (evil-org-set-key-theme '(navigation todo insert textobjects additional))
-    (evil-org-agenda-set-keys))
+  ;; (setup (:pkg evil-org)
+  ;;   ;; (:hook-into org-mode org-agenda-mode)
+  ;;   (require 'evil-org)
+  ;;   (require 'evil-org-agenda)
+  ;;   (evil-org-set-key-theme '(navigation todo insert textobjects additional))
+  ;;   (evil-org-agenda-seemacs-orgt-keys))
 #+END_SRC
  
 ** OrgRoam
@@ -868,23 +868,24 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
   (setup (:pkg notmuch :straight t)
     (add-hook 'message-setup-hook 'mml-secure-message-sign-pgpmime)
     (setq message-kill-buffer-on-exit t
-	  notmuch-search-oldest-first 'nil
-	  mml-default-sign-method 'gpg
-	  notmuch-fcc-dirs
-	  '(("x7and7@gmail.com" .
-	     "\"x7and7@gmail.com/sent\" +sent +work -inbox -unread")
-	    (".*" . "\"ha6mi19@keaston.bham.sch.uk/sent\" +sent +school -inbox -unread"))
-	  notmuch-saved-searches
-	  '((:name "Unread" :query "tag:unread" :key "u")
-	    (:name "Inbox" :query "tag:inbox" :key "i")
-	    (:name "Guix" :query "tag:guix" :key "g")
-	    (:name "Mailing Lists" :query "tag:list" :key "m")
-	    (:name "Sent" :query "tag:sent" :key "s")
-	    (:name "Spam" :query "tag:spam" :key "S")
-	    (:name "Drafts" :query "tag:draft" :key "d")
-	    (:name "Trash" :query "tag:trash" :key "t")
-	    (:name "Archive" :query "tag:archive" :key "a")
-	    (:name "All mail" :query "*" :key "A")))
+          notmuch-search-oldest-first 'nil
+          mml-default-sign-method 'gpg
+          mml-secure-openpgp-signers '("14C4247F03ADBB49D74739209BB51EC33CB46308")
+          notmuch-fcc-dirs
+          '(("haider@haider.gq" .
+             "\"haider@haider.gq/sent\" +sent +work -inbox -unread")
+            (".*" . "\"ha6mi19@keaston.bham.sch.uk/sent\" +sent +school -inbox -unread"))
+          notmuch-saved-searches
+          '((:name "Unread" :query "tag:unread" :key "u")
+            (:name "Inbox" :query "tag:inbox" :key "i")
+            (:name "Guix" :query "tag:guix" :key "g")
+            (:name "Mailing Lists" :query "tag:list" :key "m")
+            (:name "Sent" :query "tag:sent" :key "s")
+            (:name "Spam" :query "tag:spam" :key "S")
+            (:name "Drafts" :query "tag:draft" :key "d")
+            (:name "Trash" :query "tag:trash" :key "t")
+            (:name "Archive" :query "tag:archive" :key "a")
+            (:name "All mail" :query "*" :key "A")))
 
     ;; Modeline
     (setq modeline/notmuch-activity-string "")
@@ -893,17 +894,17 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
     (defun modeline/get-notmuch-incoming-count ()
       (string-trim
        (shell-command-to-string
-	"notmuch count tag:unread")))
+        "notmuch count tag:unread")))
 
     (defun modeline/format-notmuch-mode-string (count)
       (let* ((no-email (string= count "0"))
-	     (email-text (if no-email " | No Mail" " | Unread Emails")))
-	(concat email-text " [" (if no-email "" count) "] |")))
+             (email-text (if no-email " | No Mail" " | Unread Emails")))
+        (concat email-text " [" (if no-email "" count) "] |")))
 
     (defun modeline/update-notmuch-activity-string (&rest args)
       (interactive)
       (setq modeline/notmuch-activity-string
-	    (modeline/format-notmuch-mode-string (modeline/get-notmuch-incoming-count)))
+            (modeline/format-notmuch-mode-string (modeline/get-notmuch-incoming-count)))
       (force-mode-line-update))
 
     (add-hook 'notmuch-after-tag-hook 'modeline/update-notmuch-activity-string)
@@ -921,56 +922,56 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
       (interactive)
       (evil-mode 0)
       (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
-	  (notmuch-search-tag '("+trash" "-inbox" "-archived" "-unread"))
-	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
-	    (notmuch-show-tag '("+trash" "-inbox" "-archived" "-unread"))))
+          (notmuch-search-tag '("+trash" "-inbox" "-archived" "-unread"))
+        (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
+            (notmuch-show-tag '("+trash" "-inbox" "-archived" "-unread"))))
       (evil-mode 1))
 
     (defun notmuch/read()
       "Set the current message to read"
       (interactive)
       (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
-	  (notmuch-search-tag '("-unread"))
-	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
-	    (notmuch-show-tag '("-unread")))))
+          (notmuch-search-tag '("-unread"))
+        (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
+            (notmuch-show-tag '("-unread")))))
 
     (defun notmuch/archive()
       "Archive a message"
       (interactive)
       (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-search-mode")
-	  (notmuch-search-tag '("+archive"))
-	(if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
-	    (notmuch-show-tag '("+archive")))))
+          (notmuch-search-tag '("+archive"))
+        (if (string= (buffer-local-value 'major-mode (current-buffer)) "notmuch-show-mode")
+            (notmuch-show-tag '("+archive")))))
 
     (add-hook 'message-setup-hook
-	      (lambda ()
-		(gnus-alias-determine-identity)
-		(define-key message-mode-map (kbd "C-c f")
-		  (lambda ()
-		    (interactive)
-		    (message-remove-header "Fcc")
-		    (message-remove-header "Organization")
-		    (gnus-alias-select-identity)
-		    (notmuch-fcc-header-setup)))
-		(flyspell-mode)))
+              (lambda ()
+                (gnus-alias-determine-identity)
+                (define-key message-mode-map (kbd "C-c f")
+                  (lambda ()
+                    (interactive)
+                    (message-remove-header "Fcc")
+                    (message-remove-header "Organization")
+                    (gnus-alias-select-identity)
+                    (notmuch-fcc-header-setup)))
+                (flyspell-mode)))
 
-					  ; gnus-alias
+                                          ; gnus-alias
     (autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
     (setq gnus-alias-identity-alist
-	  '(("work"
-	     nil ;; Does not refer to any other identity
-	     "Haider Mirza <x7and7@gmail.com>"
-	     nil ;; No organization header
-	     nil ;; No extra headers
-	     nil ;; No extra body text
-	     nil)
-	    ("school"
-	     nil ;; Does not refer to any other identity
-	     "Haider Mirza <ha6mi19@keaston.bham.sch.uk>"
-	     nil 
-	     nil ;; No extra headers
-	     nil ;; No extra body text
-	     nil)))
+          '(("work"
+             nil ;; Does not refer to any other identity
+             "Haider Mirza <haider@haider.gq>"
+             nil ;; No organization header
+             nil ;; No extra headers
+             nil ;; No extra body text
+             nil)
+            ("school"
+             nil ;; Does not refer to any other identity
+             "Haider Mirza <ha6mi19@keaston.bham.sch.uk>"
+             nil 
+             nil ;; No extra headers
+             nil ;; No extra body text
+             nil)))
 
     (setq gnus-alias-default-identity "work")
 
@@ -990,10 +991,10 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
     ;; 		      nil))))))
 
     (setq send-mail-function 'sendmail-send-it
-	  sendmail-program "/home/haider/.guix-profile/bin/msmtp"
-	  mail-specify-envelope-from t
-	  message-sendmail-envelope-from 'header
-	  mail-envelope-from 'header))
+          sendmail-program (executable-find "msmtp")
+          mail-specify-envelope-from t
+          message-sendmail-envelope-from 'header
+          mail-envelope-from 'header))
 
   (rune/leader-keys
     "n"  '(:ignore t :which-key "Notmuch")
@@ -1056,7 +1057,7 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
   ;; 	  (lambda (msg)
   ;; 	    (when msg
   ;; 	      (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-  ;; 	  :vars '((user-mail-address . "x7and7@gmail.com")
+  ;; 	  :vars '((user-mail-address . "haider@haider.gq")
   ;; 		  (user-full-name    . "Haider Mirza")
   ;; 		  ;; (mu4e-compose-signature . "Haider Mirza via Emacs on a GNU/Linux system")
   ;; 		  (smtpmail-smtp-server  . "smtp.gmail.com")
@@ -1195,7 +1196,7 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
           lsp-modeline-diagnostics-enable nil
           lsp-headerline-breadcrumb-enable-diagnostics nil
           read-process-output-max (* 1024 1024)
-          treemacs-space-between-root-nodes nil
+          ;; treemacs-space-between-root-nodes nil
           company-idle-delay 0.0
           company-minimum-prefix-length 1
           lsp-idle-delay 0.0))
@@ -1281,17 +1282,17 @@ But for now, this is the most I can get working
 #+END_SRC
 *** Scheme
 #+BEGIN_SRC elisp
-  (setup (:pkg geiser-guile))
+  ;; (setup (:pkg geiser-guile))
 
-  (setup (:pkg geiser)
-    (setq geiser-default-implementation 'guile)
-    (setq geiser-active-implementations '(guile))
-    (setq geiser-repl-default-port 44555) ; For Gambit Scheme
-    (setq geiser-implementations-alist '(((regexp "\\.scm$") guile))))
+  ;; (setup (:pkg geiser)
+  ;;   (setq geiser-default-implementation 'guile)
+  ;;   (setq geiser-active-implementations '(guile))
+  ;;   (setq geiser-repl-default-port 44555) ; For Gambit Scheme
+  ;;   (setq geiser-implementations-alist '(((regexp "\\.scm$") guile))))
 
-  (rune/leader-keys
-    "s"  '(:ignore t :which-key "Scheme")
-    "sr" '(run-guile :which-key "Start a REPL"))
+  ;; (rune/leader-keys
+  ;;   "s"  '(:ignore t :which-key "Scheme")
+  ;;   "sr" '(run-guile :which-key "Start a REPL"))
 #+END_SRC
 *** HTML
 #+BEGIN_SRC elisp
