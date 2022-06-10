@@ -20,6 +20,6 @@ All of my dotfiles get converted into documents in the stow/ directory.
 If you want to Read Information in my dotfiles, go in the org/ directory.
 If you want the standalone files, go to the stow/ directory.
 
-** Limitations
+*** Limitations with the structure
 There is one limitation which I see with this type of configuration, that is if the config gets changed (The actual config not the one in my dotfiles) by a program
 the changes wont be reflected in any files in my Orgmode documents. Most of these files don't get changed without the user making changes, but some rare ones do.
