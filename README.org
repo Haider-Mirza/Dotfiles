@@ -3,6 +3,12 @@
 * About this repository
 ** Documentation
 Here is documentation some of the programs in the stow/ directory:
++ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/desktop.org][Desktop - Window manager setup (EXWM)]]
++ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/emacs.org][Emacs - Emacs config]]
++ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/programs.org][Programs - Email, Mocp, MPV, Qutebrowser, Dunst, Rofi]]
++ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/snippets.org][Snippets - Yasnippets]]
++ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/system.org][System - Guix config]]
+  
 ** What is this weird directory structure?
 First thing, you really shouldn't copy my directory structure (unless you like it).
 
