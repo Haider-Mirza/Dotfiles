@@ -1,0 +1,22 @@
+; THIS DOCUMENT IS MANAGED BY ORGMODE
+[user]
+name=Haider Mirza
+primary_email=haider@haider.gq
+other_email=ha6mi19@keaston.bham.sch.uk
+
+[database]
+path=/home/haider/mail
+mail_root=/home/haider/mail
+
+[maildir]
+synchronize_flags=true
+
+[search]
+exclude_flags=trash;spam
+
+[new]
+tags=inbox;unread
+ignore=.mbsyncstate;.uidvalidity
+
+[crypto]
+gpg_path=gpg

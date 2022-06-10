@@ -1,0 +1,5 @@
+# THIS DOCUMENT IS MANAGED BY ORGMODE
+
+MusicDir = "/home/haider/Moc"
+StartInMusicDir = yes
+Theme = HM_theme

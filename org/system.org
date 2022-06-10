@@ -9,8 +9,9 @@
   This is my GNU Guix system configuration applied on my system.
 * Config.scm
   This is the config file used in GNU Guix to manage your system.
-#+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
-  (use-modules
+# #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
+#+BEGIN_SRC scheme :tangle "/home/haider/dotfiles/stow/config.scm"
+  (use-modules				;
    (gnu)
    (gnu packages certs)
    (gnu packages pulseaudio)
@@ -64,7 +65,7 @@
                             "qutebrowser"
                             "ungoogled-chromium"
                             "mpv"
-                            "ccls"
+                            ;; "ccls"
                             "notmuch"
                             "msmtp"
                             "feh"
@@ -73,6 +74,7 @@
                             "dunst"
                             "unzip"
                             "clang"
+                            ;; "bear"
                             "lxappearance"
                             "gnome-themes-standard"
                             "xset"
@@ -105,11 +107,17 @@
                             "flatpak"
 
                             ;; Emacs Packages
+                            "vim"
                             "emacs"
                             "ispell"
                             "emacs-guix"
                             "emacs-gnus-alias"
                             "emacs-general"
+                            "emacs-elfeed"
+
+                            "emacs-ytel"
+                            "emacs-ytel-show"
+
                             "emacs-notmuch"
                             "emacs-undo-tree"
                             "emacs-evil"
@@ -125,7 +133,7 @@
                             "emacs-which-key"
                             "emacs-diminish"
                             "emacs-counsel"
-                            "emacs-helpful"
+                            ;; "emacs-helpful"
                             "emacs-hydra"
                             "emacs-no-littering"
                             "emacs-prettier"
@@ -150,7 +158,7 @@
                             "emacs-yasnippet"
                             "emacs-magit"
                             "emacs-sudo-edit"
-                            "emacs-ccls"
+                            ;; "emacs-ccls"
                             "emacs-lsp-mode"
                             "emacs-lsp-ui"
                             "emacs-lsp-treemacs"
@@ -211,12 +219,10 @@
                    'ext4))
             (type "ext4"))
 
-           ;; (file-system
-           ;;  (mount-point "/home/haider/drive/")
-           ;;  (device
-           ;;   (uuid "83f6e0ed-4743-4f32-94be-f8ffe2f029c6"
-           ;;         'ext4))
-           ;;  (type "ext4"))
+           (file-system
+            (device (uuid "83f6e0ed-4743-4f32-94be-f8ffe2f029c6"))
+            (mount-point "/home/haider/storage/")
+            (type "ext4"))
            %base-file-systems)))
 #+END_SRC
 

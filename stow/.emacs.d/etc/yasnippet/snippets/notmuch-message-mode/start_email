@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: Start Email
+# key: <e
+# --
+Good Morning/Afternoon,
+$0
+
+Regards,
+Haider.
+
+Email: haider@haider.gq
+Website: https://www.haider.gq
+Github: https://github.com/Haider-Mirza

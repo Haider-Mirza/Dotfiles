@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# THIS DOCUMENT IS MANAGED BY ORGMODE
+
+mbsync -a
+
+# if in "foo" directory add "foo" tag
+notmuch tag +inbox -- path:/.*\\/inbox/ 
+notmuch tag +draft -- path:/.*\\/draft/ 
+notmuch tag +sent -inbox -draft -trash -spam -- path:/.*\\/sent/ 
+notmuch tag +trash -- path:/.*\\/trash/ 
+notmuch tag +spam -- path:/.*\\/spam/ 
+
+# If file was moved out of folder on server, remove respective tag
+notmuch tag -inbox -- not path:/.*\\/inbox/ and tag:inbox
+notmuch tag -trash -- not path:/.*\\/trash/ and tag:trash
+notmuch tag -spam -- not path:/.*\\/spam/ and tag:spam
+
+notmuch tag +school -- path:ha6mi19@keaston.bham.sch.uk/**
+notmuch tag +work -- path:haider@haider.gq/**
+
+# Retag all "new" messages "inbox" and "unread"
+# notmuch tag +inbox +unread -- tag:new
+# notmuch tag -inbox -- tag:sent
+
+# Tag Mailing Lists
+notmuch tag -inbox +list '(' to:crew@morningbrew.com or from:crew@morningbrew.com ')'
+
+# Tag Guix emails
+notmuch tag +guix '(' to:help-debbugs@gnu.org or from:help-debbugs@gnu.org ')'
+notmuch tag +guix '(' to:help-guix@gnu.org or from:help-guix@gnu.org ')'
+notmuch tag +guix '(' to:bug-guix@gnu.org or from:bug-guix@gnu.org ')'
+notmuch tag +guix -- subject:guix
+notmuch tag +guix -- body:guix

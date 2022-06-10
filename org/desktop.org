@@ -1,6 +1,6 @@
 #+TITLE: =Desktop configuration=
-#+PROPERTY: header-args:elisp :tangle /home/haider/.emacs.d/desktop.el
-#+PROPERTY: header-args:conf :tangle /home/haider/.config/polybar/config
+#+PROPERTY: header-args:elisp :tangle /home/haider/dotfiles/stow/.emacs.d/desktop.el
+#+PROPERTY: header-args:conf :tangle /home/haider/dotfiles/stow/.config/polybar/config
 #+AUTHOR: Haider Mirza
 * Table of contents :toc:
 - [[#about-this-config][About This Config]]
@@ -12,8 +12,6 @@
   - [[#polybar-panel][Polybar Panel]]
   - [[#use-package][use-package]]
   - [[#keybinds][Keybinds]]
-  - [[#launch-applications][Launch Applications]
-  - [[#audio-control][Audio Control]]
   - [[#system-functions][System functions]]
 - [[#xmodmap][Xmodmap]]
 - [[#polybar][Polybar]]
@@ -26,6 +24,13 @@
 
 * About This Config
   This is my desktop configuration for my system.
+
+* Dotfiles
+Because of how my Dotfiles work, I will have to include a "Disclaimer".
+#+BEGIN_SRC elisp
+  ;; THIS DOCUMENT IS MANAGED BY ORGMODE
+
+#+END_SRC
 * EXWM
   EXWM is my Window Manager That I use becuase It fits very well to my workflow and is highly keyboard-based. 
 ** Window Mangement
@@ -112,9 +117,9 @@
     (interactive)
     (exwm/set-wallpaper)
     (exwm/picom)
-    (start-process-shell-command "scroll speed" nil "xset r rate 200 30")
-    (exwm/startup)
-    (message "Post Inititialization script...")
+    (start-process-shell-command "scroll speed" nil "xset r rate 200 50")
+    (startup)
+    (message "Post Initialization script...")
     (sleep-for 8)
     (start-process-shell-command "sound-effect" nil "mpv --no-video /home/haider/do-not-delete/startup.mp3"))
 
@@ -163,7 +168,7 @@
 ** Initial EXWM Setup
 #+BEGIN_SRC elisp
   (require 'desktop-environment)
-  (desktop-environment-volume-set "50%")
+  (desktop-environment-volume-set "25%")
 
   (setup (:pkg exwm)
     (setq exwm-workspace-number 9)
@@ -232,7 +237,7 @@
 
 #+END_SRC
 ** Functions
-EXWM Functions
+Some of my EXWM focused Functions.
 *** Launch Applications
 #+BEGIN_SRC elisp
   (defun exwm/run-qute ()
@@ -297,7 +302,7 @@ EXWM Functions
 #+END_SRC
 *** Startup script
 #+BEGIN_SRC elisp
-  (defun exwm/startup ()
+  (defun startup ()
     (interactive)
     (exwm/run-xmodmap)
     (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:16")
@@ -308,6 +313,10 @@ EXWM Functions
     (exwm-workspace-switch-create 1)
     (vterm)
     (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:50")
+    (sleep-for 1)
+    (exwm-workspace-switch-create 7)
+    (elfeed)
+    (elfeed-update)
     (sleep-for 1)
     (exwm-workspace-switch-create 8)
     (notmuch)
@@ -321,6 +330,11 @@ EXWM Functions
     (exwm/run-qute)
     (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:100"))
 
+  (defun startup/password ()
+    (interactive)
+    (let ((password (read-passwd "ERC Password: ")))
+      (exwm-workspace-switch-create 7)
+      (chat/connect-irc password)))
 #+END_SRC
 *** System functions
 #+BEGIN_SRC elisp

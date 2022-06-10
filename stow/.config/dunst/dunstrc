@@ -1,0 +1,59 @@
+# THIS DOCUMENT IS MANAGED BY ORGMODE
+
+#
+#   ██████╗ ██╗   ██╗███╗   ██╗███████╗████████╗
+#   ██╔══██╗██║   ██║████╗  ██║██╔════╝╚══██╔══╝
+#   ██║  ██║██║   ██║██╔██╗ ██║███████╗   ██║
+#   ██║  ██║██║   ██║██║╚██╗██║╚════██║   ██║
+#   ██████╔╝╚██████╔╝██║ ╚████║███████║   ██║
+#   ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝
+#
+  [global]
+  font = jetbrains mono 10
+
+  width = 250
+  height = 70
+  origin = top-right
+  offset = 10x10
+  notification_limit = 5
+  corner_radius = 5
+  sort = yes
+  indicate_hidden = yes
+  alignment = left
+  history_length = 30
+  icon_path = /home/haider/.guix-profile/share/icons/hicolor/32x32/apps/
+  browser = /home/haider/.guix-profile/bin/qutebrowser --target tab
+  padding = 8
+  horizontal_padding = 10
+  always_run_scripts = true
+
+  [shortcuts]
+  close_all = ctrl+mod4+space
+
+  [urgency_low]
+  format = "<b>%s</b>\n%b"
+  background = "#282C34"
+  foreground = "#86A75D"
+  frame_color = "#51AFEF"
+  timeout = 2
+
+  [urgency_normal]
+  format = "<b>%s</b>\n%b"
+  background = "#282C34"
+  foreground = "#86A75D"
+  frame_color = "#51AFEF"
+  timeout = 5
+
+  [urgency_critical]
+  format = "<b>%s</b>\n%b"
+  background = "#282C34"
+  foreground = "#86A75D"
+  frame_color = "#FF0000"
+  timeout = 0
+
+  [irc]
+  appname = weechat
+  timeout = 0
+  background = "#0033bb"
+  foreground = "#dddddd"
+  timeout = 10

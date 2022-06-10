@@ -1,0 +1,91 @@
+# THIS DOCUMENT IS MANAGED BY ORGMODE
+
+Create Both
+Expunge Both
+SyncState *
+
+# Work account
+IMAPAccount work
+Host "outlook.office365.com"
+User "haider@haider.gq"
+# PassCmd   "pass Email/haider@haider.gq | head -n1"
+PassCmd "emacsclient -e \"(password-store-get \\\"Email/haider@haider.gq\\\")\" | cut -d '\"' -f2"
+SSLType IMAPS
+
+IMAPStore work-remote
+Account work
+
+MaildirStore work-local
+Subfolders Verbatim
+Path "/home/haider/mail/haider@haider.gq/"
+Inbox "/home/haider/mail/haider@haider.gq/inbox"
+
+channel work-inbox
+near ":work-local:inbox"
+far ":work-remote:INBOX"
+
+channel work-sent
+near ":work-local:sent"
+far ":work-remote:/Sent Items"
+
+channel work-drafts
+near ":work-local:drafts"
+far ":work-remote:/Drafts"
+
+channel work-trash
+near ":work-local:trash"
+far ":work-remote:/Deleted Items"
+
+channel work-spam
+near ":work-local:spam"
+far ":work-remote:/Junk Email"
+
+group work 
+channel work-inbox
+channel work-sent
+channel work-drafts
+channel work-trash
+channel work-spam
+
+# Work account
+IMAPAccount school
+Host "outlook.office365.com"
+User "ha6mi19@keaston.bham.sch.uk"
+PassCmd "emacsclient -e \"(password-store-get \\\"Email/ha6mi19@keaston.bham.sch.uk\\\")\" | cut -d '\"' -f2"
+# PassCmd   "pass Email/ha6mi19@keaston.bham.sch.uk | head -n1"
+SSLType IMAPS
+
+IMAPStore school-remote
+Account school
+
+MaildirStore school-local
+Subfolders Verbatim
+Path "/home/haider/mail/ha6mi19@keaston.bham.sch.uk/"
+Inbox "/home/haider/mail/ha6mi19@keaston.bham.sch.uk/inbox"
+
+channel school-inbox
+near ":school-local:inbox"
+far ":school-remote:INBOX"
+
+channel school-sent
+near ":school-local:sent"
+far ":school-remote:/Sent Items"
+
+channel school-drafts
+near ":school-local:drafts"
+far ":school-remote:/Drafts"
+
+channel school-trash
+near ":school-local:trash"
+far ":school-remote:/Deleted Items"
+
+channel school-spam
+near ":school-local:spam"
+far ":school-remote:/Junk Email"
+
+group school
+channel school-inbox
+channel school-sent
+channel school-drafts
+channel school-trash
+channel school-spam

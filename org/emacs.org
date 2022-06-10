@@ -1,6 +1,7 @@
 #+TITLE: =Emacs configuration=
-#+PROPERTY: header-args:elisp :tangle /home/haider/.emacs.d/init.el
+#+PROPERTY: header-args:elisp :tangle /home/haider/dotfiles/stow/.emacs.d/init.el
 #+AUTHOR: Haider Mirza
+#+auto_tangle: t
 
 * Table of contents :toc:
 - [[#note][Note]]
@@ -76,7 +77,7 @@ This document contains the core parts of my Emacs configuration which drive the 
 My Emacs packages are installed by the GNU Guix package manager and by using it's Guix Home feature.
 Make sure to load my Guix Home configuration or install all the packages using Emacs. 
 ** Replace Capslock with CTRL
-You dont have to but I have replaced CapsLock with CTRL (On my system. Not on Emacs)
+You dont have to but I have replaced CapsLock with Ctrl (On my system. Not on Emacs)
 Most people don’t use the CapsLock key (unless you like YELLING ON THE INTERNET)
 So you can use this simple fix to replace it with the CTRL to make your Emacs life easier.
 Doing this will prevent you from having to bend your pinky down all day long to hit all those fabled Emacs keybindings,
@@ -101,12 +102,18 @@ If that doesn’t seem to work, you can add this line to one of your startup fil
 #+BEGIN_SRC
    xmodmap ~/path/to/.Xmodmap
 #+end_src
+* Dotfiles
+Because of how my Dotfiles work, I will have to include a "Disclaimer".
+#+BEGIN_SRC elisp
+  ;; THIS DOCUMENT IS MANAGED BY ORGMODE
+
+#+END_SRC
 * Package Cl
 When starting up Emacs, there is a error saying "Package cl is depricated" 
 You can disable this by tangling this to *early-init.el*.
 Here is a post on the matter
 
-#+BEGIN_SRC elisp :tangle "/home/haider/.emacs.d/early-init.el"
+#+BEGIN_SRC elisp :tangle "/home/haider/dotfiles/stow/.emacs.d/early-init.el"
   (setq byte-compile-warnings '(cl-functions))
 
   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
@@ -570,7 +577,7 @@ Playlist functions
 
 #+END_SRC
 * Keep Directories Clean
-Makes Emacs keep my file directories clean of unnecessary files.
+Makes Emacs keep my file directories clean of unnecessary files that I don't want.
 #+BEGIN_SRC elisp
   (setup (:pkg no-littering)
     (require 'no-littering))
@@ -590,17 +597,60 @@ Makes Emacs keep my file directories clean of unnecessary files.
         auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
 #+END_SRC
 
-* Editing Files Configuration
+* Writing Configuration
+** Spell Checking/Correcting
+*** Flyspell
+I sometimes use flyspell when writing but always in my emails.
+Auto-correct word with C-M-I.
+#+BEGIN_SRC elisp
+  (defun my-save-word ()
+    "Save a word to a dictionary that is stored in ~/.aspell.en.pws"
+    (interactive)
+    (let ((current-location (point))
+	  (word (flyspell-get-word)))
+      (when (consp word)    
+	(flyspell-do-correct 'save nil (car word) current-location (cadr word) (caddr word) current-location))))
+
+  (rune/leader-keys
+    "f"  '(:ignore t :which-key "Flyspell")
+    "fm" '(flyspell-mode :which-key "Start Flyspell-Mode")
+    "fa" '(my-save-word :which-key "Add word to Flyspell"))
+#+END_SRC
+*** Abbrev
+
+Keybinds
+| Key Bind  | Purpose                            |
+|-----------+------------------------------------|
+| C-x a g   | Define an abbrev globally          |
+| C-x a l   | Define an abbrev locally           |
+| C-x a i g | Define an inverted abbrev globally |
+| C-x a i l | Define an inverted abbrev locally  |
+
+#+BEGIN_SRC elisp
+    (setq-default abbrev-mode t) ;; Enable abbrev-mode
+
+    (read-abbrev-file "~/.emacs.d/abbrev_defs")
+
+  (setq save-abbrevs 'silent)
+
+    (setq abbrev-file-name
+          "~/.emacs.d/abbrev_defs")
+
+    (rune/leader-keys
+      "s"  '(:ignore t :which-key "Abbrev")
+      "sa" '(add-global-abbrev :which-key "Add word to abbrev globally"))
+#+END_SRC
 ** Swiper
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-s-s") 'swiper)
 #+END_SRC
-** Comment Lines
+** Line Commenter
 #+BEGIN_SRC elisp
   (rune/leader-keys
     "TAB" '(comment-dwim :which-key "comment lines"))
 #+END_SRC
-** OrgMode
+** Orgmode
+*** Orgmode
 #+begin_src elisp
   (setup (:pkg prettier))
 
@@ -626,7 +676,7 @@ Makes Emacs keep my file directories clean of unnecessary files.
     (setq org-startup-folded t) ;; Org files start up folded by default
     (setq org-image-actual-width nil)
 
-  (add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)(org-make-toc-mode)))
+  (add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)(org-make-toc-mode)(flyspell-mode)))
 
     (setq org-agenda-files
           '("~/documents/Home/Reminders.org"
@@ -638,6 +688,7 @@ Makes Emacs keep my file directories clean of unnecessary files.
           '((sequence
              "TODO(t)"
              "WORK(w)"
+             "EVENT(e)"
              "RESEARCH(r)"
              "HOLD(h)"
              "PLAN(p)"
@@ -656,13 +707,14 @@ Makes Emacs keep my file directories clean of unnecessary files.
   (setq org-startup-indented t)           ;; Indent according to section
   (setq org-startup-with-inline-images t) ;; Display images in-buffer by default
 #+END_SRC
-** ox-pandoc
+*** Orgmode packages
+**** ox-pandoc
 Expand org-mode's exporting capabilities
 Make sure the pandoc is installed on your system.
 #+BEGIN_SRC elisp
   (setup (:pkg pandoc))
 #+END_SRC
-** org-appear
+**** org-appear
 #+BEGIN_SRC elisp
   (setup (:pkg org-appear)
     (:hook-into org-mode)
@@ -671,7 +723,7 @@ Make sure the pandoc is installed on your system.
     (setq org-appear-autolinks t) ;; Enable on links
     (setq org-appear-autosubmarkers t)) ;; Enable on subscript and superscript
 #+END_SRC
-** org-super-agenda
+**** Disabled - org-super-agenda
 configuring the org-agenda view.
 #+begin_src elisp
 
@@ -711,9 +763,11 @@ configuring the org-agenda view.
   ;;   (evil-org-agenda-seemacs-orgt-keys))
 #+END_SRC
  
-** OrgRoam
+**** OrgRoam
 If OrgRoam is setup on this system, you can click here for more information: [[id:8317049b-5a2b-4176-9d39-111f310061c7][Org Roam]]
 #+begin_src elisp
+
+  (setup (:pkg org-roam-ui :straight t))
   (setup (:pkg org-roam)
     (setq org-roam-v2-ack t)
     (setq org-roam-db-location (concat (getenv "HOME") "/Notes/org-roam.db"))
@@ -771,6 +825,19 @@ If OrgRoam is setup on this system, you can click here for more information: [[i
     "wgd" '(org-roam-dailies-goto-date :which-key "Check daily for a specific date"))
 #+end_src
  
+**** org-auto-tangle
+A great Emacs package that auto-tangles all files if you add the property
+#+BEGIN_SRC org
+#+auto_tangle: t
+#+END_SRC
+
+
+#+BEGIN_SRC elisp
+  (setup (:pkg org-auto-tangle)
+    ;; (require 'org-auto-tangle)
+    ;; (add-hook 'org-mode-hook 'org-auto-tangle-mode)
+    )
+#+END_SRC
 * Chatting Configuration
 ** ERC
 ERC is Emacs's Inbuilt IRC chat platform. (and yes, many people still use IRC. I am actually quite active on it aswell)
@@ -786,7 +853,7 @@ Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-
         erc-track-shorten-start 8
         ;; erc-autojoin-channels-alist '(("irc.libera.chat" "#systemcrafters" "#emacs" "#guix"))
         erc-kill-buffer-on-part t
-        erc-fill-column 120
+        ;; erc-fill-column 120
         erc-fill-function 'erc-fill-static
         erc-fill-static-center 20
         erc-auto-query 'bury
@@ -798,15 +865,14 @@ Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-
         erc-quit-reason (lambda (s) (or s "Ejected from the cyberspace!"))
         erc-track-visibility nil) ;; Essential if using EXWM
 
-  (defun chat/connect-irc ()
+
+  (defun chat/connect-irc (password)
     (interactive)
-    (setq erc-password (read-passwd "Password: "))
     (erc-tls
      :server "irc.libera.chat"
      :port 6697
      :nick "Haider"
-     :password erc-password))
-
+     :password password))
 
   (setup (:pkg erc-hl-nicks)
     (add-to-list 'erc-modules 'hl-nicks))
@@ -823,7 +889,20 @@ Here is a useful webpage when configuring ERC [[https://systemcrafters.net/live-
     "ib" '(erc-switch-to-buffer :which-key "Switch Buffer"))
 
 #+END_SRC
+** Elfeed
+A Emacs RSS reader that is actually inspired by Notmuch.
+#+BEGIN_SRC elisp
+  (setup (:pkg elfeed-goodies :straight t)
+    (setq elfeed-goodies/entry-pane-size 0.5)
+    (elfeed-goodies/setup))
 
+  (setup (:pkg elfeed)
+    (setq elfeed-feeds
+          '(("https://www.archlinux.org/feeds/news/" linux)
+            ("https://www.reddit.com/r/emacs.rss" reddit linux)
+            ("https://www.reddit.com/r/linux.rss" reddit linux)
+            ("https://sachachua.com/blog/feed/" linux emacs))))
+#+END_SRC
 ** Emojify
    
 #+begin_src elisp
@@ -861,7 +940,7 @@ These keybindings will open my system's config files.
 * EMail Configuration
 ** Notmuch
 I have not much email.
-Special Thanks to kzar for their configuration that heavily enspired mine: [[https://github.com/kzar/davemail][davemail]].
+Thank you to kzar for their configuration that heavily enspired mine: [[https://github.com/kzar/davemail][davemail]].
 #+BEGIN_SRC elisp
   ;; TODO: Switch to the Guix package
   (setup (:pkg gnus-alias :straight t))
@@ -1005,24 +1084,7 @@ Special Thanks to kzar for their configuration that heavily enspired mine: [[htt
     "nr" '(notmuch/read :which-key "Notmuch Read"))
 
 #+END_SRC
-** Flyspell
-I use flyspell in my emails.
-Auto-correct word with C-M-I.
-#+BEGIN_SRC elisp
-  (defun my-save-word ()
-    "Save a word to a dictionary that is stored in ~/.aspell.en.pws"
-    (interactive)
-    (let ((current-location (point))
-	  (word (flyspell-get-word)))
-      (when (consp word)    
-	(flyspell-do-correct 'save nil (car word) current-location (cadr word) (caddr word) current-location))))
-
-  (rune/leader-keys
-    "f"  '(:ignore t :which-key "Flyspell")
-    "fm" '(flyspell-mode :which-key "Start Flyspell-Mode")
-    "fa" '(my-save-word :which-key "Add word to Flyspell"))
-#+END_SRC
-** Mu4e
+** Disabled - Mu4e
 I have switched to Notmuch due to it's superior tagging capabilities.
 Make sure to install mu-git from the AUR (Arch User Repository) and isync from the official Repository.
 #+BEGIN_SRC elisp
@@ -1128,14 +1190,14 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
   ;; (setq mu4e-compose-format-flowed t)
 #+END_SRC
 
-** Mu4e-Alert
+** Disabled - Mu4e-Alert
 #+BEGIN_SRC elisp
   ;; (setup (:pkg mu4e-alert)
   ;;   (mu4e-alert-enable-mode-line-display)
   ;;   (mu4e-alert-set-default-style 'libnotify)
   ;;   (:hook-into after-init-hook mu4e-alert-enable-notifications))
 #+END_SRC
-** Org-mime
+** Disabled - Org-mime
 #+BEGIN_SRC elisp
   ;; (setup (:pkg org-mime)
   ;;   (setq org-mime-export-options '(:section-numbers nil
@@ -1166,14 +1228,10 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
 ** YASnippet
 #+begin_src elisp
   (setup (:pkg yasnippet)
+    (setq yas-snippet-dirs '(
+                             "~/.emacs.d/etc/yasnippet/snippets"
+                             "~/guix/etc/snippets"))
     (yas-global-mode))
-  ;;   (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-  ;;   (yas-reload-all)
-  ;;   (:hook-into prog-mode-hook yas-minor-mode)
-  ;;   (:hook-into text-mode-hook yas-minor-mode)
-  ;;   (yas-global-mode t)
-  ;;   (require 'warnings)
-  ;;   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 #+end_src
 ** Magit
 #+BEGIN_SRC elisp
@@ -1192,9 +1250,10 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
     (add-hook 'c++-mode-hook 'lsp)
 
     (setq gc-cons-threshold (* 100 1024 1024)
-          lsp-diagnostics-provider :none
-          lsp-modeline-diagnostics-enable nil
-          lsp-headerline-breadcrumb-enable-diagnostics nil
+          lsp-clangd-binary-path "/run/current-system/profile/bin/clangd"
+          ;; lsp-diagnostics-provider :none
+          ;; lsp-modeline-diagnostics-enable nil
+          ;; lsp-headerline-breadcrumb-enable-diagnostics nil
           read-process-output-max (* 1024 1024)
           ;; treemacs-space-between-root-nodes nil
           company-idle-delay 0.0
@@ -1202,8 +1261,8 @@ Make sure to install mu-git from the AUR (Arch User Repository) and isync from t
           lsp-idle-delay 0.0))
 #+END_SRC
 ** Languages
-*** Javascript
-I generally don't use Javascript.
+*** Disabled - Javascript
+I use minimal Javascript because, you know, Javascript is Javascript.
 #+BEGIN_SRC elisp
 
   ;; (defun dw/set-js-indentation ()
@@ -1255,7 +1314,8 @@ But for now, this is the most I can get working
 #+BEGIN_SRC elisp
   (setup (:pkg ccls :straight t))
 #+END_SRC
-*** Rust
+*** Disabled - Rust
+Sorry any Rust programmers. This is *Tempoarily* disabled. (Don't cancel me)
 #+BEGIN_SRC elisp
   ;; (setup (:pkg rustic
   ;;   :ensure
@@ -1280,7 +1340,8 @@ But for now, this is the most I can get working
   ;;   "r"  '(:ignore t :which-key "Rust")
   ;;   "rr" 'cargo-process-run)
 #+END_SRC
-*** Scheme
+*** Disabled - Scheme
+I never actually used this package
 #+BEGIN_SRC elisp
   ;; (setup (:pkg geiser-guile))
 
@@ -1294,7 +1355,8 @@ But for now, this is the most I can get working
   ;;   "s"  '(:ignore t :which-key "Scheme")
   ;;   "sr" '(run-guile :which-key "Start a REPL"))
 #+END_SRC
-*** HTML
+*** Disabled - HTML
+I don't use any packaged for HTML. I use Orgmode anyway. 
 #+BEGIN_SRC elisp
   ;; (setup (:pkg web-mode
   ;;   :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
@@ -1318,13 +1380,15 @@ But for now, this is the most I can get working
   ;;   :defer 5)
 
 #+END_SRC
-*** YAML
+*** Disabled - YAML
+I have a bad time with YAML. Never really found a use for it.
 #+BEGIN_SRC elisp
   ;; (setup (:pkg yaml-mode
   ;;   :mode "\\.ya?ml\\'")
 
 #+END_SRC
 ** Smart Parens
+Makes your parenthesis look cooler (and so it is easier to see a pair of them)
 #+BEGIN_SRC elisp
   (setup (:pkg smartparens)
     (:hook-into org-mode org-agenda-mode))
@@ -1377,12 +1441,12 @@ But for now, this is the most I can get working
               (company-complete-common)
             (indent-for-tab-command)))))
 #+END_SRC 
-** Flycheck
+** Disabled - Flycheck
 Flycheck kinda calls everything to be an error. Kind of anoyying (cuz it doesnt understand libraries)
 #+BEGIN_SRC elisp
   ;; (setup (:pkg flycheck :ensure)
 #+END_SRC
-** Tree
+** Disabled - Tree
 I dont really use these Tree programs and use counsel-recentf or keybinds to switch files quickly instead.
 *** Neotree
 The tree directory listing in Emacs.
@@ -1406,7 +1470,7 @@ The tree directory listing in Emacs.
 
 #+END_SRC
 * Terminal Configurations
-** Term
+** Disabled - Term
 #+BEGIN_SRC elisp
   ;; (setup (:pkg term)
   ;;   (setq explicit-shell-file-name "bash") ;; Change this to zsh, etc
@@ -1424,7 +1488,7 @@ The tree directory listing in Emacs.
 
   (global-set-key (kbd "s-v") 'vterm)
 #+END_SRC
-*** VTerm-toggle
+*** Disabled - VTerm-toggle
 #+BEGIN_SRC elisp
   ;; (setup (:pkg vterm-toggle)
 #+END_SRC
@@ -1436,7 +1500,7 @@ The tree directory listing in Emacs.
     "eh" '(counsel-esh-history :which-key "Eshell History"))
 
 #+END_SRC 
-* Password Managment
+* Password Management
 Uses the standard Unix password store "pass".
 
 #+begin_src elisp
@@ -1468,4 +1532,9 @@ This loads EXWM and the rest of my system.
 #+BEGIN_SRC elisp
   ;; Make gc pauses faster by decreasing the threshold.
   (setq gc-cons-threshold (* 2 1000 1000))
+#+END_SRC
+
+
+#+BEGIN_SRC 
+__GL_SYNC_TO_VBLANK=1 wine ~/GD/a.exe
 #+END_SRC
