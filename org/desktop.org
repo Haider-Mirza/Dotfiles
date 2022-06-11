@@ -206,7 +206,7 @@ Because of how my Dotfiles work, I will have to include a "Disclaimer".
           ([?\s-z] . exwm-layout-toggle-mode-line)
           ([?\s-b] . consult-buffer)
           ([?\s-g] . consult-buffer-other-frame)
-          ([\f6] . desktop-environment-toggle-mute)
+          ([\desktop-environment-toggle-mute)
           ([\f7] . desktop-environment-volume-decrement)
           ([\f8] . desktop-environment-volume-increment)
           ([?\s-x] . exwm-floating-toggle-floating)
@@ -233,7 +233,7 @@ Because of how my Dotfiles work, I will have to include a "Disclaimer".
                           (exwm-workspace-switch-create ,i))))
                     (number-sequence 0 9))))
 
-  (exwm-enable))
+ (exwm-enable))
 
 #+END_SRC
 ** Functions
@@ -304,7 +304,7 @@ Some of my EXWM focused Functions.
 #+BEGIN_SRC elisp
   (defun startup ()
     (interactive)
-    (exwm/run-xmodmap)
+    (exwm/run-modmap)
     (start-process-shell-command "dunst" nil "dunstify Progress: -h int:value:16")
     (exwm-workspace-switch-create 0)
     (start-process-shell-command "btop" nil "alacritty -e btop")
@@ -387,7 +387,7 @@ Rekeybind *Ctrl* to *Caps-lock*
 
  #+END_SRC
 ** Polybar
-   My Polybar config
+My Polybar config
    
 #+BEGIN_SRC conf
 
@@ -496,7 +496,24 @@ format-padding = 4
 label = %title%
 label-empty = Empty
 label-empty-foreground = #707880
-   #+END_SRC
+#+END_SRC
+
+** Polybar Panel
+#+BEGIN_SRC elisp
+  (defun poly/polybar-exwm-workspace ()
+    (pcase exwm-workspace-current-index
+      (0 "Dashboard")
+      (1 "Terminal")
+      (2 "Web Browser")
+      (3 "Videos")
+      (4 "Documentation")
+      (5 "Development")
+      (6 "Blender")
+      (7 "Chat")
+      (8 "Mu4e")
+      (9 "Mocp")))
+
+#+END_SRC
 * XMonad
 ** Xmonad.hs
    This is a alternative desktop environment I had used previous to EXWM.
@@ -1124,21 +1141,5 @@ Config { font            = "xft:Ubuntu:weight=bold:pixelsize=11:antialias=true:h
   )
 
     (poly/polybar-exwm-workspace)
-
-#+END_SRC
-** Polybar Panel
-#+BEGIN_SRC elisp
-  (defun poly/polybar-exwm-workspace ()
-    (pcase exwm-workspace-current-index
-      (0 "Dashboard")
-      (1 "Terminal")
-      (2 "Web Browser")
-      (3 "Videos")
-      (4 "Documentation")
-      (5 "Development")
-      (6 "Blender")
-      (7 "Chat")
-      (8 "Mu4e")
-      (9 "Mocp")))
 
 #+END_SRC

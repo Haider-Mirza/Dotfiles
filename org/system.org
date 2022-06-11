@@ -11,8 +11,7 @@
   This is the config file used in GNU Guix to manage your system.
 # #+BEGIN_SRC scheme :tangle "/sudo::/etc/config.scm"
 #+BEGIN_SRC scheme :tangle "/home/haider/dotfiles/stow/config.scm"
-  (use-modules				;
-   (gnu)
+  (use-modules (gnu)
    (gnu packages certs)
    (gnu packages pulseaudio)
    (gnu packages shells)
@@ -126,6 +125,7 @@
                             "emacs-visual-fill-column"
                             "emacs-vertico"
                             "emacs-marginalia"
+                            "emacs-org-auto-tangle"
                             "emacs-rainbow-delimiters"
                             "emacs-all-the-icons"
                             "emacs-all-the-icons-completion"
@@ -159,9 +159,10 @@
                             "emacs-magit"
                             "emacs-sudo-edit"
                             ;; "emacs-ccls"
-                            "emacs-lsp-mode"
-                            "emacs-lsp-ui"
-                            "emacs-lsp-treemacs"
+                            "emacs-eglot"
+                            ;; "emacs-lsp-mode"
+                            ;; "emacs-lsp-ui"
+                            ;; "emacs-lsp-treemacs"
                             "emacs-geiser-guile"
                             "emacs-geiser"
                             "emacs-smartparens"

@@ -19,7 +19,6 @@
 * Email Configuration
 ** Notmuch
 #+BEGIN_SRC conf :tangle "/home/haider/dotfiles/stow/.notmuch-config"
-  ; THIS DOCUMENT IS MANAGED BY ORGMODE
   [user]
   name=Haider Mirza
   primary_email=haider@haider.gq

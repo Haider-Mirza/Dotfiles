@@ -1,3 +1,5 @@
+;; THIS DOCUMENT IS MANAGED BY ORGMODE
+
 (defun win/position-window-left-corner ()
   (interactive)
   (let* ((pos (frame-position))

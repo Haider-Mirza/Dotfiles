@@ -1,0 +1,105 @@
+; Docs: https://github.com/polybar/polybar
+;==========================================================
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[colors]
+background = #1D2026
+background-alt = #282C34
+foreground = #A6Accd
+foreground-alt = #555
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+underline-1 = #51AFEF
+
+[bar/panel]
+width = 100%
+height = 17
+offset-x = 0
+offset-y = 0
+fixed-center = true
+enable-ipc = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 2
+line-color = #f00
+
+border-size = 0
+border-color = #00000000
+
+padding-top = 5
+padding-left = 1
+padding-right = 1
+
+module-margin-left = 5
+
+font-0 = "Cantarell:size=8:weight=bold;2"
+font-1 = "Font Awesome:size=6;2"
+font-2 = "Material Icons:size=9;5"
+font-3 = "Fira Mono:size=5;-3"
+
+modules-left = exwm-workspace title
+modules-right = cpu memory date
+
+tray-position = right
+tray-padding = 2
+tray-maxsize = 28
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+[module/exwm-workspace]
+type = custom/ipc
+hook-0 = emacsclient -e "(poly/polybar-exwm-workspace)" | sed -e 's/^"//' -e 's/"$//'
+initial = 1
+format-underline = ${colors.underline-1}
+format-padding = 1
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format = <label>
+format-underline = ${colors.underline-1}
+click-left = emacsclient -e "(proced)"
+label = CPU %percentage%%
+
+[module/memory]
+type = internal/memory
+interval = 3
+format = <bar-used>
+bar-used-indicator =
+bar-used-width = 30
+bar-used-foreground-0 = #55aa55
+bar-used-foreground-1 = #557755
+bar-used-foreground-2 = #f5a70a
+bar-used-foreground-3 = #ff5555
+bar-used-fill = ▐
+bar-used-empty = ▐
+format-underline = ${colors.underline-1}
+bar-used-empty-foreground = #444444
+
+[module/date]
+type = internal/date
+interval = 1
+date = "%A %B %d %Y"
+time = %l:%M:%S %p
+format-prefix-foreground = ${colors.foreground-alt}
+format-underline = ${colors.underline-1}
+label = %date% %time%
+
+[module/title]
+type = internal/xwindow
+format = <label>
+format-foreground = #98BE65
+format-padding = 4
+label = %title%
+label-empty = Empty
+label-empty-foreground = #707880
