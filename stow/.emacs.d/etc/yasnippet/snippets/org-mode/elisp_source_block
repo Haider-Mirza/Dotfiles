@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Org Elisp Src Block 
+# key: <el
+# --
+#+BEGIN_SRC elisp
+$0
+#+END_SRC

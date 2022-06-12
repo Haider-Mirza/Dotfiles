@@ -1,5 +1,6 @@
 #+TITLE: =Yasnippet Snippets=
 #+AUTHOR: Haider Mirza
+#+auto_tangle: t
 
 * Table of contents :toc:
 * About
@@ -7,45 +8,53 @@ Yasnippet is a overpowered feature of Emacs.
 Here is it's Github Repository: [[https://github.com/joaotavora/yasnippet][Repository]]
 * Note
 "Org Source Block" in Orgmode needs to be manually copied over (you will see why)
-* OrgMode
-Here are some snippets I made for OrgMode
-** Titler
-#+begin_src snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/org-mode/titler"
-  # -*- mode: snippet -*-
-  # name: Insert Title and Date
-  # key: <t
-  # --
-  ,#+TITLE: ${1:Title}
-  ,#+AUTHOR: Haider Mirza
-  ,#+DATE: `(let ((x (org-insert-time-stamp nil nil t ))))`
-  :PROPERTIES:
-  ,#+OPTIONS:
-  :END:
+* Orgmode
+Here are some snippets I made for Orgmode
+** Title
+*** Main
+#+begin_src snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/org-mode/title-main"
+# -*- mode: snippet -*-
+# name: Insert Title and Date
+# key: tm
+# --
+,#+TITLE: ${1:`(file-name-base)`}
+,#+AUTHOR: Haider Mirza
+,#+DATE: `(let ((x (org-insert-time-stamp nil nil t ))))`
 
-  $0
+$0
+#+end_src
+*** Blog
+#+begin_src snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/org-mode/title-blog"
+# -*- mode: snippet -*-
+# name: Insert Title and Date
+# key: tb
+# --
+,#+TITLE: `(file-name-base)`
+
+,* `(insert (format-time-string "%Y %B %d"))`
+$0
 #+end_src
 ** Source Blocks
-You Might want to manually transfer these over (you can see why)
 *** Org Source Block
-#+begin_src snippet
+#+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/org-mode/source_block"
 # -*- mode: snippet -*-
 # name: Org Src Block 
 # key: <src
 # --
-# #+BEGIN_SRC $1
+,#+BEGIN_SRC $1
 $0
-# #+END_SRC
+,#+END_SRC
 #+end_src
 
 *** Org Elisp Source Block
-#+begin_src snippet
+#+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/org-mode/elisp_source_block"
 # -*- mode: snippet -*-
 # name: Org Elisp Src Block 
 # key: <el
 # --
-# #+BEGIN_SRC elisp
+,#+BEGIN_SRC elisp
 $0
-# #+END_SRC
+,#+END_SRC
 #+end_src
 
 ** Org Properties
@@ -85,4 +94,22 @@ Haider.
 Email: haider@haider.gq
 Website: https://www.haider.gq
 Github: https://github.com/Haider-Mirza
+#+END_SRC
+
+* Magit
+#+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/text-mode/commit_add_message"
+# -*- mode: snippet -*-
+# name: Add Files
+# key: ga
+# condition: git-commit-mode
+# --
+
+Added ${1:`(with-temp-buffer
+                (magit-git-wash #'magit-diff-wash-diffs
+                  "diff" "--staged")
+                (goto-char (point-min))
+                (when (re-search-forward "\\+(define-public \\(\\S-+\\)" nil 'noerror)
+                  (match-string-no-properties 1)))`}.
+
+,* `(car (magit-staged-files))` ($1): New file.
 #+END_SRC

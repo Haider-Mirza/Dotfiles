@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Insert Title and Date
+# key: tb
+# --
+#+TITLE: `(file-name-base)`
+
+* `(insert (format-time-string "%Y %B %d"))`
+$0
