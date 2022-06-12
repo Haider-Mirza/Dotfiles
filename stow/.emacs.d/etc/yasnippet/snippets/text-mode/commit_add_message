@@ -6,4 +6,4 @@
 
 Added ${1:}.
 
-* `(car (magit-staged-files))` Added ($1). *New file(s)*
+* `(car (magit-staged-files))` Added $1. *New file(s)*

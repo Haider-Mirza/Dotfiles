@@ -107,7 +107,7 @@ Github: https://github.com/Haider-Mirza
 
 Added ${1:}.
 
-,* `(car (magit-staged-files))` Added ($1). *New file(s)*
+,* `(car (magit-staged-files))` Added $1. *New file(s)*
 #+END_SRC
 ** Remove
 #+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/text-mode/commit_remove_message"
@@ -119,7 +119,7 @@ Added ${1:}.
 
 Removed ${1:}.
 
-,* `(car (magit-staged-files))` Removed ($1). *Removed file(s)*
+,* `(car (magit-staged-files))` Removed $1. *Removed file(s)*
 #+END_SRC
 ** Modify
 #+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/text-mode/commit_modify_message"

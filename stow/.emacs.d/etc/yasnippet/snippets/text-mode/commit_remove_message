@@ -6,4 +6,4 @@
 
 Removed ${1:}.
 
-* `(car (magit-staged-files))` Removed ($1). *Removed file(s)*
+* `(car (magit-staged-files))` Removed $1. *Removed file(s)*
