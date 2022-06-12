@@ -1,8 +1,8 @@
 (use-modules (gnu)
- (gnu packages certs)
- (gnu packages pulseaudio)
- (gnu packages shells)
- (gnu packages emacs))
+             (gnu packages certs)
+             (gnu packages pulseaudio)
+             (gnu packages shells)
+             (gnu packages emacs))
 
 (use-service-modules
  cups
@@ -129,6 +129,7 @@
                           "emacs-org-bullets"
                           "emacs-ox-pandoc"
                           "emacs-org-appear"
+                          "emacs-olivetti"
                           "emacs-org-super-agenda"
                           "emacs-evil-org"
                           "emacs-org-reveal"
