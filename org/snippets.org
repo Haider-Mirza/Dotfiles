@@ -97,6 +97,7 @@ Github: https://github.com/Haider-Mirza
 #+END_SRC
 
 * Magit
+** Add
 #+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/text-mode/commit_add_message"
 # -*- mode: snippet -*-
 # name: Add Files
@@ -104,12 +105,31 @@ Github: https://github.com/Haider-Mirza
 # condition: git-commit-mode
 # --
 
-Added ${1:`(with-temp-buffer
-                (magit-git-wash #'magit-diff-wash-diffs
-                  "diff" "--staged")
-                (goto-char (point-min))
-                (when (re-search-forward "\\+(define-public \\(\\S-+\\)" nil 'noerror)
-                  (match-string-no-properties 1)))`}.
+Added ${1:}.
 
-,* `(car (magit-staged-files))` ($1): New file.
+,* `(car (magit-staged-files))` Added ($1). *New file(s)*
+#+END_SRC
+** Remove
+#+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/text-mode/commit_remove_message"
+# -*- mode: snippet -*-
+# name: Remove Files
+# key: gr
+# condition: git-commit-mode
+# --
+
+Removed ${1:}.
+
+,* `(car (magit-staged-files))` Removed ($1). *Removed file(s)*
+#+END_SRC
+** Modify
+#+BEGIN_SRC snippet :tangle "/home/haider/dotfiles/stow/.emacs.d/etc/yasnippet/snippets/text-mode/commit_modify_message"
+# -*- mode: snippet -*-
+# name: Modify Files
+# key: gm
+# condition: git-commit-mode
+# --
+
+${1:}.
+
+,* `(car (magit-staged-files))`. $1. *Modified file(s)*
 #+END_SRC

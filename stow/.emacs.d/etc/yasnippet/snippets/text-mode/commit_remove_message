@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Remove Files
+# key: gr
+# condition: git-commit-mode
+# --
+
+Removed ${1:}.
+
+* `(car (magit-staged-files))` Removed ($1). *Removed file(s)*

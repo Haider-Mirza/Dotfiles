@@ -4,11 +4,6 @@
 # condition: git-commit-mode
 # --
 
-Added ${1:`(with-temp-buffer
-                (magit-git-wash #'magit-diff-wash-diffs
-                  "diff" "--staged")
-                (goto-char (point-min))
-                (when (re-search-forward "\\+(define-public \\(\\S-+\\)" nil 'noerror)
-                  (match-string-no-properties 1)))`}.
+Added ${1:}.
 
-* `(car (magit-staged-files))` ($1): New file.
+* `(car (magit-staged-files))` Added ($1). *New file(s)*
