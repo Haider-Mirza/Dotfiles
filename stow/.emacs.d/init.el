@@ -183,17 +183,20 @@ installed via Guix.")
   "oh" '(org-todo :which-key "Add a todo header thing"))
 
 (setup (:pkg org)
-  (setq org-ellipsis " ▾")
+  (setq org-startup-indented t
+	org-ellipsis " ▾"
+	org-agenda-start-with-log-mode t
+	org-log-done t
+	org-log-into-drawer t
+	org-pretty-entities t
+	org-hide-emphasis-markers t
+	org-startup-with-inline-images t
+	org-src-fontify-natively t
+	org-startup-folded t
+	org-image-actual-width nil
+	org-image-actual-width '(300))
 
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done t)
-  (setq org-log-into-drawer t)
-
-  (setq org-src-fontify-natively t) ;; Syntax highlighting in org src blocks
-  (setq org-startup-folded t) ;; Org files start up folded by default
-  (setq org-image-actual-width nil)
-
-(add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)(flyspell-mode)))
+  (add-hook 'org-mode-hook (lambda ()(org-toggle-pretty-entities)(flyspell-mode)))
 
   (setq org-agenda-files
 	'("~/documents/Home/Reminders.org"
@@ -219,7 +222,9 @@ installed via Guix.")
   (setq org-agenda-span 'month))
 
 (setup (:pkg org-superstar)
+  (setq org-superstar-special-todo-items t)
   (:hook-into org-mode))
+  ;; (org-superstar-configure-like-org-bullets)
 
 (setup (:pkg org-appear)
   (:hook-into org-mode)
@@ -338,6 +343,22 @@ installed via Guix.")
 
 (space-keys
   "TAB" '(comment-dwim :which-key "comment lines"))
+
+(defun distraction-free ()
+  "Distraction-free writing environment"
+  (interactive)
+  (if (equal olivetti-mode nil)
+      (progn
+	(text-scale-increase 1)
+	(olivetti-mode t)
+	(display-line-numbers-mode 0))
+    (progn
+      (olivetti-mode 0)
+      (display-line-numbers-mode 1)
+      (text-scale-decrease 1))))
+
+(setup (:pkg olivetti :straight t)
+  (setq olivetti-body-width .67))
 
 (space-keys
   "d"  '(:ignore t :which-key "Files")
@@ -748,6 +769,16 @@ installed via Guix.")
   (interactive)
   (start-process-shell-command "kill unclutter" nil "pkill unclutter"))
 
+(defun shutdown ()
+  (interactive)
+  (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password: "))
+			 " | sudo -S shutdown")))
+
+(defun reboot ()
+  (interactive)
+  (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password: "))
+			 " | sudo -S reboot")))
+
 (exwm/bind-function
  "s-SPC" 'exwm/run-rofi
  "M-s-b" 'exwm/run-qute
@@ -801,7 +832,7 @@ installed via Guix.")
   (sleep-for 7)
   (start-process-shell-command "sound-effect" nil "mpv --no-video /home/haider/do-not-delete/startup.mp3")
   (let ((password (read-passwd "ERC Password: ")))
-    (exwm-workspace-switch-create 7)
+    (exwm-workspace-switch-create 5)
     (chat/connect-irc password)))
 
 (defun exwm/configure-window-by-class ()
