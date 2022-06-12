@@ -1,0 +1,13 @@
+;;-*-coding: utf-8;-*-
+(define-abbrev-table 'global-abbrev-table '(
+("hm" "Haider Mirza" nil 5)
+("em" "haider@haider.gq" nil 5)
+("abdullah" "Abdullah" nil 5)
+("haider" "Haider" nil 5)
+("emacs" "Emacs" nil 5)
+("guix" "Guix" nil 5)
+("linux" "Linux" nil 5)
+("repo" "Repository" nil 5)
+("btw" "by the way" nil 3)
+("imo" "in my opinion" nil 3)
+("wether" "whether" nil 5)))
