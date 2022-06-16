@@ -1,3 +1,12 @@
+;; init.el - Emacs initialization system
+
+;; Author: Haider Mirza <haider@haider.gq>
+;; Created: 13/6/22
+;; Note: Complete Rewrite from Ground Up
+
+;; Make sure to check out the License (GPL v3)
+
+;; Code:
 (setq dw/is-guix-system (and (eq system-type 'gnu/linux)
                              (require 'f)
                              (string-equal (f-read "/etc/issue")
