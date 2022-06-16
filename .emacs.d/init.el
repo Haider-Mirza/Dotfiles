@@ -33,23 +33,9 @@
 (straight-use-package '(setup :type git :host nil :repo "https://git.sr.ht/~pkal/setup"))
 (require 'setup)
 
-;; Uncomment this for debugging purposes
-;; (defun dw/log-require (&rest args)
-;;   (with-current-buffer (get-buffer-create "*require-log*")
-;;     (insert (format "%s\n"
-;;                     (file-name-nondirectory (car args))))))
-;; (add-to-list 'after-load-functions #'dw/log-require)
-
-;; Recipe is always a list
-;; Install via Guix if length == 1 or :guix t is present
-
 (defvar dw/guix-emacs-packages '()
   "Contains a list of all Emacs package names that must be
 installed via Guix.")
-
-;; Examples:
-;; - (org-roam :straight t)
-;; - (git-gutter :straight git-gutter-fringe)
 
 (defun dw/filter-straight-recipe (recipe)
   (let* ((plist (cdr recipe))
@@ -470,7 +456,6 @@ installed via Guix.")
   ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
   ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
   ("f" nil "finished" :exit t))
-
 
 
 (setup (:pkg vterm)
