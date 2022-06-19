@@ -1,25 +1,6 @@
 #+TITLE: =Dotfiles=
 #+AUTHOR: Haider Mirza
 * About this repository
-** Documentation
-Here is documentation some of the programs in the stow/ directory:
-+ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/desktop.org][Desktop - Window manager setup (EXWM)]]
-+ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/emacs.org][Emacs - Emacs config]]
-+ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/programs.org][Programs - Email, Mocp, MPV, Qutebrowser, Dunst, Rofi]]
-+ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/snippets.org][Snippets - Yasnippets]]
-+ [[https://github.com/Haider-Mirza/Dotfiles/blob/main/org/system.org][System - Guix config]]
-  
-** What is this weird directory structure?
-First thing, you really shouldn't copy my directory structure (unless you like it).
+This is just my dotfiles, which is managed by [[https://www.gnu.org/software/stow/][GNU Stow]].
 
-My config is in two parts, Stow and Org.
-Some of my dotfiles are Documented and therefore configured in Orgmode others are separate files in the stow/ directory.
-All of my dotfiles get converted into documents in the stow/ directory.
-
-*** Synopsis
-If you want to Read Information in my dotfiles, go in the org/ directory.
-If you want the standalone files, go to the stow/ directory.
-
-*** Limitations with the structure
-There is one limitation which I see with this type of configuration, that is if the config gets changed (The actual config not the one in my dotfiles) by a program
-the changes wont be reflected in any files in my Orgmode documents. Most of these files don't get changed without the user making changes, but some rare ones do.
+Feel free to take any code *Make Sure to read the License (GPL v3)*.
