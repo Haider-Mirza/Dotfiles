@@ -876,7 +876,9 @@ installed via Guix.")
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq confirm-kill-emacs 'yes-or-no-p)
 
-(server-start)
+(require 'server)
+(or (server-running-p)
+    (server-start))
 
 ;; (defun win/position-window-left-corner ()
 ;;   (interactive)
