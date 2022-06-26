@@ -32,10 +32,10 @@ myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = False -- I don't use a mouse anymore
 myClickJustFocuses :: Bool
 myClickJustFocuses = False
-myBorderWidth = 1
+myBorderWidth = 2
 myModMask = mod4Mask
 myNormalBorderColor = "#dddddd"
-myFocusedBorderColor = "#00ffff"
+myFocusedBorderColor = "#FF0000"
 
 myWorkspaces = [" term ", " www ", " mpv ", " doc ", " dev ", " chat ", "mail", "alsa", "sys"]
 
