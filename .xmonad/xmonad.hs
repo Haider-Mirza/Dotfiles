@@ -20,6 +20,9 @@ import XMonad.Hooks.EwmhDesktops
 -- Layout modifiers
 import XMonad.Layout.Spacing
 
+-- Actions
+import XMonad.Actions.SpawnOn
+
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
@@ -116,15 +119,26 @@ myStartupHook = do
   spawnOnce "xmodmap ~/.xmodmap"
   spawnOnce "unclutter -idle 0.01 -root"
 
+  -- Launch applications on startup
+  spawnOn (myWorkspaces !! 0) "alacritty"
+  spawnOn (myWorkspaces !! 1) "qutebrowser --qt-flag disable-seccomp-filter-sandbox"
+  spawnOn (myWorkspaces !! 2) "emacs -f elfeed"
+  spawnOn (myWorkspaces !! 3) "emacs"
+  spawnOn (myWorkspaces !! 4) "emacs"
+  spawnOn (myWorkspaces !! 5) "emacs -f chat/connect-ement"
+  spawnOn (myWorkspaces !! 6) "emacs -f notmuch"
+  spawnOn (myWorkspaces !! 7) "alacritty -e alsamixer"
+  spawnOn (myWorkspaces !! 8) "alacritty -e btop"
+
 main :: IO ()
 main = xmonad
      . ewmhFullscreen
      . ewmh
-     . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) defToggleStrutsKey
+     . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleStrutsKey
      $ myConfig
   where
     toggleStrutsKey :: XConfig Layout -> (KeyMask, KeySym)
-    toggleStrutsKey XConfig{ modMask = m } = (m, xK_q)
+    toggleStrutsKey XConfig{ modMask = m } = (m, xK_w)
 
 myXmobarPP :: PP
 myXmobarPP = def
