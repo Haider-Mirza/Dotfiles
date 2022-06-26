@@ -1,8 +1,6 @@
-# THIS DOCUMENT IS MANAGED BY ORGMODE
-
 # Open every tab as a new window, Vimb style
-c.tabs.tabs_are_windows = True
-c.tabs.last_close = "close"
+# c.tabs.tabs_are_windows = True
+# c.tabs.last_close = "close"
 
 c.auto_save.session = True
 c.scrolling.smooth = True
@@ -100,11 +98,11 @@ config.bind('<Ctrl-k>', 'completion-item-focus --history prev', mode='command')
 
 config.bind('X', 'wq')
 config.unbind('d') # Dont want to accidentally delete my tab
-config.unbind('u') # rekeybind the u key
+# config.unbind('u') # rekeybind the u key
 config.bind('Q', 'bookmark-add')
 config.bind('W', 'bookmark-del')
 config.bind('E', 'bookmark-list')
-config.bind('u', 'undo --window')
+# config.bind('u', 'undo --window')
 config.bind('b', 'set-cmd-text -s :tab-select ', mode='normal')
 config.bind('z', 'spawn ~/.config/qutebrowser/scripts/mpv.sh;; spawn mpv {url}')
 config.bind('Z', 'hint links spawn mpv {hint-url}')
