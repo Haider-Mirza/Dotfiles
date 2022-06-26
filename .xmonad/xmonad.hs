@@ -180,7 +180,7 @@ myConfig = def {
         keys               = myKeys,
         mouseBindings      = myMouseBindings,
         layoutHook         = myLayout,
-        manageHook         = myManageHook,
+        manageHook = manageSpawn <+> manageHook def,
         handleEventHook    = myEventHook,
 
         startupHook        = myStartupHook,
