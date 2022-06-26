@@ -9,7 +9,7 @@
  desktop
  networking
  ssh
- nix
+ sddm
  xorg
  virtualization)
 
@@ -45,13 +45,24 @@
                %base-user-accounts))
 
  (packages (append (map specification->package
-                        '("nss-certs"
+                        '(;; Desktop Environment
+			  "xmonad-next"
+			  "xmessage"
+			  "ghc"
+			  "ghc-xmonad-contrib-next"
+			  "xinitrc-xsession"
+			  "xinit"
+			;; "emacs-haskell-mode"
+			  "xmobar"
+			  "dmenu"
+
+			  "nss-certs"
                           "binutils"
                           "blender"
                           "qutebrowser"
                           "ungoogled-chromium"
                           "mpv"
-                          ;; "ccls"
+                          "yt-dlp"
                           "notmuch"
                           "msmtp"
                           "feh"
@@ -59,11 +70,10 @@
                           "l2md"
                           "dunst"
                           "unzip"
-                          "clang"
-                          ;; "bear"
                           "lxappearance"
                           "gnome-themes-standard"
                           "xset"
+                          "xdg-utils"
 
                           ;; Virt manager
                           "virt-manager"
@@ -88,6 +98,8 @@
                           "xmodmap"
                           "pulsemixer"
                           "font-jetbrains-mono"
+                          "font-mononoki"
+                          "font-openmoji"
                           "libvterm"
                           "picom"
                           "flatpak"
@@ -100,9 +112,8 @@
                           "emacs-gnus-alias"
                           "emacs-general"
                           "emacs-elfeed"
-
-                          "emacs-ytel"
-                          "emacs-ytel-show"
+			  "emacs-ement"
+			  "curl"
 
                           "emacs-notmuch"
                           "emacs-undo-tree"
@@ -120,7 +131,6 @@
                           "emacs-which-key"
                           "emacs-diminish"
                           "emacs-counsel"
-                          ;; "emacs-helpful"
                           "emacs-hydra"
                           "emacs-no-littering"
                           "emacs-prettier"
@@ -134,7 +144,6 @@
                           "emacs-evil-org"
                           "emacs-org-reveal"
                           "emacs-org-roam"
-                          "gcc"
                           "gcc-toolchain"
                           "emacs-org-make-toc"
                           "emacs-erc-hl-nicks"
@@ -146,37 +155,46 @@
                           "emacs-yasnippet"
                           "emacs-magit"
                           "emacs-sudo-edit"
-                          ;; "emacs-ccls"
-                          "emacs-eglot"
-                          ;; "emacs-lsp-mode"
-                          ;; "emacs-lsp-ui"
-                          ;; "emacs-lsp-treemacs"
-                          "emacs-geiser-guile"
+			  ;; IDE Setup
+                          "emacs-lsp-mode"
+                          "emacs-dap-mode"
+                          "emacs-lsp-ui"
+                          "emacs-lsp-treemacs"
+
+                          "emacs-ccls" ; C++
+			  "ccls"
+
+                          "emacs-geiser-guile" ; Guile Scheme
                           "emacs-geiser"
+
                           "emacs-smartparens"
                           "emacs-company"
-                          "emacs-company-box"
+                          ;; "emacs-company-box"
                           "emacs-vterm"
                           "emacs-password-store"
-                          "emacs-exwm"
-                          "emacs-desktop-environment"
+                          ;; "emacs-exwm"
+                          ;; "emacs-desktop-environment"
                           "emacs-consult"))
                    %base-packages))
 
  (services
   (append
    (list
-    (service slim-service-type (slim-configuration
-                                (xorg-configuration
-                                 (xorg-configuration
-                                  (keyboard-layout keyboard-layout)))))
+    (service sddm-service-type 
+	     (sddm-configuration
+	      (auto-login-user "haider")
+	      (auto-login-session "xinitrc")))
+    (set-xorg-configuration
+      (xorg-configuration
+       (keyboard-layout keyboard-layout))
+     sddm-service-type)
 
     (service libvirt-service-type
              (libvirt-configuration
               (unix-sock-group "libvirt")
               (tls-port "16555")))
 
-    (service nix-service-type)
+    ;; (service nix-service-type)
 
     (extra-special-file
      "/lib64/ld-linux-x86-64.so.2"

@@ -1,0 +1,19 @@
+Config { font = "xft:Jetbrains Mono:weight=bold:pixelsize=11:antialias=true:hinting=true"
+       , bgColor = "#282c34"
+       , fgColor = "#ff6c6b"
+       , position  = TopSize L 100 18
+       , lowerOnStart = True
+       , hideOnStart  = False
+       , allDesktops  = True
+       , persistent   = True
+       , commands = [ Run Cpu ["-t", "cpu: (<total>%)","-H","50","--high","red"] 20
+                    , Run Memory ["-t", "ram: <used>M (<usedratio>%)"] 20
+                    , Run DiskU [("/", "<free>")] [] 60
+                    , Run Uptime ["-t", "<days>d <hours>h"] 360
+                    , Run Date "%b %d %Y  %H:%M:%S" "date" 10
+                    , Run XMonadLog
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = " <icon=/home/haider/.xmonad/xpm/haskell_20_xpm/> <fc=#666666>|</fc> %XMonadLog% }{ <fc=#98be65><action=`alacritty -e btop`>%uptime%</action></fc> | <fc=#ecbe7b><action=`alacritty -e btop`>%cpu%</action></fc> | <fc=#ff6c6b><action=`alacritty -e btop`>%memory%</action></fc> | <fc=#a9a1e1><action=`alacritty -e btop`>%disku%</action></fc> | <fc=#46d9ff><action=`alacritty -e btop`>%date%</action></fc>  "
+       }
