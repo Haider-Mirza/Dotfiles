@@ -99,7 +99,7 @@
                           "pulsemixer"
                           "font-jetbrains-mono"
                           "font-mononoki"
-                          "font-openmoji"
+                          "font-awesome"
                           "libvterm"
                           "picom"
                           "flatpak"
