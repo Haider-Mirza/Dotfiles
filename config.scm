@@ -52,7 +52,6 @@
 			  "ghc-xmonad-contrib-next"
 			  "xinitrc-xsession"
 			  "xinit"
-			;; "emacs-haskell-mode"
 			  "xmobar"
 			  "dmenu"
 
