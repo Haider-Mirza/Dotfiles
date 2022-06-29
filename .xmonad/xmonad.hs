@@ -119,7 +119,6 @@ myManageHook = composeAll
     , className =? "chromium"   --> doShift ( myWorkspaces !! 1 )
     -- , className =? "Gimp"           --> doFloat
     -- , resource  =? "desktop_window" --> doIgnore
-    -- , resource  =? "kdesktop"       --> doIgnore 
     ]
 
 myEventHook = mempty
