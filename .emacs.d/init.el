@@ -193,7 +193,6 @@ installed via Guix.")
 	'((sequence
 	   "TODO(t)"
 	   "WORK(w)"
-	   "EVENT(e)"
 	   "RESEARCH(r)"
 	   "HOLD(h)"
 	   "PLAN(p)"
@@ -1119,7 +1118,13 @@ installed via Guix.")
      ("https://www.reddit.com/r/GUIX.rss" Linux Guix)
      ("https://www.reddit.com/r/emacs.rss" reddit linux)
      ("https://www.reddit.com/r/linux.rss" reddit linux)
-     ("https://sachachua.com/blog/feed/" linux Emacs))))
+     ("https://sachachua.com/blog/feed/" linux Emacs)))
+ '(warning-suppress-log-types
+   '(((savehist-file))
+     ((savehist-file))
+     ((savehist-file))
+     (emacs)))
+ '(warning-suppress-types '(((savehist-file)) ((savehist-file)) (emacs))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
