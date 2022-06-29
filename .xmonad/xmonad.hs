@@ -9,6 +9,7 @@ import System.Exit
 import XMonad.Util.Run
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Loggers
+import XMonad.Util.EZConfig
 
 -- Hooks
 import XMonad.Hooks.ManageDocks
@@ -22,6 +23,9 @@ import XMonad.Layout.Spacing
 
 -- Actions
 import XMonad.Actions.SpawnOn
+import XMonad.Actions.CopyWindow (kill1)
+import XMonad.Actions.WithAll (killAll)
+import XMonad.Actions.Promote
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -40,43 +44,52 @@ myFocusedBorderColor = "#FF0000"
 myWorkspaces = [" term ", " www ", " mpv ", " doc ", " dev ", " chat ", "mail", "alsa", "sys"]
 
 -- Key bindings
-myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
-    [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf) -- Terminal
-    , ((modm,               xK_Return), spawn "dmenu_run") -- Dmenu
-    , ((modm,               xK_b     ), spawn "qutebrowser --qt-flag disable-seccomp-filter-sandbox") -- Qutebrowser
-    , ((modm .|. shiftMask, xK_c     ), kill) -- Kill Focused window
-    , ((modm,               xK_space ), sendMessage NextLayout) -- Rotate layouts
-    , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf) --  Reset the layouts to default
-    , ((modm,               xK_n     ), refresh) -- Resize viewed windows to the correct size
-    , ((modm,               xK_Tab   ), windows W.focusDown)-- Move focus to the next window
-    , ((modm,               xK_j     ), windows W.focusDown) -- Move focus to the next window
-    , ((modm,               xK_k     ), windows W.focusUp  ) -- Move focus to the previous window
-    , ((modm,               xK_m     ), windows W.focusMaster  ) -- Move focus to the master window
---    , ((modm,               xK_Return), windows W.swapMaster) -- Swap the focused window and the master window
-    , ((modm .|. shiftMask, xK_j     ), windows W.swapDown  ) -- Swap the focused window with the next window
-    , ((modm .|. shiftMask, xK_k     ), windows W.swapUp    ) -- Swap the focused window with the previous window
-    , ((modm,               xK_h     ), sendMessage Shrink) -- Shrink the master area
-    , ((modm,               xK_l     ), sendMessage Expand) -- Expand the master area
-    , ((modm,               xK_t     ), withFocused $ windows . W.sink) -- Push window back into tiling
-    , ((modm              , xK_comma ), sendMessage (IncMasterN 1)) -- Increment the number of windows in the master area
-    , ((modm              , xK_period), sendMessage (IncMasterN (-1))) -- Deincrement the number of windows in the master area
-    , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess)) -- Quit xmonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart") -- Restart xmonad
-    ]
-    ++
+myKeys = \c -> mkKeymap c $
+    [ -- XMonad session control
+      ("M-S-r", spawn "xmonad --recompile && xmonad --restart")
+    , ("M-S-q", io (exitWith ExitSuccess))
+    , ("M-S-c", kill1)
+    , ("M-S-a", killAll)
 
-    -- mod-[1..9], Switch to workspace N
-    -- mod-shift-[1..9], Move client to workspace N
-    [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-    ++
+    -- Window management
+    , ("M-h", sendMessage Shrink)
+    , ("M-l", sendMessage Expand)
+    , ("M-j", windows W.focusDown)
+    , ("M-k", windows W.focusUp)
+    , ("M-m", windows W.focusMaster)
+    , ("M-S-j", windows W.swapDown)
+    , ("M-S-k", windows W.swapUp)
+    , ("M-n", refresh)
+    , ("M-t", withFocused $ windows . W.sink)
+    , ("M-<Backspace>", promote)
+    , ("M-<Space>", sendMessage NextLayout)
+    , ("M-c", kill)
 
-    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-    -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-    [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+    -- Launch applications
+    , ("M-S-<Return>", spawn $ terminal c)
+    , ("M-<Return>", spawn "dmenu_run")
+    , ("M-b", spawn "qutebrowser --qt-flag disable-seccomp-filter-sandbox")
+
+    -- Switch to workspace
+    , ("M-1", (windows $ W.greedyView $ myWorkspaces !! 0))
+    , ("M-2", (windows $ W.greedyView $ myWorkspaces !! 1))
+    , ("M-3", (windows $ W.greedyView $ myWorkspaces !! 2))
+    , ("M-4", (windows $ W.greedyView $ myWorkspaces !! 3))
+    , ("M-5", (windows $ W.greedyView $ myWorkspaces !! 4))
+    , ("M-6", (windows $ W.greedyView $ myWorkspaces !! 5))
+    , ("M-7", (windows $ W.greedyView $ myWorkspaces !! 6))
+    , ("M-8", (windows $ W.greedyView $ myWorkspaces !! 7))
+    , ("M-9", (windows $ W.greedyView $ myWorkspaces !! 8))
+
+    -- Manually send window to workspace
+    , ("M-S-1", (windows $ W.shift $ myWorkspaces !! 0))
+    , ("M-S-2", (windows $ W.shift $ myWorkspaces !! 1))
+    , ("M-S-3", (windows $ W.shift $ myWorkspaces !! 2))
+    , ("M-S-4", (windows $ W.shift $ myWorkspaces !! 3))
+    , ("M-S-5", (windows $ W.shift $ myWorkspaces !! 4))
+    , ("M-S-6", (windows $ W.shift $ myWorkspaces !! 5))
+    , ("M-S-7", (windows $ W.shift $ myWorkspaces !! 6))
+    , ("M-S-8", (windows $ W.shift $ myWorkspaces !! 7))]
 
 -- Mouse bindings: default actions bound to mouse events
 myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
@@ -118,6 +131,7 @@ myStartupHook = do
   spawnOnce "picom &"
   spawnOnce "xmodmap ~/.xmodmap"
   spawnOnce "unclutter -idle 0.01 -root"
+  spawnOnce "xcape -e 'Super_L=Escape'"
 
   -- Launch applications on startup
   spawnOn (myWorkspaces !! 0) "alacritty"
