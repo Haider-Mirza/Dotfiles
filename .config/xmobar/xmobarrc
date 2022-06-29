@@ -1,6 +1,5 @@
 Config { font = "xft:Jetbrains Mono:weight=bold:pixelsize=11:antialias=true:hinting=true"
-       , additionalFonts = [ "xft:Mononoki:pixelsize=11:antialias=true:hinting=true"
-                           , "xft:Font Awesome 6 Free Solid:pixelsize=12"
+       , additionalFonts = ["xft:Font Awesome 6 Free Solid:pixelsize=12"
                            , "xft:Font Awesome 6 Brands:pixelsize=12"
                            ]
        , bgColor = "#282c34"
@@ -12,12 +11,12 @@ Config { font = "xft:Jetbrains Mono:weight=bold:pixelsize=11:antialias=true:hint
        , persistent   = True
        , commands = [ Run Cpu ["-t", "cpu: (<total>%)","-H","50","--high","red"] 20
                     , Run Memory ["-t", "ram: <used>M (<usedratio>%)"] 20
-                    , Run DiskU [("/", "<free>")] [] 60
-                    , Run Uptime ["-t", "<days>d <hours>h"] 360
+                    -- , Run DiskU [("/", "<free>")] [] 60
+                    , Run Uptime ["-t", "uptime: <hours>h <minutes>m"] 300
                     , Run Date "%b %d %Y - (%H:%M) " "date" 50
                     , Run XMonadLog
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " <icon=/home/haider/.xmonad/xpm/haskell_20_xpm/> <fc=#666666>|</fc> %XMonadLog% }{ <fc=#98be65><action=`alacritty -e btop`>%uptime%</action></fc>  <fc=#ecbe7b><action=`alacritty -e btop`>%cpu%</action></fc>  <fc=#ff6c6b><action=`alacritty -e btop`>%memory%</action></fc>  <fc=#a9a1e1><action=`alacritty -e btop`>%disku%</action></fc>  <fc=#46d9ff><action=`alacritty -e btop`>%date%</action></fc>  "
+       , template = " <icon=/home/haider/.xmonad/xpm/haskell_20_xpm/> <fc=#666666>|</fc> %XMonadLog% }{ <fc=#98be65><action=`alacritty -e btop`>%uptime%</action></fc>  <fc=#ecbe7b><action=`alacritty -e btop`>%cpu%</action></fc>  <fc=#ff6c6b><action=`alacritty -e btop`>%memory%</action></fc>  <fc=#46d9ff><action=`alacritty -e btop`>%date%</action></fc>  "
        }
