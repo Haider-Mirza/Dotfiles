@@ -331,10 +331,19 @@ installed via Guix.")
  "sa" '(add-global-abbrev :which-key "Add word to abbrev globally"))
 
 ;; ----------------------------------------------------------------------
+;;;                           Emacs server
+;; ----------------------------------------------------------------------
+
+(require 'server)
+(or (server-running-p)
+    (server-start))
+
+;; ----------------------------------------------------------------------
 ;;;                             recentf
 ;; ----------------------------------------------------------------------
 
 (recentf-mode 1)
+(setq recentf-save-file (format "%s.%s" recentf-save-file server-name))
 (setq recentf-max-menu-items 25)
 (setq recentf-max-saved-items 25)
 
@@ -874,10 +883,6 @@ installed via Guix.")
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq confirm-kill-emacs 'yes-or-no-p)
-
-(require 'server)
-(or (server-running-p)
-    (server-start))
 
 ;; (defun win/position-window-left-corner ()
 ;;   (interactive)
