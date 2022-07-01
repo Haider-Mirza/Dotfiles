@@ -121,7 +121,8 @@ installed via Guix.")
 
 (set-face-attribute 'default nil
                     :family "Jetbrains Mono"
-                    :height 80
+                    ;; :font "Iosevka Aile"
+                    :height 79
                     :weight 'normal
                     :width  'normal)
 
@@ -678,7 +679,7 @@ installed via Guix.")
  ;; 			   OK (alright people, fine if remove)
  ;; 			   "techlinked"
  ;; 			   "mr beast"
- ;; 			   "technoblade"
+ ;; 			   "technoblade" ; Will always remember Technoblade, Rest in peace Alex.
  ;; 			   "jerryrigeverything"
  ;; 			   "the game theorists"
  ;; 			   "the food theorists"
@@ -1117,6 +1118,8 @@ installed via Guix.")
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("22ce392ec78cd5e512169f8960edf5cbbad70e01d3ed0284ea62ab813d4ff250" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(elfeed-feeds
    '("https://www.youtube.com/feeds/videos.xml?channel_id=UC7YOGHUfC1Tb6E4pudI9STA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCnDti_lPfS1o09ORdNWjJuQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCBZiUUYeLfS5rIj4TQvgSvA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCOKHwx1VCdgnxwbjyb9Iu1g" "https://www.youtube.com/feeds/videos.xml?channel_id=UCojEXrCBzO-cP2N5YlRcrWw" "https://www.youtube.com/feeds/videos.xml?channel_id=UC04QdEl71CFDogk8pzY7Geg" "https://www.youtube.com/feeds/videos.xml?channel_id=UCHZ986wm_sJT6wntdDTIIcw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCp68_FLety0O-n9QU6phsgw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCrPseYLGpNygVi34QpGNqpA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCHYoe8kQ-7Gn9ASOlmI0k6Q" "https://www.youtube.com/feeds/videos.xml?channel_id=UCo_IB5145EVNcf8hw1Kku7w" "https://www.youtube.com/feeds/videos.xml?channel_id=UCWFKCr40YwOZQx8FHU_ZqqQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCFAiFyGs6oDiF1Nf-rRJpZA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCX6OQ3DkcsbYNE6H8uQQuVA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCeeFfhMcJa1kjtfZAGskOCA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCuj_loxODrOPxSsXDfJmpng" "https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCY1kMZp36IQSyNx_9h4mpCg" "https://www.youtube.com/feeds/videos.xml?channel_id=UCXuqSBlHAE6Xw-yeJA0Tunw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCfMJ2MchTSW2kWaT0kK94Yw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg" "https://www.youtube.com/feeds/videos.xml?channel_id=UCld68syR8Wi-GY_n4CaoJGA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCQ-W1KE9EYfdxhL6S4twUNw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCnmGIkw-KdI0W5siakKPKog" "https://www.youtube.com/feeds/videos.xml?channel_id=UCMiJRAwDNSNzuYeN2uWa0pA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCBJycsmduvYEL83R_U4JriQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCgNg3vwj3xt7QOrcIDaHdFg" "https://www.youtube.com/feeds/videos.xml?channel_id=UC9RM-iSvTu1uPJb8X5yp3EQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCsXVk37bltHxD1rDPwtNM8Q" "https://www.youtube.com/feeds/videos.xml?channel_id=UClq42foiSgl7sSpLupnugGA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCwmFOfFuvRPI112vR5DNnrA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCqmugCqELzhIMNYnsjScXXw" "https://www.youtube.com/feeds/videos.xml?channel_id=UC6nSFpj9HTCZ5t-N3Rm3-HA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCHC4G4X-OR5WkY-IquRGa3Q" "https://www.youtube.com/feeds/videos.xml?channel_id=UCKKiQ8Bz3pgiJ7JdqNrQfeQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCBa659QWEk1AI4Tg--mrJ2A" "https://www.youtube.com/feeds/videos.xml?channel_id=UC9-y-6csu5WGm29I7JiwpnA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCoxcjq-8xIDTYp3uz647V5A" "https://www.youtube.com/feeds/videos.xml?channel_id=UCYO_jab_esuFRV4b17AJtAw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCJ0-OtVpF0wOKEqT2Z1HEtA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCHnyfMqiRRG1u-2MsSQLbXA"
      ("https://www.archlinux.org/feeds/news/" Linux)
@@ -1138,3 +1141,11 @@ installed via Guix.")
  )
 
 (setup (:pkg haskell-mode :straight t))
+
+(set-face-attribute 'org-level-1 nil
+                    :height 100
+                    :weight 'bold)
+
+(set-face-attribute 'org-document-title nil
+                    :height 130
+                    :weight 'bold)
