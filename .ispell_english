@@ -9,6 +9,7 @@ ccls
 colour
 config
 Configurating
+cpu
 Ctrl
 CV
 DAP
@@ -27,6 +28,8 @@ Eukaryotes
 Eukaryotic
 EXWM
 frontend
+GCSE
+Github
 GPG
 Guix
 haider
@@ -58,6 +61,7 @@ pgpmime
 plasmids
 png
 Polybar
+PopOS
 Powerpoint
 Prokaryotes
 Prokaryotic
@@ -72,6 +76,7 @@ SSHing
 standalone
 subheading
 Surds
+synced
 SystemD
 Titler
 TODOs
@@ -80,6 +85,7 @@ Urdu
 username
 Vim
 Voidlinux
+VRAM
 VTerm
 webpage
 website
