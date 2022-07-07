@@ -8,6 +8,11 @@
 ;; Make sure to check out the License (GPL v3)
 
 ;; Code:
+(global-set-key (kbd "<s-left>") 'windmove-left)
+(global-set-key (kbd "<s-right>") 'windmove-right)
+(global-set-key (kbd "<s-up>") 'windmove-up)
+(global-set-key (kbd "<s-down>") 'windmove-down)
+
 (setq dw/is-guix-system (and (eq system-type 'gnu/linux)
                              (require 'f)
                              (string-equal (f-read "/etc/issue")
@@ -342,16 +347,16 @@ installed via Guix.")
 ;; ----------------------------------------------------------------------
 ;;;                             recentf
 ;; ----------------------------------------------------------------------
+;; Recentf had gave me some errors when I launch Emacs
 
-(recentf-mode 1)
-(setq recentf-save-file (format "%s.%s" recentf-save-file server-name))
-(setq recentf-max-menu-items 25)
-(setq recentf-max-saved-items 25)
+;; (recentf-mode 1)
+;; (setq recentf-max-menu-items 25)
+;; (setq recentf-max-saved-items 25)
 
-(run-at-time nil (* 5 60) 'recentf-save-list)
+;; (run-at-time nil (* 5 60) 'recentf-save-list)
 
-(space-keys
-  "t" '(counsel-recentf :which-key "Recent files"))
+;; (space-keys
+;;   "t" '(counsel-recentf :which-key "Recent files"))
 
 ;; ----------------------------------------------------------------------
 ;;;                        password management
@@ -585,29 +590,29 @@ installed via Guix.")
 ;;;                      Hydra (window management) 
 ;; ----------------------------------------------------------------------
 
-(setup (:pkg hydra)
-  (require 'hydra))
+;; (setup (:pkg hydra)
+;;   (require 'hydra))
 
-(defhydra hydra-exwm-move-resize
-  (global-map "<C-M-tab>")
-  "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
-  ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
-  ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
-  ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
-  ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
-  ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
-  ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
-  ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
-  ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
-  ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
-  ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
-  ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
-  ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
-  ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
-  ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
-  ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
-  ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
-  ("f" nil "finished" :exit t))
+;; (defhydra hydra-exwm-move-resize
+;;   (global-map "<C-M-tab>")
+;;   "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
+;;   ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
+;;   ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
+;;   ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
+;;   ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
+;;   ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
+;;   ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
+;;   ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
+;;   ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
+;;   ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
+;;   ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
+;;   ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
+;;   ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
+;;   ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
+;;   ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
+;;   ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
+;;   ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
+;;   ("f" nil "finished" :exit t))
 
 ;; ----------------------------------------------------------------------
 ;;;                                Vterm 
@@ -871,11 +876,6 @@ installed via Guix.")
 (setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
       auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
 
-(global-set-key (kbd "<s-left>") 'windmove-left)
-(global-set-key (kbd "<s-right>") 'windmove-right)
-(global-set-key (kbd "<s-up>") 'windmove-up)
-(global-set-key (kbd "<s-down>") 'windmove-down)
-
 (setup (:pkg vertico)
   (vertico-mode))
 
@@ -1112,12 +1112,8 @@ installed via Guix.")
 ;;   (add-hook 'exwm-init-hook #'exwm/exwm-init-hook)
 ;;   (exwm-enable))
 
-;; Look at this monster of a variable (elfeed  & elfeed-tube)
+;; Look at this monster of a variable (elfeed & elfeed-tube)
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("22ce392ec78cd5e512169f8960edf5cbbad70e01d3ed0284ea62ab813d4ff250" "47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(elfeed-feeds
@@ -1134,10 +1130,6 @@ installed via Guix.")
      (emacs)))
  '(warning-suppress-types '(((savehist-file)) ((savehist-file)) (emacs))))
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  )
 
 (setup (:pkg haskell-mode :straight t))
